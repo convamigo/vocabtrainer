@@ -1,0 +1,338 @@
+<body>
+    <div class="trainer-container">
+  <div id="vocab-trainer">
+  <!-- your vocabulary trainer HTML here -->
+</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vocabulary Trainer</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 2rem; background: #f4f4f4; margin: 0; box-sizing: border-box; }
+    #start-screen, #end-screen, #game-screen { display: none; width: 100%; max-width: 100%; margin: auto; box-sizing: border-box; }
+ 
+    }
+    .screen-box {
+  width: 100%;
+  max-width: 700px;
+  background: white;
+  padding: 2rem;
+  margin: 2rem auto;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.6s ease;$1
+}
+    .screen-box h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .screen-box p {
+      font-size: 1.2rem;
+      color: #555;
+    }
+    .word-box { background: #d0ecff; padding: 1rem; font-size: 2rem; margin-bottom: 1rem; border-radius: 10px; animation: fadeIn 0.5s ease; }
+    .option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+    .option { background: white; border-radius: 10px; padding: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: flex-start; border: 1px solid #ccc; transition: background 0.2s ease, transform 0.2s ease; animation: fadeInUp 0.3s ease; }
+    .correct-answer { background-color: #c8f7c5 !important; }
+    .wrong-answer { background-color: #f7c5c5 !important; }
+    .key-circle { width: 24px; height: 24px; background: #ccc; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 0.5rem; font-size: 0.9rem; }
+    .progress-bar { display: flex; height: 20px; margin-bottom: 1rem; border-radius: 10px; overflow: hidden; }
+    .mcq-progress { background: #4caf50; height: 100%; transition: width 0.3s ease; }
+    .typing-progress { background: #2196f3; height: 100%; transition: width 0.3s ease; }
+    .input-box { font-size: 1.2rem; padding: 0.5rem; border-radius: 8px; border: 1px solid #ccc; margin-top: 1rem; width: 50%; animation: fadeIn 0.5s ease; }
+    .mistake-box { background: #eee; margin: 0.5rem auto; padding: 0.5rem 1rem; border-radius: 8px; display: flex; justify-content: space-between; width: 60%; }
+    .correct { color: green; }
+    .highlight { background: yellow !important; }
+    .button { background: #2196f3; color: white; padding: 1rem 2rem; border: none; border-radius: 8px; cursor: pointer; margin-top: 2rem; font-size: 1rem; transition: background 0.3s ease; }
+    .button:hover { background: #1976d2; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  .submit-arrow {
+      background: #d0ecff;
+      color: #0077b6;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      margin-left: 0.5rem;
+      transition: background 0.3s ease;
+    }
+
+    .submit-arrow:hover {
+      background: #b5dcff;
+    }
+    .trainer-container {
+        max-width: 100vh;
+        margin: 80px auto; /* Push down from top and center horizontally */
+        padding: 24px;
+        background-color: white;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        border-radius: 12px;
+        overflow: hidden;
+}
+	  #vocab-trainer {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  height: 100% !important;
+}
+  </style>
+</head>
+<body>
+  <div id="start-screen">
+    <div class="screen-box">
+      <h1>Welcome to the Vocabulary Trainer</h1>
+      <p id="term-count"></p>
+      <p>Train your memory and test your knowledge. Let’s grow your vocabulary step by step! 🚀</p>
+      <button class="button" onclick="startGame()">Start Learning</button>
+    </div>
+  </div>
+
+  <div id="game-screen" class="screen-box">
+    <div class="progress-bar">
+      <div id="mcq-bar" class="mcq-progress" style="width: 0%"></div>
+      <div id="typing-bar" class="typing-progress" style="width: 0%"></div>
+    </div>
+    <div class="word-box" id="word-box"></div>
+    <div id="mcq-options" class="option-grid"></div>
+    <div id="typing-area">
+      <input id="typing-input" class="input-box" placeholder="Type your answer...">
+      <button class="submit-arrow" onclick="submitTyping()">➜</button>
+    </div>
+    <button class="button" id="dont-know-btn" onclick="dontKnow()">I don't know</button>
+  </div>
+
+  <div id="end-screen">
+    <div class="screen-box">
+      <h1>🎉 Great job!</h1>
+      <p>You’ve reached the end of the session. Here's where you can improve:</p>
+      <h2>Mistakes:</h2>
+      <div id="mistakes-list"></div>
+      <button class="button" onclick="retryMistakes()">Retry Mistakes</button>
+    </div>
+  </div>
+
+  <audio id="correct-sound" src="https://github.com/convamigo/InglesA1/raw/refs/heads/main/Correct2.mp3"></audio>
+  <audio id="incorrect-sound" src="https://github.com/convamigo/InglesA1/raw/refs/heads/main/Incorrect2.mp3"></audio>
+
+  <script>
+    const DATA_URL = 'https://raw.githubusercontent.com/convamigo/InglesA1/refs/heads/main/Aula%201%20-%20Vocab%20-%20Subject%20Pronouns.json';
+    let allTerms = [], mcqLearned = [], fullyLearned = [], currentTerm = null;
+    let showTyping = false, questionCount = 0, mistakes = [], pendingMistakes = [], delay = 0;
+let isWaiting = false;
+
+    async function loadData() {
+  try {
+    const text = JSON.stringify([
+  { "pt": "eu", "en": "I" },
+  { "pt": "você", "en": "you" },
+  { "pt": "ele", "en": "he" },
+  { "pt": "ela", "en": "she" },
+  { "pt": "nós", "en": "we" },
+  { "pt": "vocês", "en": "you (plural)" },
+  { "pt": "eles", "en": "they (masc.)" },
+  { "pt": "elas", "en": "they (fem.)" }
+]);
+try {
+  allTerms = JSON.parse(text);
+    } catch (e) {
+      throw new Error('Invalid JSON format');
+    }
+    document.getElementById('term-count').textContent = `You will learn ${allTerms.length} words.`;
+      document.getElementById('start-screen').style.display = 'block';
+  } catch (err) {
+    document.body.innerHTML = `<pre style="color: red; font-size: 1.2rem;">Failed to load data:
+${err}</pre>`;
+    console.error(err);
+  }
+    }
+
+    function startGame() {
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('game-screen').style.display = 'block';
+      nextQuestion();
+    }
+
+    function updateProgressBar() {
+      const mcqPercent = (mcqLearned.length / allTerms.length) * 50;
+      const typingPercent = (fullyLearned.length / allTerms.length) * 50;
+      document.getElementById('mcq-bar').style.width = `${mcqPercent}%`;
+      document.getElementById('typing-bar').style.width = `${typingPercent}%`;
+    }
+
+    function nextQuestion() {
+  isWaiting = false;
+      document.getElementById('dont-know-btn').disabled = false;
+      const inputBox = document.getElementById('typing-input');
+      inputBox.value = '';
+      inputBox.classList.remove('correct-answer', 'wrong-answer');
+      const feedbackDiv = document.getElementById('typing-feedback');
+      if (feedbackDiv) feedbackDiv.remove();
+
+      updateProgressBar();
+      questionCount++;
+
+      const eligibleTyping = mcqLearned.filter(t => !fullyLearned.includes(t) && t !== currentTerm);
+      showTyping = mcqLearned.length >= 5 && eligibleTyping.length > 0 && Math.random() < 0.5;
+
+      document.getElementById('typing-area').style.display = 'none';
+      document.getElementById('mcq-options').innerHTML = '';
+
+      if (showTyping) {
+        currentTerm = eligibleTyping[Math.floor(Math.random() * eligibleTyping.length)];
+        document.getElementById('typing-area').style.display = 'block';
+        document.getElementById('typing-input').focus();
+      } else {
+        const remaining = allTerms.filter(t => !mcqLearned.includes(t));
+        if (remaining.length === 0) return showEndScreen();
+        currentTerm = pendingMistakes.length > 0 && questionCount % 5 === 0
+          ? pendingMistakes.shift()
+          : remaining[Math.floor(Math.random() * remaining.length)];
+
+        const options = [currentTerm.en];
+        while (options.length < 4) {
+          const random = allTerms[Math.floor(Math.random() * allTerms.length)].en;
+          if (!options.includes(random)) options.push(random);
+        }
+        options.sort(() => Math.random() - 0.5);
+
+        options.forEach((opt, i) => {
+          const div = document.createElement('div');
+          div.className = 'option';
+          div.dataset.answer = opt;
+          div.onclick = () => submitMCQ(opt, div);
+          div.innerHTML = `<div class='key-circle'>${i+1}</div> ${opt}`;
+          document.getElementById('mcq-options').appendChild(div);
+        });
+      }
+
+      document.getElementById('word-box').textContent = currentTerm.pt;
+    }
+
+    function submitMCQ(answer, element) {
+  if (isWaiting) return;
+  isWaiting = true;
+      document.getElementById('dont-know-btn').disabled = true;
+      const correct = answer === currentTerm.en;
+      const originalSound = document.getElementById(correct ? 'correct-sound' : 'incorrect-sound');
+const sound = originalSound.cloneNode();
+sound.play().catch(() => {});
+
+      if (correct) {
+        element.classList.add('correct-answer');
+        mcqLearned.push(currentTerm);
+        setTimeout(nextQuestion, 1000);
+      } else {
+        element.classList.add('wrong-answer');
+        document.querySelectorAll('.option').forEach(opt => {
+          if (opt.dataset.answer === currentTerm.en) opt.classList.add('correct-answer');
+        });
+        mistakes.push(currentTerm);
+        pendingMistakes.push(currentTerm);
+        setTimeout(nextQuestion, 3000);
+      }
+    }
+
+    function submitTyping() {
+  if (isWaiting) return;
+  isWaiting = true;
+      document.getElementById('dont-know-btn').disabled = true;
+      const inputBox = document.getElementById('typing-input');
+      const input = inputBox.value.trim().toLowerCase();
+      const target = currentTerm.en.toLowerCase().split('(')[0].trim();
+      const correct = input === target;
+
+      const sound = document.getElementById(correct ? 'correct-sound' : 'incorrect-sound');
+      sound.pause();
+      sound.currentTime = 0;
+      sound.play().catch(() => {});
+
+      const feedbackDiv = document.getElementById('typing-feedback');
+      if (feedbackDiv) feedbackDiv.remove();
+
+      if (correct) {
+        fullyLearned.push(currentTerm);
+        inputBox.classList.add('correct-answer');
+        setTimeout(nextQuestion, 1000);
+      } else {
+        mistakes.push(currentTerm);
+        pendingMistakes.push(currentTerm);
+        inputBox.classList.add('wrong-answer');
+
+        const feedback = document.createElement('div');
+        feedback.id = 'typing-feedback';
+        feedback.textContent = `Correct: ${currentTerm.en}`;
+        feedback.style.color = 'green';
+        feedback.style.marginTop = '1rem';
+        document.getElementById('typing-area').appendChild(feedback);
+
+        setTimeout(nextQuestion, 3000);
+      }
+    }
+
+    function dontKnow() {
+  if (isWaiting) return;
+  isWaiting = true;
+      document.querySelectorAll('.option').forEach(opt => {
+        if (opt.dataset.answer === currentTerm.en) opt.classList.add('highlight');
+      });
+      mistakes.push(currentTerm);
+      pendingMistakes.push(currentTerm);
+      setTimeout(nextQuestion, 1000);
+    }
+
+    function showEndScreen() {
+      document.getElementById('game-screen').style.display = 'none';
+      document.getElementById('end-screen').style.display = 'block';
+      const container = document.getElementById('mistakes-list');
+      container.innerHTML = '';
+      const uniqueMistakes = Array.from(new Set(mistakes.map(JSON.stringify))).map(JSON.parse);
+      uniqueMistakes.forEach(term => {
+        const div = document.createElement('div');
+        div.className = 'mistake-box';
+        div.innerHTML = `<span>${term.pt}</span><span class='correct'>${term.en}</span>`;
+        container.appendChild(div);
+      });
+    }
+
+    function retryMistakes() {
+      allTerms = Array.from(new Set(mistakes.map(JSON.stringify))).map(JSON.parse);
+      mcqLearned = [];
+      fullyLearned = [];
+      mistakes = [];
+      pendingMistakes = [];
+      questionCount = 0;
+      document.getElementById('end-screen').style.display = 'none';
+      document.getElementById('game-screen').style.display = 'block';
+      nextQuestion();
+    }
+
+    document.addEventListener('keydown', e => {
+  if (isWaiting) return;
+  const key = e.key;
+  if (['1', '2', '3', '4'].includes(key)) {
+    const idx = parseInt(key) - 1;
+    const option = document.querySelectorAll('.option')[idx];
+    if (option) option.click();
+  } else if (key === 'Enter') {
+    const typingArea = document.getElementById('typing-area');
+    if (typingArea.style.display !== 'none') submitTyping();
+  }
+});
+
+    loadData();
+  </script>
+</body>
+</html>
+  </div>
+</body>
