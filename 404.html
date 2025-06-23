@@ -234,7 +234,7 @@
         document.getElementById('term-count').textContent = `You will learn ${allTerms.length} words.`;
         document.getElementById('start-screen').style.display = 'block';
       } catch (err) {
-        document.body.innerHTML = `<pre style=\"color: red; font-size: 1.2rem;\">Failed to load data:\n${err}</pre>`;
+        document.body.innerHTML = `<pre style="color: red; font-size: 1.2rem;">Failed to load data:\n${err}</pre>`;
         console.error(err);
       }
     }
@@ -251,14 +251,16 @@
       document.getElementById('mcq-bar').style.width = `${mcqPercent}%`;
       document.getElementById('typing-bar').style.width = `${typingPercent}%`;
     }
-    
+
     function nextQuestion() {
+      // reset input & feedback
       const inputBox = document.getElementById('typing-input');
       inputBox.classList.remove('correct-answer', 'wrong-answer');
       inputBox.value = '';
       const fb = document.getElementById('typing-feedback');
       if (fb) fb.remove();
 
+      // end condition
       if (mcqLearned.length === allTerms.length && fullyLearned.length === allTerms.length) {
         return showEndScreen();
       }
@@ -270,6 +272,7 @@
       updateProgressBar();
       questionCount++;
 
+      // decide typing vs mcq
       const eligibleTyping = mcqLearned.filter(t => !fullyLearned.includes(t) && t !== currentTerm);
       showTyping = mcqLearned.length >= 5 && eligibleTyping.length > 0 && Math.random() < 0.5;
 
@@ -287,6 +290,7 @@
           ? pendingMistakes.shift()
           : remaining[Math.floor(Math.random() * remaining.length)];
 
+        // build MCQ options
         const options = [currentTerm.en];
         while (options.length < 4) {
           const random = allTerms[Math.floor(Math.random() * allTerms.length)].en;
@@ -306,13 +310,88 @@
       document.getElementById('word-box').textContent = currentTerm.pt;
     }
 
-    function submitMCQ(answer, element) { /* ... unchanged ... */ }
-    function submitTyping() { /* ... unchanged ... */ }
-    function dontKnow() { /* ... unchanged ... */ }
-    function showEndScreen() { /* ... unchanged ... */ }
-    function retryMistakes() { /* ... unchanged ... */ }
+    function submitMCQ(answer, element) {
+      if (isWaiting) return;
+      isWaiting = true;
+      document.getElementById('dont-know-btn').disabled = true;
+      const correct = answer === currentTerm.en;
+      element.classList.add(correct ? 'correct-answer' : 'wrong-answer');
+      if (correct) {
+        mcqLearned.push(currentTerm);
+        document.getElementById('correct-sound').play();
+      } else {
+        mistakes.push(currentTerm);
+        pendingMistakes.push(currentTerm);
+        document.getElementById('incorrect-sound').play();
+      }
+      setTimeout(nextQuestion, 1000);
+    }
 
-    document.addEventListener('keydown', e => { /* ... unchanged ... */ });
+    function submitTyping() {
+      if (isWaiting) return;
+      isWaiting = true;
+      const input = document.getElementById('typing-input');
+      const guess = input.value.trim();
+      const correct = guess.toLowerCase() === currentTerm.en.toLowerCase();
+      input.classList.add(correct ? 'correct-answer' : 'wrong-answer');
+      if (correct) {
+        fullyLearned.push(currentTerm);
+        document.getElementById('correct-sound').play();
+      } else {
+        mistakes.push(currentTerm);
+        pendingMistakes.push(currentTerm);
+        document.getElementById('incorrect-sound').play();
+      }
+      const feedback = document.createElement('div');
+      feedback.id = 'typing-feedback';
+      feedback.textContent = `Answer: ${currentTerm.en}`;
+      document.getElementById('typing-area').appendChild(feedback);
+      setTimeout(nextQuestion, 1500);
+    }
+
+    function dontKnow() {
+      if (isWaiting) return;
+      isWaiting = true;
+      mistakes.push(currentTerm);
+      pendingMistakes.push(currentTerm);
+      document.getElementById('incorrect-sound').play();
+      setTimeout(nextQuestion, 1000);
+    }
+
+    function showEndScreen() {
+      document.getElementById('game-screen').style.display = 'none';
+      document.getElementById('end-screen').style.display = 'block';
+      const list = document.getElementById('mistakes-list');
+      mistakes.forEach(term => {
+        const div = document.createElement('div');
+        div.className = 'mistake-box';
+        div.textContent = `${term.pt} → ${term.en}`;
+        list.appendChild(div);
+      });
+    }
+
+    function retryMistakes() {
+      allTerms = mistakes.slice();
+      mcqLearned = [];
+      fullyLearned = [];
+      mistakes = [];
+      pendingMistakes = [];
+      questionCount = 0;
+      document.getElementById('end-screen').style.display = 'none';
+      document.getElementById('start-screen').style.display = 'block';
+    }
+
+    document.addEventListener('keydown', e => {
+      if (isWaiting) return;
+      const key = e.key;
+      if (['1','2','3','4'].includes(key)) {
+        const idx = parseInt(key) - 1;
+        const option = document.querySelectorAll('.option')[idx];
+        if (option) option.click();
+      } else if (key === 'Enter') {
+        if (document.getElementById('typing-area').style.display !== 'none') submitTyping();
+      }
+    });
 
     loadData();
   </script>
