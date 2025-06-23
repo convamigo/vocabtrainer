@@ -253,6 +253,11 @@
     }
 
     function nextQuestion() {
+        const inputBox = document.getElementById('typing-input');
+        inputBox.classList.remove('correct-answer', 'wrong-answer');
+        inputBox.value = '';
+        const fb = document.getElementById('typing-feedback');
+        if (fb) fb.remove();
       if (mcqLearned.length === allTerms.length && fullyLearned.length === allTerms.length) {
         return showEndScreen();
       }
