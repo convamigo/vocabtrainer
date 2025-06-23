@@ -407,6 +407,34 @@
     });
 
     loadData();
+    }
+     // Grab the last part of the URL, e.g. "subjectpronouns.json" or ""
+  const fileName = window.location.pathname.split('/').pop();
+
+  // If it doesn’t end in ".json", do nothing (no fetch on "/" or other HTML pages)
+  if (!fileName.endsWith('.json')) {
+    return;
+  }
+
+  // Remove the ".json" extension and fetch from data/
+  const baseName = fileName.slice(0, -5);
+  fetch(`data/${baseName}.json`)
+    .then(res => {
+      if (!res.ok) throw new Error(`File not found: ${fileName}`);
+      return res.json();
+    })
+    .then(list => {
+      const ul = document.createElement('ul');
+      list.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        ul.appendChild(li);
+      });
+      document.body.appendChild(ul);
+    })
+    .catch(err => {
+      document.body.textContent = err.message;
+    });
   </script>
 </body>
 </html>
