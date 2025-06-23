@@ -341,6 +341,11 @@
   const correct = guess.toLowerCase() === currentTerm.en.toLowerCase();
   input.classList.add(correct ? 'correct-answer' : 'wrong-answer');
   if (correct) {
+    const snd = document.getElementById('correct-sound');
+    snd.pause();
+    snd.currentTime = 0;
+    snd.play();
+  }
     fullyLearned.push(currentTerm);
     // play correct sound...
   } else {
