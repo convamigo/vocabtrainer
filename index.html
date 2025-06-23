@@ -122,25 +122,28 @@
   <audio id="incorrect-sound" src="https://github.com/convamigo/InglesA1/raw/refs/heads/main/Incorrect2.mp3"></audio>
 
   <script>
-    const DATA_URL = 'https://raw.githubusercontent.com/convamigo/InglesA1/refs/heads/main/Aula%201%20-%20Vocab%20-%20Subject%20Pronouns.json';
+    const DATA_URL = './data/SubjectPronouns.json';
     let allTerms = [], mcqLearned = [], fullyLearned = [], currentTerm = null;
     let showTyping = false, questionCount = 0, mistakes = [], pendingMistakes = [], delay = 0;
 let isWaiting = false;
 
     async function loadData() {
   try {
-    const text = JSON.stringify([
-  { "pt": "eu", "en": "I" },
-  { "pt": "você", "en": "you" },
-  { "pt": "ele", "en": "he" },
-  { "pt": "ela", "en": "she" },
-  { "pt": "nós", "en": "we" },
-  { "pt": "vocês", "en": "you (plural)" },
-  { "pt": "eles", "en": "they (masc.)" },
-  { "pt": "elas", "en": "they (fem.)" }
-]);
-try {
-  allTerms = JSON.parse(text);
+    async function loadData() {
+        try {
+            const res = await fetch(DATA_URL);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            allTerms = await res.json();
+            document.getElementById('term-count').textContent =
+                `You will learn ${allTerms.length} words.`;
+            document.getElementById('start-screen').style.display = 'block';
+            } catch (err) {
+            document.body.innerHTML = `<pre style="color:red; font-size:1.2rem;">
+    Failed to load data:
+    ${err}
+    </pre>`;
+    console.error(err);
+  }
     } catch (e) {
       throw new Error('Invalid JSON format');
     }
@@ -167,6 +170,9 @@ ${err}</pre>`;
     }
 
     function nextQuestion() {
+        if (mcqLearned.length === allTerms.length && fullyLearned.length === allTerms.length) {
+            return showEndScreen();
+}
   isWaiting = false;
       document.getElementById('dont-know-btn').disabled = false;
       const inputBox = document.getElementById('typing-input');
@@ -190,7 +196,12 @@ ${err}</pre>`;
         document.getElementById('typing-input').focus();
       } else {
         const remaining = allTerms.filter(t => !mcqLearned.includes(t));
-        if (remaining.length === 0) return showEndScreen();
+        if (remaining.length === 0) {
+            showTyping = true;
+            return nextQuestion();
+            
+        }
+
         currentTerm = pendingMistakes.length > 0 && questionCount % 5 === 0
           ? pendingMistakes.shift()
           : remaining[Math.floor(Math.random() * remaining.length)];
