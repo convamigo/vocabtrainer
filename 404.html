@@ -206,7 +206,7 @@
     </div>
   </div>
 
-  <audio id="correct-sound" src="https://github.com/convamigo/InglesA1/raw/refs/heads/main/Correct2.mp3"></audio>
+    <audio id="correct-sound" src="https://github.com/convamigo/InglesA1/raw/refs/heads/main/Correct2.mp3"></audio>
   <audio id="incorrect-sound" src="https://github.com/convamigo/InglesA1/raw/refs/heads/main/Incorrect2.mp3"></audio>
 
   <script>
@@ -318,59 +318,57 @@
       element.classList.add(correct ? 'correct-answer' : 'wrong-answer');
       if (correct) {
         mcqLearned.push(currentTerm);
+        // play correct sound immediately, cutting off any prior
         const snd = document.getElementById('correct-sound');
-        snd.pause();
-        snd.currentTime = 0;
+        snd.pause(); snd.currentTime = 0;
         snd.play();
       } else {
         mistakes.push(currentTerm);
         pendingMistakes.push(currentTerm);
+        // play incorrect sound immediately, cutting off any prior
         const snd = document.getElementById('incorrect-sound');
-        snd.pause();
-        snd.currentTime = 0;
+        snd.pause(); snd.currentTime = 0;
         snd.play();
       }
       setTimeout(nextQuestion, 1000);
     }
 
     function submitTyping() {
-  if (isWaiting) return;
-  isWaiting = true;
-  const input = document.getElementById('typing-input');
-  const guess = input.value.trim();
-  const correct = guess.toLowerCase() === currentTerm.en.toLowerCase();
-  input.classList.add(correct ? 'correct-answer' : 'wrong-answer');
-  if (correct) {
-    const snd = document.getElementById('correct-sound');
-    snd.pause();
-    snd.currentTime = 0;
-    snd.play();
-  }
-    fullyLearned.push(currentTerm);
-    // play correct sound...
-  } else {
-    mistakes.push(currentTerm);
-    pendingMistakes.push(currentTerm);
-    // play incorrect sound...
-  }
-
-  // ← Replace the unconditional feedback block with the conditional one:
-  if (!correct) {
-    const feedback = document.createElement('div');
-    feedback.id = 'typing-feedback';
-    feedback.textContent = `Answer: ${currentTerm.en}`;
-    document.getElementById('typing-area').appendChild(feedback);
-  }
-
-  setTimeout(nextQuestion, 1500);
-}
+      if (isWaiting) return;
+      isWaiting = true;
+      const input = document.getElementById('typing-input');
+      const guess = input.value.trim();
+      const correct = guess.toLowerCase() === currentTerm.en.toLowerCase();
+      input.classList.add(correct ? 'correct-answer' : 'wrong-answer');
+      if (correct) {
+        fullyLearned.push(currentTerm);
+        const snd = document.getElementById('correct-sound');
+        snd.pause(); snd.currentTime = 0;
+        snd.play();
+      } else {
+        mistakes.push(currentTerm);
+        pendingMistakes.push(currentTerm);
+        const snd = document.getElementById('incorrect-sound');
+        snd.pause(); snd.currentTime = 0;
+        snd.play();
+      }
+      if (!correct) {
+        const feedback = document.createElement('div');
+        feedback.id = 'typing-feedback';
+        feedback.textContent = `Answer: ${currentTerm.en}`;
+        document.getElementById('typing-area').appendChild(feedback);
+      }
+      setTimeout(nextQuestion, 1500);
+    }
 
     function dontKnow() {
       if (isWaiting) return;
       isWaiting = true;
       mistakes.push(currentTerm);
       pendingMistakes.push(currentTerm);
-      document.getElementById('incorrect-sound').play();
+      const snd = document.getElementById('incorrect-sound');
+      snd.pause(); snd.currentTime = 0;
+      snd.play();
       setTimeout(nextQuestion, 1000);
     }
 
