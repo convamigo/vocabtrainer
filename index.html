@@ -223,6 +223,9 @@
 
   <script>
     const DATA_URL = './SubjectPronouns.json';
+    let mcqCount = 0;
+    let writeCount = 0;
+    const TARGET_WRITE = 0.3;  // 30% writing questions
     let allTerms = [], mcqLearned = [], fullyLearned = [], currentTerm = null;
     let showTyping = false, questionCount = 0, mistakes = [], pendingMistakes = [], isWaiting = false;
 
@@ -253,29 +256,22 @@
     }
 
     function nextQuestion() {
-        const inputBox = document.getElementById('typing-input');
-        inputBox.classList.remove('correct-answer', 'wrong-answer');
-        inputBox.value = '';
-        const fb = document.getElementById('typing-feedback');
-        if (fb) fb.remove();
-      if (mcqLearned.length === allTerms.length && fullyLearned.length === allTerms.length) {
-        return showEndScreen();
-      }
-      isWaiting = false;
-      document.getElementById('dont-know-btn').disabled = false;
-      document.getElementById('typing-area').style.display = 'none';
-      document.getElementById('mcq-options').innerHTML = '';
-      updateProgressBar();
-      questionCount++;
-
-      const eligibleTyping = mcqLearned.filter(t => !fullyLearned.includes(t) && t !== currentTerm);
-      showTyping = mcqLearned.length >= 5 && eligibleTyping.length > 0 && Math.random() < 0.5;
+         const totalAsked = mcqCount + writeCount;
+         const currentWriteFrac = totalAsked ? writeCount / totalAsked : 0;
+         const writeBias = TARGET_WRITE - currentWriteFrac;
+         let writeProb = TARGET_WRITE + writeBias * 0.5;
+         writeProb = Math.min(0.9, Math.max(0.1, writeProb));
+         
+         const doWrite = (Math.random() < writeProb);
+         if (doWrite) {
+             writeCount++;
 
       if (showTyping) {
         currentTerm = eligibleTyping[Math.floor(Math.random() * eligibleTyping.length)];
         document.getElementById('typing-area').style.display = 'block';
         document.getElementById('typing-input').focus();
       } else {
+          mcqCount++;
         const remaining = allTerms.filter(t => !mcqLearned.includes(t));
         if (remaining.length === 0) {
           showTyping = true;
