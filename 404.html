@@ -222,12 +222,15 @@
   <audio id="incorrect-sound" src="https://github.com/convamigo/InglesA1/raw/refs/heads/main/Incorrect2.mp3"></audio>
 
   <script>
-    const DATA_URL = './SubjectPronouns.json';
-    let allTerms = [], mcqLearned = [], fullyLearned = [], currentTerm = null;
-    let showTyping = false, questionCount = 0, mistakes = [], pendingMistakes = [], isWaiting = false;
-
     async function loadData() {
       try {
+          const fileName = window.location.pathname.split('/').pop();
+          if (!fileName.endsWith('.json')) {
+              return;
+          }
+          const baseName = fileName.slice(0, -5);
+          const DATA_URL = `data/${baseName}.json`;
+
         const res = await fetch(DATA_URL);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         allTerms = await res.json();
@@ -407,6 +410,7 @@
     });
 
     loadData();
+    }
   </script>
 </body>
 </html>
