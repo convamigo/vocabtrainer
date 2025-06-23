@@ -1,336 +1,399 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Vocabulary Trainer</title>
-<style>
-body {
-font-family: sans-serif;
-text-align: center;
-padding: 2rem;
-background: white;
-margin: 0;
-box-sizing: border-box;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vocabulary Trainer</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 2rem;
+      background: white;
+      margin: 0;
+      box-sizing: border-box;
+    }
 
-#start-screen,
-#end-screen,
-#game-screen {
-display: none;
-width: 100%;
-max-width: 600px;
-margin: auto;
-box-sizing: border-box;
-align-items: center;
-text-align: center;
-}
+    #start-screen,
+    #end-screen,
+    #game-screen {
+      display: none;
+      width: 100%;
+      max-width: 600px;
+      margin: auto;
+      box-sizing: border-box;
+      align-items: center;
+      text-align: center;
+    }
 
-.screen-box {
-width: 100%;
-background: white;
-padding: 2rem;
-margin: 2rem auto;
-border-radius: 20px;
-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-animation: fadeIn 0.6s ease;
-}
+    .screen-box {
+      width: 100%;
+      background: white;
+      padding: 2rem;
+      margin: 2rem auto;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.6s ease;
+    }
 
-.screen-box h1 {
-font-size: 2rem;
-margin-bottom: 0.5rem;
-}
+    .screen-box h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
 
-.screen-box p {
-font-size: 1.2rem;
-color: #555;
-}
+    .screen-box p {
+      font-size: 1.2rem;
+      color: #555;
+    }
 
-.word-box {
-background: #d0ecff;
-padding: 1rem;
-font-size: 2rem;
-margin-bottom: 1rem;
-border-radius: 10px;
-animation: fadeIn 0.5s ease;
-}
+    .word-box {
+      background: #d0ecff;
+      padding: 1rem;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      border-radius: 10px;
+      animation: fadeIn 0.5s ease;
+    }
 
-.option-grid {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 1rem;
-margin-top: 1rem;
-}
+    .option-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
 
-.option {
-background: white;
-border-radius: 10px;
-padding: 1rem;
-cursor: pointer;
-display: flex;
-align-items: center;
-justify-content: flex-start;
-border: 1px solid #ccc;
-transition: background 0.2s ease, transform 0.2s ease;
-animation: fadeInUp 0.3s ease;
-}
+    .option {
+      background: white;
+      border-radius: 10px;
+      padding: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      border: 1px solid #ccc;
+      transition: background 0.2s ease, transform 0.2s ease;
+      animation: fadeInUp 0.3s ease;
+    }
 
-.correct-answer {
-background-color: #c8f7c5 !important;
-}
+    .correct-answer {
+      background-color: #c8f7c5 !important;
+    }
 
-.wrong-answer {
-background-color: #f7c5c5 !important;
-}
+    .wrong-answer {
+      background-color: #f7c5c5 !important;
+    }
 
-.key-circle {
-width: 24px;
-height: 24px;
-background: #ccc;
-border-radius: 50%;
-display: flex;
-align-items: center;
-justify-content: center;
-margin-right: 0.5rem;
-font-size: 0.9rem;
-}
+    .key-circle {
+      width: 24px;
+      height: 24px;
+      background: #ccc;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0.5rem;
+      font-size: 0.9rem;
+    }
 
-.progress-bar {
-display: flex;
-height: 20px;
-margin-bottom: 1rem;
-border-radius: 10px;
-overflow: hidden;
-}
+    .progress-bar {
+      display: flex;
+      height: 20px;
+      margin-bottom: 1rem;
+      border-radius: 10px;
+      overflow: hidden;
+    }
 
-.mcq-progress {
-background: #4caf50;
-height: 100%;
-transition: width 0.3s ease;
-}
+    .mcq-progress {
+      background: #4caf50;
+      height: 100%;
+      transition: width 0.3s ease;
+    }
 
-.typing-progress {
-background: #2196f3;
-height: 100%;
-transition: width 0.3s ease;
-}
+    .typing-progress {
+      background: #2196f3;
+      height: 100%;
+      transition: width 0.3s ease;
+    }
 
-.input-box {
-font-size: 1.2rem;
-padding: 0.5rem;
-border-radius: 8px;
-border: 1px solid #ccc;
-margin-top: 1rem;
-width: 50%;
-animation: fadeIn 0.5s ease;
-}
+    .input-box {
+      font-size: 1.2rem;
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-top: 1rem;
+      width: 50%;
+      animation: fadeIn 0.5s ease;
+    }
 
-.mistake-box {
-background: #eee;
-margin: 0.5rem auto;
-padding: 0.5rem 1rem;
-border-radius: 8px;
-display: flex;
-justify-content: space-between;
-width: 60%;
-}
+    .mistake-box {
+      background: #eee;
+      margin: 0.5rem auto;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      width: 60%;
+    }
 
-.correct {
-color: green;
-}
+    .correct {
+      color: green;
+    }
 
-.highlight {
-background: yellow !important;
-}
+    .highlight {
+      background: yellow !important;
+    }
 
-.button {
-background: #1679ab;
-color: white;
-padding: 1rem 2rem;
-border: none;
-border-radius: 8px;
-cursor: pointer;
-margin-top: 2rem;
-font-size: 1rem;
-transition: background 0.3s ease;
-}
+    .button {
+      background: #1679ab;
+      color: white;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 2rem;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+    }
 
-.button:hover {
-background: #1C99D8;
-}
+    .button:hover {
+      background: #1C99D8;
+    }
 
-@keyframes fadeIn {
-from { opacity: 0; transform: translateY(-10px); }
-to { opacity: 1; transform: translateY(0); }
-}
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-@keyframes fadeInUp {
-from { opacity: 0; transform: translateY(10px); }
-to { opacity: 1; transform: translateY(0); }
-}
-</style>
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
-<div id="start-screen">
-<div class="screen-box">
-<h1>Welcome to the Vocabulary Trainer</h1>
-<p id="term-count"></p>
-<p>Train your memory and test your knowledge. Let’s grow your vocabulary step by step! 🚀</p>
-<button class="button" onclick="startGame()">Start Learning</button>
-</div>
-</div>
+  <div id="start-screen">
+    <div class="screen-box">
+      <h1>Welcome to the Vocabulary Trainer</h1>
+      <p id="term-count"></p>
+      <p>Train your memory and test your knowledge. Let’s grow your vocabulary step by step! 🚀</p>
+      <button class="button" onclick="startGame()">Start Learning</button>
+    </div>
+  </div>
 
-<div id="game-screen">
-<div class="screen-box">
-<div class="progress-bar">
-<div id="mcq-bar" class="mcq-progress" style="width: 0%"></div>
-<div id="typing-bar" class="typing-progress" style="width: 0%"></div>
-</div>
-<div class="word-box" id="word-box"></div>
-<div id="mcq-options" class="option-grid"></div>
-<div id="typing-area" style="display:none;">
-<input id="typing-input" class="input-box" placeholder="Type your answer...">
-<button class="button" onclick="submitTyping()">➜</button>
-</div>
-<button class="button" id="dont-know-btn" onclick="dontKnow()">I don't know</button>
-</div>
-</div>
+  <div id="game-screen">
+    <div class="screen-box">
+      <div class="progress-bar">
+        <div id="mcq-bar" class="mcq-progress" style="width: 0%"></div>
+        <div id="typing-bar" class="typing-progress" style="width: 0%"></div>
+      </div>
+      <div class="word-box" id="word-box"></div>
+      <div id="mcq-options" class="option-grid"></div>
+      <div id="typing-area" style="display:none;">
+        <input id="typing-input" class="input-box" placeholder="Type your answer...">
+        <button class="button" onclick="submitTyping()">➜</button>
+      </div>
+      <button class="button" id="dont-know-btn" onclick="dontKnow()">I don't know</button>
+    </div>
+  </div>
 
-<div id="end-screen">
-<div class="screen-box">
-<h1>🎉 Great job!</h1>
-<p>You’ve reached the end of the session. Here's where you can improve:</p>
-<h2>Mistakes:</h2>
-<div id="mistakes-list"></div>
-<button class="button" onclick="retryMistakes()">Retry Mistakes</button>
-</div>
-</div>
+  <div id="end-screen">
+    <div class="screen-box">
+      <h1>🎉 Great job!</h1>
+      <p>You’ve reached the end of the session. Here's where you can improve:</p>
+      <h2>Mistakes:</h2>
+      <div id="mistakes-list"></div>
+      <button class="button" onclick="retryMistakes()">Retry Mistakes</button>
+    </div>
+  </div>
 
-<audio id="correct-sound" src="https://github.com/convamigo/InglesA1/raw/refs/heads/main/Correct2.mp3"></audio>
-<audio id="incorrect-sound" src="https://github.com/convamigo/InglesA1/raw/refs/heads/main/Incorrect2.mp3"></audio>
+  <audio id="correct-sound" src="https://github.com/convamigo/InglesA1/raw/refs/heads/main/Correct2.mp3"></audio>
+  <audio id="incorrect-sound" src="https://github.com/convamigo/InglesA1/raw/refs/heads/main/Incorrect2.mp3"></audio>
 
-<script>
-// Initialize state variables
-let allTerms = [];
-let mcqLearned = [];
-let fullyLearned = [];
-let mistakes = [];
-let pendingMistakes = [];
-let questionCount = 0;
-let currentTerm = null;
-let showTyping = false;
-let isWaiting = false;
+  <script>
+    // Initialize state variables
+    let allTerms = [];
+    let mcqLearned = [];
+    let fullyLearned = [];
+    let mistakes = [];
+    let pendingMistakes = [];
+    let questionCount = 0;
+    let currentTerm = null;
+    let showTyping = false;
+    let isWaiting = false;
 
-async function loadData() {
-try {
-const fileName = window.location.pathname.split('/').pop();
-if (!fileName.endsWith('.json')) return;
-const baseName = fileName.slice(0, -5);
-const DATA_URL = `data/${baseName}.json`;
+    async function loadData() {
+      try {
+        const fileName = window.location.pathname.split('/').pop();
+        if (!fileName.endsWith('.json')) return;
+        const baseName = fileName.slice(0, -5);
+        const DATA_URL = `data/${baseName}.json`;
 
-const res = await fetch(DATA_URL);
-if (!res.ok) throw new Error(`HTTP ${res.status}`);
-allTerms = await res.json();
-document.getElementById('term-count').textContent = `You will learn ${allTerms.length} words.`;
-document.getElementById('start-screen').style.display = 'block';
-} catch (err) {
-document.body.innerHTML = `<pre style="color: red; font-size: 1.2rem;">Failed to load data:\n${err}</pre>`;
-console.error(err);
-}
-}
+        const res = await fetch(DATA_URL);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        allTerms = await res.json();
+        document.getElementById('term-count').textContent = `You will learn ${allTerms.length} words.`;
+        document.getElementById('start-screen').style.display = 'block';
+      } catch (err) {
+        document.body.innerHTML = `<pre style="color: red; font-size: 1.2rem;">Failed to load data:\n${err}</pre>`;
+        console.error(err);
+      }
+    }
 
-function startGame() {
-document.getElementById('start-screen').style.display = 'none';
-document.getElementById('game-screen').style.display = 'block';
-nextQuestion();
-}
+    function startGame() {
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('game-screen').style.display = 'block';
+      nextQuestion();
+    }
 
-function updateProgressBar() {
-const mcqPercent = (mcqLearned.length / allTerms.length) * 50;
-const typingPercent = (fullyLearned.length / allTerms.length) * 50;
-document.getElementById('mcq-bar').style.width = `${mcqPercent}%`;
-document.getElementById('typing-bar').style.width = `${typingPercent}%`;
-}
+    function updateProgressBar() {
+      const mcqPercent = (mcqLearned.length / allTerms.length) * 50;
+      const typingPercent = (fullyLearned.length / allTerms.length) * 50;
+      document.getElementById('mcq-bar').style.width = `${mcqPercent}%`;
+      document.getElementById('typing-bar').style.width = `${typingPercent}%`;
+    }
 
-function nextQuestion() {
-// reset input & feedback
-const inputBox = document.getElementById('typing-input');
-inputBox.classList.remove('correct-answer', 'wrong-answer');
-inputBox.value = '';
-const fb = document.getElementById('typing-feedback');
-if (fb) fb.remove();
+    function nextQuestion() {
+      // reset input & feedback
+      const inputBox = document.getElementById('typing-input');
+      inputBox.classList.remove('correct-answer', 'wrong-answer');
+      inputBox.value = '';
+      const fb = document.getElementById('typing-feedback');
+      if (fb) fb.remove();
 
-// end condition
-if (mcqLearned.length === allTerms.length && fullyLearned.length === allTerms.length) {
-return showEndScreen();
-}
+      // end condition
+      if (mcqLearned.length === allTerms.length && fullyLearned.length === allTerms.length) {
+        return showEndScreen();
+      }
 
-isWaiting = false;
-document.getElementById('dont-know-btn').disabled = false;
-document.getElementById('typing-area').style.display = 'none';
-document.getElementById('mcq-options').innerHTML = '';
-updateProgressBar();
-questionCount++;
+      isWaiting = false;
+      document.getElementById('dont-know-btn').disabled = false;
+      document.getElementById('typing-area').style.display = 'none';
+      document.getElementById('mcq-options').innerHTML = '';
+      updateProgressBar();
+      questionCount++;
 
-// decide typing vs mcq
-const eligibleTyping = mcqLearned.filter(t => !fullyLearned.includes(t) && t !== currentTerm);
-showTyping = mcqLearned.length >= 5 && eligibleTyping.length > 0 && Math.random() < 0.5;
+      // decide typing vs mcq
+      const eligibleTyping = mcqLearned.filter(t => !fullyLearned.includes(t) && t !== currentTerm);
+      showTyping = mcqLearned.length >= 5 && eligibleTyping.length > 0 && Math.random() < 0.5;
 
-if (showTyping) {
-currentTerm = eligibleTyping[Math.floor(Math.random() * eligibleTyping.length)];
-document.getElementById('typing-area').style.display = 'block';
-document.getElementById('typing-input').focus();
-} else {
-const remaining = allTerms.filter(t => !mcqLearned.includes(t));
-if (remaining.length === 0) {
-showTyping = true;
-return nextQuestion();
-}
-currentTerm = pendingMistakes.length > 0 && questionCount % 5 === 0
-? pendingMistakes.shift()
-: remaining[Math.floor(Math.random() * remaining.length)];
+      if (showTyping) {
+        currentTerm = eligibleTyping[Math.floor(Math.random() * eligibleTyping.length)];
+        document.getElementById('typing-area').style.display = 'block';
+        document.getElementById('typing-input').focus();
+      } else {
+        const remaining = allTerms.filter(t => !mcqLearned.includes(t));
+        if (remaining.length === 0) {
+          showTyping = true;
+          return nextQuestion();
+        }
+        currentTerm = pendingMistakes.length > 0 && questionCount % 5 === 0
+          ? pendingMistakes.shift()
+          : remaining[Math.floor(Math.random() * remaining.length)];
 
-// build MCQ options
-const options = [currentTerm.en];
-while (options.length < 4) {
-const random = allTerms[Math.floor(Math.random() * allTerms.length)].en;
-if (!options.includes(random)) options.push(random);
-}
-options.sort(() => Math.random() - 0.5);
+        // build MCQ options
+        const options = [currentTerm.en];
+        while (options.length < 4) {
+          const random = allTerms[Math.floor(Math.random() * allTerms.length)].en;
+          if (!options.includes(random)) options.push(random);
+        }
+        options.sort(() => Math.random() - 0.5);
 
-options.forEach((opt, i) => {
-const div = document.createElement('div');
-div.className = 'option';
-div.dataset.answer = opt;
-div.onclick = () => submitMCQ(opt, div);
-div.innerHTML = `<div class='key-circle'>${i+1}</div> ${opt}`;
-document.getElementById('mcq-options').appendChild(div);
-});
-}
-document.getElementById('word-box').textContent = currentTerm.pt;
-}
+        options.forEach((opt, i) => {
+          const div = document.createElement('div');
+          div.className = 'option';
+          div.dataset.answer = opt;
+          div.onclick = () => submitMCQ(opt, div);
+          div.innerHTML = `<div class='key-circle'>${i+1}</div> ${opt}`;
+          document.getElementById('mcq-options').appendChild(div);
+        });
+      }
+      document.getElementById('word-box').textContent = currentTerm.pt;
+    }
 
-function submitMCQ(answer, element) {
-if (isWaiting) return;
-isWaiting = true;
-document.getElementById('dont-know-btn').disabled = true;
-const correct = answer === currentTerm.en;
-element.classList.add(correct ? 'correct-answer' : 'wrong-answer');
-if (correct) {
-mcqLearned.push(currentTerm);
+    function submitMCQ(answer, element) {
+      if (isWaiting) return;
+      isWaiting = true;
+      document.getElementById('dont-know-btn').disabled = true;
+      const correct = answer === currentTerm.en;
+      element.classList.add(correct ? 'correct-answer' : 'wrong-answer');
+      if (correct) {
+        mcqLearned.push(currentTerm);
         document.getElementById('correct-sound').play();
-        const snd = document.getElementById('correct-sound');
-        snd.pause();
-        snd.currentTime = 0;
-        snd.play();
-} else {
-mistakes.push(currentTerm);
-pendingMistakes.push(currentTerm);
+      } else {
+        mistakes.push(currentTerm);
+        pendingMistakes.push(currentTerm);
         document.getElementById('incorrect-sound').play();
-        const snd = document.getElementById('incorrect-sound');
-        snd.pause();
-        snd.currentTime = 0;
-        snd.play();
-}
-setTimeout(nextQuestion, 1000);
-}
+      }
+      setTimeout(nextQuestion, 1000);
+    }
+
+    function submitTyping() {
+      if (isWaiting) return;
+      isWaiting = true;
+      const input = document.getElementById('typing-input');
+      const guess = input.value.trim();
+      const correct = guess.toLowerCase() === currentTerm.en.toLowerCase();
+      input.classList.add(correct ? 'correct-answer' : 'wrong-answer');
+      if (correct) {
+        fullyLearned.push(currentTerm);
+        document.getElementById('correct-sound').play();
+      } else {
+        mistakes.push(currentTerm);
+        pendingMistakes.push(currentTerm);
+        document.getElementById('incorrect-sound').play();
+      }
+      const feedback = document.createElement('div');
+      feedback.id = 'typing-feedback';
+      feedback.textContent = `Answer: ${currentTerm.en}`;
+      document.getElementById('typing-area').appendChild(feedback);
+      setTimeout(nextQuestion, 1500);
+    }
+
+    function dontKnow() {
+      if (isWaiting) return;
+      isWaiting = true;
+      mistakes.push(currentTerm);
+      pendingMistakes.push(currentTerm);
+      document.getElementById('incorrect-sound').play();
+      setTimeout(nextQuestion, 1000);
+    }
+
+    function showEndScreen() {
+      document.getElementById('game-screen').style.display = 'none';
+      document.getElementById('end-screen').style.display = 'block';
+      const list = document.getElementById('mistakes-list');
+      mistakes.forEach(term => {
+        const div = document.createElement('div');
+        div.className = 'mistake-box';
+        div.textContent = `${term.pt} → ${term.en}`;
+        list.appendChild(div);
+      });
+    }
+
+    function retryMistakes() {
+      allTerms = mistakes.slice();
+      mcqLearned = [];
+      fullyLearned = [];
+      mistakes = [];
+      pendingMistakes = [];
+      questionCount = 0;
+      document.getElementById('end-screen').style.display = 'none';
+      document.getElementById('start-screen').style.display = 'block';
+    }
+
+    document.addEventListener('keydown', e => {
+      if (isWaiting) return;
+      const key = e.key;
+      if (['1','2','3','4'].includes(key)) {
+        const idx = parseInt(key) - 1;
+        const option = document.querySelectorAll('.option')[idx];
+        if (option) option.click();
+      } else if (key === 'Enter') {
+        if (document.getElementById('typing-area').style.display !== 'none') submitTyping();
+      }
+    });
+
+    loadData();
+  </script>
+</body>
+</html>
