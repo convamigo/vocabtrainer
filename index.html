@@ -318,11 +318,17 @@
       element.classList.add(correct ? 'correct-answer' : 'wrong-answer');
       if (correct) {
         mcqLearned.push(currentTerm);
-        document.getElementById('correct-sound').play();
+        const correctSound = document.getElementById('correct-sound');
+        correctSound.pause();
+        correctSound.currentTime = 0;
+        correctSound.play();
       } else {
         mistakes.push(currentTerm);
         pendingMistakes.push(currentTerm);
-        document.getElementById('incorrect-sound').play();
+        const incorrectSound = document.getElementById('incorrect-sound');
+        incorrectSound.pause();
+        incorrectSound.currentTime = 0;
+        incorrectSound.play();
       }
       setTimeout(nextQuestion, 1000);
     }
