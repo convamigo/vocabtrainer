@@ -252,7 +252,8 @@
       document.getElementById('typing-bar').style.width = `${typingPercent}%`;
     }
 
-    function nextQuestion() {
+    function nextQuestion() {    
+        pendingMistakes.forEach(obj => obj.delay--);
       // reset input & feedback
       const inputBox = document.getElementById('typing-input');
       inputBox.classList.remove('correct-answer', 'wrong-answer');
@@ -286,10 +287,15 @@
           showTyping = true;
           return nextQuestion();
         }
-        currentTerm = pendingMistakes.length > 0 && questionCount % 5 === 0
-          ? pendingMistakes.shift()
-          : remaining[Math.floor(Math.random() * remaining.length)];
-
+        const readyMistakes = pendingMistakes.filter(obj => obj.delay <= 0); 
+        if (readyMistakes.length > 0 && questionCount % 5 === 0) {
+            const idx = Math.floor(Math.random() * readyMistakes.length);
+            const [selected] = readyMistakes.splice(idx, 1);
+            currentTerm = selected.term;
+            pendingMistakes = pendingMistakes.filter(obj => obj !== selected);
+} else {
+  // ... (existing code for normal selection)
+}
         // build MCQ options
         const options = [currentTerm.en];
         while (options.length < 4) {
@@ -324,7 +330,7 @@
         correctSound.play();
       } else {
         mistakes.push(currentTerm);
-        pendingMistakes.push(currentTerm);
+        pendingMistakes.push({ term: currentTerm, delay: 3 });
         const incorrectSound = document.getElementById('incorrect-sound');
         incorrectSound.pause();
         incorrectSound.currentTime = 0;
