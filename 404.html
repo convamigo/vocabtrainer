@@ -252,8 +252,7 @@
       document.getElementById('typing-bar').style.width = `${typingPercent}%`;
     }
 
-    function nextQuestion() {    
-        pendingMistakes.forEach(obj => obj.delay--);
+    function nextQuestion() {
       // reset input & feedback
       const inputBox = document.getElementById('typing-input');
       inputBox.classList.remove('correct-answer', 'wrong-answer');
@@ -287,15 +286,10 @@
           showTyping = true;
           return nextQuestion();
         }
-        const readyMistakes = pendingMistakes.filter(obj => obj.delay <= 0); 
-        if (readyMistakes.length > 0 && questionCount % 5 === 0) {
-            const idx = Math.floor(Math.random() * readyMistakes.length);
-            const [selected] = readyMistakes.splice(idx, 1);
-            currentTerm = selected.term;
-            pendingMistakes = pendingMistakes.filter(obj => obj !== selected);
-} else {
-  // ... (existing code for normal selection)
-}
+        currentTerm = pendingMistakes.length > 0 && questionCount % 5 === 0
+          ? pendingMistakes.shift()
+          : remaining[Math.floor(Math.random() * remaining.length)];
+
         // build MCQ options
         const options = [currentTerm.en];
         while (options.length < 4) {
@@ -330,7 +324,7 @@
         correctSound.play();
       } else {
         mistakes.push(currentTerm);
-        pendingMistakes.push({ term: currentTerm, delay: 3 });
+        pendingMistakes.push(currentTerm);
         const incorrectSound = document.getElementById('incorrect-sound');
         incorrectSound.pause();
         incorrectSound.currentTime = 0;
@@ -354,15 +348,13 @@
         pendingMistakes.push(currentTerm);
         document.getElementById('incorrect-sound').play();
       }
-     if (!correct) {
-         const feedback = document.createElement('div');
-         feedback.id = 'typing-feedback';
-         feedback.textContent = `Answer: ${currentTerm.en}`;
-         document.getElementById('typing-area').appendChild(feedback);
-         setTimeout(nextQuestion, 1500);
-} else {
-  setTimeout(nextQuestion, 500); // or 0 for instant, or any delay you prefer
+      if (!correct) {
+          const feedback = document.createElement('div');
+          feedback.id = 'typing-feedback';
+          feedback.textContent = `Answer: ${currentTerm.en}`;
+          document.getElementById('typing-area').appendChild(feedback);
 }
+
     }
 
     function dontKnow() {
