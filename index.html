@@ -348,11 +348,13 @@
         pendingMistakes.push(currentTerm);
         document.getElementById('incorrect-sound').play();
       }
-      const feedback = document.createElement('div');
-      feedback.id = 'typing-feedback';
-      feedback.textContent = `Answer: ${currentTerm.en}`;
-      document.getElementById('typing-area').appendChild(feedback);
-      setTimeout(nextQuestion, 1500);
+      if (!correct) {
+          const feedback = document.createElement('div');
+          feedback.id = 'typing-feedback';
+          feedback.textContent = `Answer: ${currentTerm.en}`;
+          document.getElementById('typing-area').appendChild(feedback);
+}
+
     }
 
     function dontKnow() {
