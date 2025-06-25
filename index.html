@@ -537,8 +537,14 @@
       }
       window.addEventListener('resize', setFullHeight);
       setFullHeight();
+      window.addEventListener('focusout', () => {
+          setTimeout(() => {
+              document.documentElement.scrollTop = 0;
+              document.body.scrollTop = 0;
+          }, 100);
+});
+
 
   </script>
 </body>
 </html>
-
