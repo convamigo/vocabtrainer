@@ -24,6 +24,10 @@
       box-sizing: border-box;
       align-items: center;
       text-align: center;
+      min-height: 100vh;          /* NEW: make container fill the screen */
+      display: flex;              /* center content vertically */
+      justify-content: center;
+      flex-direction: column;
     }
 
     .input-row {
@@ -48,7 +52,7 @@
       width: 100%;
       background: white;
       padding: 2rem;
-      margin: 2rem auto;
+      margin: 0 auto;             /* remove vertical gap */
       border-radius: 20px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       animation: fadeIn 0.6s ease;
@@ -489,4 +493,3 @@
   </script>
 </body>
 </html>
-
