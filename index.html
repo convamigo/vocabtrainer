@@ -260,7 +260,9 @@
       document.getElementById('mcq-bar').style.width = `${mcqPercent}%`;
       document.getElementById('typing-bar').style.width = `${typingPercent}%`;
     }
-
+    function isRetryMode() {
+        return allTerms.length <= 5 && questionCount === 1;
+    }
     function nextQuestion() {
       // reset input & feedback
       const inputBox = document.getElementById('typing-input');
@@ -270,8 +272,8 @@
       if (fb) fb.remove();
 
       // end condition
-      if (mcqLearned.length === allTerms.length && fullyLearned.length === allTerms.length) {
-        return showEndScreen();
+      if ((mcqLearned.length >= 4 || allTerms.length <= 4 || isRetryMode()) && eligibleTyping.length > 0) {
+          showTyping = Math.random() < shouldType;
       }
 
       isWaiting = false;
@@ -288,8 +290,7 @@
       const total = mcqLeft + typingLeft;
       const shouldType = typingLeft / total;
       showTyping = false;
-      if (mcqLearned.length >= 4 && eligibleTyping.length > 0) {
-          showTyping = Math.random() < (typingLeft / total);
+      if ((mcqLearned.length >= 4 || allTerms.length <= 4 || isRetryMode()) && eligibleTyping.length > 0) {
       }
       
       if (showTyping) {
@@ -409,18 +410,18 @@
     }
 
     function retryMistakes() {
-      allTerms = mistakes.map(term => ({ ...term }));
-      mcqLearned = [];
-      fullyLearned = [];
-      mistakes = [];
-      pendingMistakes = [];
-      questionCount = 0;
-      document.getElementById('end-screen').style.display = 'none';
-      document.getElementById('game-screen').style.display = 'block';
-      mcqLearned = allTerms.slice(); // pretend all MCQs are done
-      nextQuestion();
+        allTerms = mistakes.map(term => ({ ...term }));
+        mcqLearned = [];
+        fullyLearned = [];
+        mistakes = [];
+        pendingMistakes = [];
+        questionCount = 0;
+        document.getElementById('end-screen').style.display = 'none';
+        document.getElementById('game-screen').style.display = 'block';
+        nextQuestion();
+        
     }
-
+    
     document.addEventListener('keydown', e => {
       if (isWaiting) return;
       const key = e.key;
