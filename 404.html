@@ -366,6 +366,9 @@
       const input = document.getElementById('typing-input');
       const guess = input.value.trim();
       const correct = guess.toLowerCase() === currentTerm.en.toLowerCase();
+      const cleanAnswer = currentTerm.en.replace(/\s*\(.*?\)/g, '').trim().toLowerCase();
+      const correct = guess.toLowerCase() === cleanAnswer;
+
       input.classList.add(correct ? 'correct-answer' : 'wrong-answer');
       if (correct) {
         fullyLearned.push(currentTerm);
@@ -415,6 +418,7 @@
       questionCount = 0;
       document.getElementById('end-screen').style.display = 'none';
       document.getElementById('start-screen').style.display = 'block';
+      mcqLearned = allTerms.slice(); // pretend all MCQs are done
       nextQuestion();
     }
 
