@@ -375,6 +375,7 @@
         pendingMistakes.push({ term: currentTerm, delay: 3 });
         document.getElementById('incorrect-sound').play();
       }
+      setTimeout(nextQuestion, 1000);
       if (!correct) {
           const feedback = document.createElement('div');
           feedback.id = 'typing-feedback';
