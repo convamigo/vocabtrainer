@@ -8,7 +8,7 @@
     body {
       font-family: sans-serif;
       text-align: center;
-      padding: 2rem;
+      padding: 0;
       background: white;
       margin: 0;
       box-sizing: border-box;
@@ -18,14 +18,13 @@
     #end-screen,
     #game-screen {
       display: none;
-      width: 100%;
-      max-width: 600px;
-      margin: auto;
+      width: 100vw;
+      height: 100vh;
+      padding: 1rem;
       box-sizing: border-box;
       align-items: center;
       text-align: center;
-      min-height: 100vh;          /* NEW: make container fill the screen */
-      display: flex;              /* center content vertically */
+      min-height: 100vh;
       justify-content: center;
       flex-direction: column;
     }
@@ -50,6 +49,7 @@
 
     .screen-box {
       width: 100%;
+      max-width: 600px;
       background: white;
       padding: 2rem;
       margin: 0 auto;             /* remove vertical gap */
@@ -301,11 +301,15 @@
     }
 
     function startGame() {
-      document.getElementById('start-screen').style.display = 'none';
-      document.getElementById('game-screen').style.display = 'block';
-      nextQuestion();
+        document.getElementById('start-screen').style.display = 'none';
+        const gameScreen = document.getElementById('game-screen');
+        gameScreen.style.display = 'flex';
+        gameScreen.style.flexDirection = 'column';
+        gameScreen.style.justifyContent = 'center';
+        gameScreen.style.alignItems = 'center';
+        nextQuestion();
+}
 
-    }
 
     function updateProgressBar() {
       const mcqPercent = (mcqLearned.length / allTerms.length) * 50;
@@ -471,10 +475,12 @@
         mistakes = [];
         pendingMistakes = [];
         questionCount = 0;
-        document.getElementById('end-screen').style.display = 'none';
-        document.getElementById('game-screen').style.display = 'block';
+        const gameScreen = document.getElementById('game-screen');
+        gameScreen.style.display = 'flex';
+        gameScreen.style.flexDirection = 'column';
+        gameScreen.style.justifyContent = 'center';
+        gameScreen.style.alignItems = 'center';
         nextQuestion();
-        
     }
     
     document.addEventListener('keydown', e => {
