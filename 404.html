@@ -17,6 +17,7 @@
     #start-screen,
     #end-screen,
     #game-screen {
+      height: calc(var(--vh, 1vh) * 100);
       display: none;
       width: 100vw;
       height: 100vh;
@@ -500,9 +501,18 @@
       } else if (key === 'Enter') {
         if (document.getElementById('typing-area').style.display !== 'none') submitTyping();
       }
+      
     });
 
     loadData();
+    
+    function setFullHeight() {
+          const vh = window.innerHeight * 0.01;
+          document.documentElement.style.setProperty('--vh', `${vh}px`);
+      }
+      window.addEventListener('resize', setFullHeight);
+      setFullHeight();
+
   </script>
 </body>
 </html>
