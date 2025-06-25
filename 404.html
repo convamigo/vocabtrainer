@@ -366,11 +366,17 @@
       input.classList.add(correct ? 'correct-answer' : 'wrong-answer');
       if (correct) {
         fullyLearned.push(currentTerm);
-        document.getElementById('correct-sound').play();
+        const correctSound = document.getElementById('correct-sound');
+        correctSound.pause();
+        correctSound.currentTime = 0;
+        correctSound.play();
       } else {
         mistakes.push(currentTerm);
         pendingMistakes.push({ term: currentTerm, delay: 3 });
-        document.getElementById('incorrect-sound').play();
+        const incorrectSound = document.getElementById('incorrect-sound');
+        incorrectSound.pause();
+        incorrectSound.currentTime = 0;
+        incorrectSound.play();
       }
       setTimeout(nextQuestion, 1000);
       if (!correct) {
@@ -395,6 +401,7 @@
       document.getElementById('mistakes-list').innerHTML = '';
       document.getElementById('game-screen').style.display = 'none';
       document.getElementById('end-screen').style.display = 'block';
+      
       const list = document.getElementById('mistakes-list');
       mistakes.forEach(term => {
         const div = document.createElement('div');
