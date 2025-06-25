@@ -251,6 +251,9 @@
       document.getElementById('start-screen').style.display = 'none';
       document.getElementById('game-screen').style.display = 'block';
       nextQuestion();
+      mcqLearned = allTerms.slice(); // pretend all MCQs are done
+      nextQuestion();
+
     }
 
     function updateProgressBar() {
@@ -282,14 +285,15 @@
 
       // decide typing vs mcq
       const eligibleTyping = mcqLearned.filter(t => !fullyLearned.includes(t) && t !== currentTerm);
-      showTyping = mcqLearned.length >= 4 && eligibleTyping.length > 0 && Math.random() < 0.5;
       const mcqLeft = allTerms.length - mcqLearned.length;
       const typingLeft = mcqLearned.length - fullyLearned.length;
       const total = mcqLeft + typingLeft;
       const shouldType = typingLeft / total;
-      showTyping = mcqLearned.length >= 4 && eligibleTyping.length > 0 && Math.random() < shouldType;
-
-
+      showTyping = false;
+      if (mcqLearned.length >= 4 && eligibleTyping.length > 0) {
+          showTyping = Math.random() < (typingLeft / total);
+      }
+      
       if (showTyping) {
         currentTerm = eligibleTyping[Math.floor(Math.random() * eligibleTyping.length)];
         document.getElementById('typing-area').style.display = 'block';
@@ -362,6 +366,7 @@
       isWaiting = true;
       const input = document.getElementById('typing-input');
       const guess = input.value.trim();
+      const correct = guess.toLowerCase() === currentTerm.en.toLowerCase();
       const cleanAnswer = currentTerm.en.replace(/\s*\(.*?\)/g, '').trim().toLowerCase();
       const correct = guess.toLowerCase() === cleanAnswer;
 
