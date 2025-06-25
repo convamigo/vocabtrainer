@@ -271,11 +271,6 @@
       const fb = document.getElementById('typing-feedback');
       if (fb) fb.remove();
 
-      // end condition
-      if ((mcqLearned.length >= 4 || allTerms.length <= 4 || isRetryMode()) && eligibleTyping.length > 0) {
-          showTyping = Math.random() < shouldType;
-      }
-
       isWaiting = false;
       document.getElementById('dont-know-btn').disabled = false;
       document.getElementById('typing-area').style.display = 'none';
@@ -295,28 +290,27 @@
           showTyping = Math.random() < shouldType;
       }
       if (showTyping) {
-        currentTerm = eligibleTyping[Math.floor(Math.random() * eligibleTyping.length)];
-        document.getElementById('typing-area').style.display = 'block';
-        document.getElementById('typing-input').focus();
+          currentTerm = eligibleTyping[Math.floor(Math.random() * eligibleTyping.length)];
+          document.getElementById('typing-area').style.display = 'block';
+          document.getElementById('typing-input').focus();
       } else {
-        const remaining = allTerms.filter(t => !mcqLearned.includes(t));
-        if (remaining.length === 0) {
-          showTyping = true;
-        }
-        currentTerm = pendingMistakes.length > 0 && questionCount % 5 === 0
-        ? pendingMistakes.shift()
-        : remaining[Math.floor(Math.random() * remaining.length)];
-        for (let i = 0; i < pendingMistakes.length; i++) {
-            pendingMistakes[i].delay--;
-        }
-        const readyMistakeIndex = pendingMistakes.findIndex(m => m.delay <= 0);
-        if (readyMistakeIndex !== -1) {
-            currentTerm = pendingMistakes.splice(readyMistakeIndex, 1)[0].term;
-        } else {
-            currentTerm = remaining[Math.floor(Math.random() * remaining.length)];
-            
-        }
-
+          const remaining = allTerms.filter(t => !mcqLearned.includes(t));
+          for (let i = 0; i < pendingMistakes.length; i++) {
+              pendingMistakes[i].delay--;
+          }
+          const readyMistakeIndex = pendingMistakes.findIndex(m => m.delay <= 0);
+          if (remaining.length === 0 && readyMistakeIndex === -1) {
+              showEndScreen();
+              return;
+              
+          }
+          if (readyMistakeIndex !== -1) {
+              currentTerm = pendingMistakes.splice(readyMistakeIndex, 1)[0].term;
+              
+          } else {
+              currentTerm = remaining[Math.floor(Math.random() * remaining.length)];
+              
+          }
         // build MCQ options
         const options = [currentTerm.en];
         while (options.length < 4) {
