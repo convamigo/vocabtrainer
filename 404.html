@@ -427,6 +427,7 @@
         incorrectSound.play();
       }
       document.activeElement.blur();
+      parent.postMessage('scrollTop', '*');
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
       setTimeout(nextQuestion, 1000);
@@ -439,7 +440,6 @@
       const guess = input.value.trim();
       const cleanAnswer = currentTerm.en.replace(/\s*\(.*?\)/g, '').trim().toLowerCase();
       const correct = guess.toLowerCase() === cleanAnswer;
-
 
       input.classList.add(correct ? 'correct-answer' : 'wrong-answer');
       if (correct) {
@@ -457,6 +457,7 @@
         incorrectSound.play();
       }
       document.activeElement.blur();
+      parent.postMessage('scrollTop', '*');
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
       setTimeout(nextQuestion, 1000);
@@ -476,6 +477,7 @@
       pendingMistakes.push({ term: currentTerm, delay: 3 });
       document.getElementById('incorrect-sound').play();
       document.activeElement.blur();
+      parent.postMessage('scrollTop', '*');
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
       setTimeout(nextQuestion, 1000);
