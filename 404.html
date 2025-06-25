@@ -188,11 +188,38 @@
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    @media (max-width: 400px) {
+    @media (max-width: 768px) {
   .screen-box {
-    padding: 1rem;    /* shrink padding so content fits */
-    margin: 1rem;     /* tighten margins */
+    padding: 1rem;
+    margin: 1rem;
   }
+
+  .option-grid {
+    grid-template-columns: 1fr; /* stack options vertically on small screens */
+  }
+
+  .input-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .input-row .button {
+    width: 100%;
+    font-size: 1rem;
+  }
+
+  .input-box {
+    font-size: 1rem;
+    padding: 0.6rem;
+  }
+
+  .mistake-box {
+    width: 100%;
+    flex-direction: column;
+    text-align: left;
+  }
+}
+
 }
 
   </style>
@@ -462,3 +489,4 @@
   </script>
 </body>
 </html>
+
