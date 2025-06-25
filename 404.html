@@ -20,7 +20,7 @@
       display: none;
       width: 100vw;
       height: 100vh;
-      padding: 1rem;
+      padding: 0rem;
       box-sizing: border-box;
       text-align: center;
     }
@@ -290,6 +290,11 @@
         allTerms = await res.json();
         document.getElementById('term-count').textContent = `You will learn ${allTerms.length} words.`;
         document.getElementById('start-screen').style.display = 'block';
+        const startScreen = document.getElementById('start-screen');
+        startScreen.style.display = 'flex';
+        startScreen.style.flexDirection = 'column';
+        startScreen.style.justifyContent = 'center';
+        startScreen.style.alignItems = 'center';
       } catch (err) {
         document.body.innerHTML = `<pre style="color: red; font-size: 1.2rem;">Failed to load data:\n${err}</pre>`;
         console.error(err);
@@ -454,6 +459,12 @@
       document.getElementById('mistakes-list').innerHTML = '';
       document.getElementById('game-screen').style.display = 'none';
       document.getElementById('end-screen').style.display = 'block';
+      const endScreen = document.getElementById('end-screen');
+      endScreen.style.display = 'flex';
+      endScreen.style.flexDirection = 'column';
+      endScreen.style.justifyContent = 'center';
+      endScreen.style.alignItems = 'center';
+
       
       const list = document.getElementById('mistakes-list');
       mistakes.forEach(term => {
