@@ -26,6 +26,24 @@
       text-align: center;
     }
 
+    .input-row {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        margin-top: 1rem;
+    }
+
+    .input-row .input-box {
+        flex: 1;
+        max-width: none;
+    }
+
+    .input-row .button {
+        padding: 0.5rem 1rem;
+        font-size: 1.2rem;
+        height: 100%;
+    }
+
     .screen-box {
       width: 100%;
       background: white;
@@ -158,6 +176,7 @@
 
     .button:hover {
       background: #1C99D8;
+      
     }
 
     @keyframes fadeIn {
@@ -197,8 +216,11 @@
       <div class="word-box" id="word-box"></div>
       <div id="mcq-options" class="option-grid"></div>
       <div id="typing-area" style="display:none;">
-        <input id="typing-input" class="input-box" placeholder="Type your answer...">
-        <button class="button" onclick="submitTyping()">➜</button>
+      <div class="input-row">
+          <input id="typing-input" class="input-box" placeholder="Type your answer...">
+          <button class="button" onclick="submitTyping()">➜</button>
+</div>
+
       </div>
       <button class="button" id="dont-know-btn" onclick="dontKnow()">I don't know</button>
     </div>
