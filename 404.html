@@ -338,13 +338,12 @@
         return allTerms.length <= 5 && questionCount === 1;
     }
     function nextQuestion() {
-      // reset input & feedback
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       const inputBox = document.getElementById('typing-input');
       inputBox.classList.remove('correct-answer', 'wrong-answer');
       inputBox.value = '';
       const fb = document.getElementById('typing-feedback');
       if (fb) fb.remove();
-
       isWaiting = false;
       document.getElementById('dont-know-btn').disabled = false;
       document.getElementById('typing-area').style.display = 'none';
@@ -425,6 +424,7 @@
         incorrectSound.currentTime = 0;
         incorrectSound.play();
       }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       setTimeout(nextQuestion, 1000);
     }
 
@@ -452,6 +452,7 @@
         incorrectSound.currentTime = 0;
         incorrectSound.play();
       }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       setTimeout(nextQuestion, 1000);
       if (!correct) {
           const feedback = document.createElement('div');
@@ -468,6 +469,7 @@
       mistakes.push(currentTerm);
       pendingMistakes.push({ term: currentTerm, delay: 3 });
       document.getElementById('incorrect-sound').play();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       setTimeout(nextQuestion, 1000);
     }
 
