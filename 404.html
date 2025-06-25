@@ -197,15 +197,25 @@
   .option-grid {
     grid-template-columns: 1fr; /* stack options vertically on small screens */
   }
-
+  
   .input-row {
-    flex-direction: column;
-    gap: 0.5rem;
+      flex-direction: row;
+      align-items: stretch;
+      gap: 0.5rem;
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
   }
-
+  
+  .input-box {
+      flex: 1;
+      min-width: 0;
+  }
+  
   .input-row .button {
-    width: 100%;
-    font-size: 1rem;
+      width: auto;
+      font-size: 1.2rem;
+      white-space: nowrap;
   }
 
   .input-box {
@@ -515,3 +525,4 @@
   </script>
 </body>
 </html>
+
