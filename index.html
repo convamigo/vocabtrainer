@@ -339,10 +339,10 @@
     }
     function nextQuestion() {
       document.activeElement.blur();
-      // Always scroll back to top when loading a new question
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
+      setTimeout(() => {
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+      }, 50);
       const inputBox = document.getElementById('typing-input');
       inputBox.classList.remove('correct-answer', 'wrong-answer');
       inputBox.value = '';
