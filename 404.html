@@ -363,7 +363,7 @@
       const mcqLeft = allTerms.length - mcqLearned.length;
       const typingLeft = mcqLearned.length - fullyLearned.length;
       const total = mcqLeft + typingLeft;
-      const shouldType = typingLeft / total;
+      const shouldType = total > 0 ? typingLeft / total : 0;
       
       showTyping = false;
       if ((mcqLearned.length >= 4 || allTerms.length <= 4 || isRetryMode()) && eligibleTyping.length > 0) {
