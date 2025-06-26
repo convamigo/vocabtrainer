@@ -509,12 +509,13 @@
     }
 
     function retryMistakes() {
-        allTerms = mistakes.map(term => ({ ...term }));
+        const retryTerms = [...mistakes];
+        allTerms = retryTerms.map(term => ({ ...term }));
         mcqLearned = [];
         fullyLearned = [];
-        mistakes = [];
         pendingMistakes = [];
         questionCount = 0;
+        mistakes = retryTerms.map(term => ({ ...term })); // keep for final screen
         const gameScreen = document.getElementById('game-screen');
         gameScreen.style.display = 'flex';
         gameScreen.style.flexDirection = 'column';
