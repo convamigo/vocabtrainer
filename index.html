@@ -291,6 +291,7 @@
     let mcqLearned = [];
     let fullyLearned = [];
     let mistakes = [];
+    let retryMode = false;
     let pendingMistakes = [];
     let questionCount = 0;
     let currentTerm = null;
@@ -424,8 +425,10 @@
         correctSound.currentTime = 0;
         correctSound.play();
       } else {
-        mistakes.push(currentTerm);
-        pendingMistakes.push({ term: currentTerm, delay: 3 });
+        if (!retryMode) {
+            mistakes.push(currentTerm);
+            pendingMistakes.push({ term: currentTerm, delay: 3 });
+        }
         const incorrectSound = document.getElementById('incorrect-sound');
         incorrectSound.pause();
         incorrectSound.currentTime = 0;
@@ -454,6 +457,7 @@
         correctSound.currentTime = 0;
         correctSound.play();
       } else {
+        if (!retryMode)
         mistakes.push(currentTerm);
         pendingMistakes.push({ term: currentTerm, delay: 3 });
         const incorrectSound = document.getElementById('incorrect-sound');
@@ -478,6 +482,7 @@
     function dontKnow() {
       if (isWaiting) return;
       isWaiting = true;
+      if (!retryMode)
       mistakes.push(currentTerm);
       pendingMistakes.push({ term: currentTerm, delay: 3 });
       document.getElementById('incorrect-sound').play();
@@ -509,20 +514,23 @@
     }
 
     function retryMistakes() {
-        const retryTerms = [...mistakes];
-        allTerms = retryTerms.map(term => ({ ...term }));
+        retryMode = true;
+        allTerms = mistakes.map(term => ({ ...term }));
         mcqLearned = [];
         fullyLearned = [];
         pendingMistakes = [];
         questionCount = 0;
-        mistakes = retryTerms.map(term => ({ ...term })); // keep for final screen
+        mistakes = [...allTerms]; // share the same object references
+        
         const gameScreen = document.getElementById('game-screen');
         gameScreen.style.display = 'flex';
         gameScreen.style.flexDirection = 'column';
         gameScreen.style.justifyContent = 'center';
         gameScreen.style.alignItems = 'center';
         nextQuestion();
+        
     }
+
     
     document.addEventListener('keydown', e => {
       if (isWaiting) return;
