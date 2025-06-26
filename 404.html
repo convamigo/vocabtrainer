@@ -534,8 +534,11 @@
     loadData();
     
     function setFullHeight() {
-          const vh = window.innerHeight * 0.01;
-          document.documentElement.style.setProperty('--vh', `${vh}px`);
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+      // Reset scroll to top on viewport resize to avoid keyboard-induced scrolling
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
       }
       window.addEventListener('resize', setFullHeight);
       setFullHeight();
@@ -545,8 +548,7 @@
               document.body.scrollTop = 0;
           }, 100);
 });
-
-
   </script>
 </body>
 </html>
+
