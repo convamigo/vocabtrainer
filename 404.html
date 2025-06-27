@@ -296,11 +296,11 @@
     let retryMode = false;
     let pendingMistakes = [];
     let questionCount = 0;
-    let currentTerm = allTerms[questionCount - 1];
+    let currentTerm;
     let showTyping = false;
     let isWaiting = false;
 
-    async function loadData() {
+    async function loadData() {() {
       try {
         const fileName = window.location.pathname.split('/').pop();
         if (!fileName.endsWith('.json')) return;
@@ -364,7 +364,7 @@
       // pick a term
       currentTerm = allTerms[questionCount - 1];
       // prepare 4 options for MCQ
-      options = generateOptions(currentTerm, allTerms);
+      // Removed undefined generateOptions call
       // decide typing vs mcq
       const eligibleTyping = mcqLearned.filter(t => !fullyLearned.includes(t) && t !== currentTerm);
       const mcqLeft = allTerms.length - mcqLearned.length;
@@ -372,9 +372,10 @@
       const total = mcqLeft + typingLeft;
       const shouldType = total > 0 ? typingLeft / total : 0;
       if (forceMCQ) {
-          showTyping = false;
-          forceMCQ = false; // so typing can come back later
-          }
+    showTyping = false;
+    forceMCQ = false; // so typing can come back later
+  }
+      showTyping = false;
       if ((mcqLearned.length >= 4 || allTerms.length <= 4 || isRetryMode()) && eligibleTyping.length > 0) {
           showTyping = Math.random() < shouldType;
       }
@@ -571,3 +572,4 @@
   </script>
 </body>
 </html>
+
