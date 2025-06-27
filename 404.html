@@ -287,6 +287,7 @@
 
   <script>
     // Initialize state variables
+    let originalTerms = [];
     let allTerms = [];
     let mcqLearned = [];
     let fullyLearned = [];
@@ -307,7 +308,8 @@
 
         const res = await fetch(DATA_URL);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        allTerms = await res.json();
+        originalTerms = await res.json();
+        allTerms = originalTerms.map(term => ({ ...term }));
         document.getElementById('term-count').textContent = `You will learn ${allTerms.length} words.`;
         document.getElementById('start-screen').style.display = 'block';
         const startScreen = document.getElementById('start-screen');
@@ -419,11 +421,14 @@
       const correct = answer === currentTerm.en;
       element.classList.add(correct ? 'correct-answer' : 'wrong-answer');
       if (correct) {
-        mcqLearned.push(currentTerm);
-        const correctSound = document.getElementById('correct-sound');
-        correctSound.pause();
-        correctSound.currentTime = 0;
-        correctSound.play();
+          mcqLearned.push(currentTerm);
+          if (retryMode && !fullyLearned.includes(currentTerm)) {
+  fullyLearned.push(currentTerm);
+          }
+  const correctSound = document.getElementById('correct-sound');
+  correctSound.pause();
+  correctSound.currentTime = 0;
+  correctSound.play();
       } else {
           if (!mistakes.some(term => term.pt === currentTerm.pt && term.en === currentTerm.en)) {
               mistakes.push(currentTerm);
@@ -500,7 +505,6 @@
             
         }
         retryMode = false;
-        retryMode = false;
       document.getElementById('mistakes-list').innerHTML = '';
       document.getElementById('game-screen').style.display = 'none';
       document.getElementById('end-screen').style.display = 'block';
@@ -522,7 +526,9 @@
         alert("No mistakes to retry!");
         return;
     }
-    const retryTerms = mistakes.map(term => ({ ...term }));
+    const retryTerms = mistakes.map(m => {
+        return originalTerms.find(term => term.pt === m.pt && term.en === m.en);
+    }).filter(Boolean);
         retryMode = true;
         allTerms = retryTerms;
         mcqLearned = [];
