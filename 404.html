@@ -324,7 +324,10 @@
         console.error(err);
       }
     }
-
+    
+    function isSameTerm(a, b) {
+        return a.pt === b.pt && a.en === b.en;
+    }
     function startGame() {
         document.getElementById('start-screen').style.display = 'none';
         const gameScreen = document.getElementById('game-screen');
@@ -333,6 +336,7 @@
         gameScreen.style.justifyContent = 'center';
         gameScreen.style.alignItems = 'center';
         nextQuestion();
+        const eligibleTyping = mcqLearned.filter(t => !fullyLearned.some(m => isSameTerm(m, t)));
 }
 
 
@@ -362,9 +366,11 @@
       document.getElementById('mcq-options').innerHTML = '';
       updateProgressBar();
       questionCount++;
+      const eligibleTyping = mcqLearned.filter(t => !fullyLearned.some(m => isSameTerm(m, t)));
+
 
       // decide typing vs mcq
-      const eligibleTyping = mcqLearned.filter(t => !fullyLearned.includes(t) && t !== currentTerm);
+      const remaining = allTerms.filter(t => !mcqLearned.some(m => isSameTerm(m, t)));
       const mcqLeft = allTerms.length - mcqLearned.length;
       const typingLeft = mcqLearned.length - fullyLearned.length;
       const total = mcqLeft + typingLeft;
@@ -383,7 +389,7 @@
           document.getElementById('typing-area').style.display = 'block';
           document.getElementById('typing-input').focus();
       } else {
-          const remaining = allTerms.filter(t => !mcqLearned.includes(t));
+          const remaining = allTerms.filter(t => !mcqLearned.some(m => isSameTerm(m, t)));
           for (let i = 0; i < pendingMistakes.length; i++) {
               pendingMistakes[i].delay--;
           }
