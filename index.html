@@ -425,10 +425,9 @@
         correctSound.currentTime = 0;
         correctSound.play();
       } else {
-        if (!retryMode) {
-            mistakes.push(currentTerm);
-            pendingMistakes.push({ term: currentTerm, delay: 3 });
-        }
+          if (!retryMode || (retryMode && !mistakes.includes(currentTerm))) { mistakes.push(currentTerm);
+          pendingMistakes.push({ term: currentTerm, delay: 3 });
+          }
         const incorrectSound = document.getElementById('incorrect-sound');
         incorrectSound.pause();
         incorrectSound.currentTime = 0;
@@ -457,9 +456,9 @@
         correctSound.currentTime = 0;
         correctSound.play();
       } else {
-        if (!retryMode)
-        mistakes.push(currentTerm);
-        pendingMistakes.push({ term: currentTerm, delay: 3 });
+          if (!retryMode || (retryMode && !mistakes.includes(currentTerm))) { mistakes.push(currentTerm);
+          pendingMistakes.push({ term: currentTerm, delay: 3 });
+}
         const incorrectSound = document.getElementById('incorrect-sound');
         incorrectSound.pause();
         incorrectSound.currentTime = 0;
@@ -494,9 +493,6 @@
     }
 
     function showEndScreen() {
-        if (retryMode) {
-            mistakes = allTerms.filter(term => !fullyLearned.includes(term));
-        }
         retryMode = false;
       document.getElementById('mistakes-list').innerHTML = '';
       document.getElementById('game-screen').style.display = 'none';
@@ -565,3 +561,4 @@
   </script>
 </body>
 </html>
+
