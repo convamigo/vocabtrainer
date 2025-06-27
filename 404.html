@@ -553,6 +553,7 @@
     retryMode = false;
     allTerms = mistakes.slice();
     originalTerms = allTerms.map(term => ({ ...term }));
+    mistakes = [];
     mcqLearned = [];
     fullyLearned = [];
     pendingMistakes = [];
@@ -564,7 +565,7 @@
     gameScreen.style.justifyContent = 'center';
     gameScreen.style.alignItems = 'center';
     nextQuestion();
-    mistakes = [];
+
     }
 
     
