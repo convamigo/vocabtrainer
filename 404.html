@@ -444,14 +444,16 @@
       document.getElementById('dont-know-btn').disabled = true;
       const correct = answer === currentTerm.en;
       element.classList.add(correct ? 'correct-answer' : 'wrong-answer');
-     if (!mcqLearned.some(t => isSameTerm(t, currentTerm))) {
-         mcqLearned.push(currentTerm);
-     }
-  const correctSound = document.getElementById('correct-sound');
-  correctSound.pause();
-  correctSound.currentTime = 0;
-  correctSound.play();
-    } else {
+      if (correct) {
+    if (!mcqLearned.some(t => isSameTerm(t, currentTerm))) {
+        mcqLearned.push(currentTerm);
+    }
+    const correctSound = document.getElementById('correct-sound');
+    correctSound.pause();
+    correctSound.currentTime = 0;
+    correctSound.play();
+} else {
+
           if (!mistakes.some(term => term.pt === currentTerm.pt && term.en === currentTerm.en)) {
               mistakes.push(currentTerm);
               pendingMistakes.push({ term: currentTerm, delay: 3 });
@@ -478,20 +480,23 @@
 
       input.classList.add(correct ? 'correct-answer' : 'wrong-answer');
       if (correct) {
-        fullyLearned.push(currentTerm);
+          if (!mcqLearned.some(t => isSameTerm(t, currentTerm))) {
+              mcqLearned.push(currentTerm);
+          }
         const correctSound = document.getElementById('correct-sound');
         correctSound.pause();
         correctSound.currentTime = 0;
         correctSound.play();
-      } else {
-          if (!mistakes.some(term => term.pt === currentTerm.pt && term.en === currentTerm.en)) {
-              mistakes.push(currentTerm);
-              pendingMistakes.push({ term: currentTerm, delay: 3 });
-          }
-        const incorrectSound = document.getElementById('incorrect-sound');
-        incorrectSound.pause();
-        incorrectSound.currentTime = 0;
-        incorrectSound.play();
+    } else {
+    if (!mistakes.some(term => term.pt === currentTerm.pt && term.en === currentTerm.en)) {
+        mistakes.push(currentTerm);
+        pendingMistakes.push({ term: currentTerm, delay: 3 });
+    }
+    const incorrectSound = document.getElementById('incorrect-sound');
+    incorrectSound.pause();
+    incorrectSound.currentTime = 0;
+    incorrectSound.play();
+}
       }
       document.activeElement.blur();
       parent.postMessage('scrollTop', '*');
