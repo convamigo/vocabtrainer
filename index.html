@@ -500,7 +500,6 @@
     }
 
     function showEndScreen() {
-        }
         retryMode = false;
       document.getElementById('mistakes-list').innerHTML = '';
       document.getElementById('game-screen').style.display = 'none';
@@ -523,9 +522,14 @@
         alert("No mistakes to retry!");
         return;
     }
+    document.getElementById('mcq-bar').style.width = '0%';
+    document.getElementById('typing-bar').style.width = '0%';
+    document.getElementById('end-screen').style.display = 'none';
+
     const retryTerms = mistakes.map(m => {
         return originalTerms.find(term => term.pt === m.pt && term.en === m.en);
     }).filter(Boolean);
+        mistakes = [];
         retryMode = true;
         allTerms = retryTerms;
         mcqLearned = [];
