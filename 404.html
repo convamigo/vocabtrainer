@@ -298,6 +298,7 @@
     let currentTerm = null;
     let showTyping = false;
     let isWaiting = false;
+    let forceMCQ = false;
 
     async function loadData() {
       try {
@@ -308,7 +309,8 @@
 
         const res = await fetch(DATA_URL);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        originalTerms = await res.json();
+        const loaded = await res.json();
+        originalTerms = loaded.map(term => ({ ...term }));
         allTerms = originalTerms.map(term => ({ ...term }));
         document.getElementById('term-count').textContent = `You will learn ${allTerms.length} words.`;
         document.getElementById('start-screen').style.display = 'block';
@@ -369,6 +371,10 @@
       const shouldType = total > 0 ? typingLeft / total : 0;
       
       showTyping = false;
+      if (forceMCQ) {
+          showTyping = false;
+          forceMCQ = false;
+      }
       if ((mcqLearned.length >= 4 || allTerms.length <= 4 || isRetryMode()) && eligibleTyping.length > 0) {
           showTyping = Math.random() < shouldType;
       }
@@ -518,32 +524,33 @@
       });
 }
     function retryMistakes() {
+        console.log("Retry button clicked");
+        forceMCQ = true;
         if (mistakes.length === 0) {
         alert("No mistakes to retry!");
         return;
     }
+    
+    const retryTerms = mistakes.slice(); // copy them safely
+    mistakes = []; // clear AFTER copying
+
     document.getElementById('mcq-bar').style.width = '0%';
     document.getElementById('typing-bar').style.width = '0%';
     document.getElementById('end-screen').style.display = 'none';
-
-    const retryTerms = mistakes.map(m => {
-        return originalTerms.find(term => term.pt === m.pt && term.en === m.en);
-    }).filter(Boolean);
-        mistakes = [];
-        retryMode = true;
-        allTerms = retryTerms;
-        mcqLearned = [];
-        fullyLearned = [];
-        pendingMistakes = [];
-        questionCount = 0;
+    
+    retryMode = true;
+    allTerms = retryTerms;
+    mcqLearned = [];        
+    fullyLearned = [];
+    pendingMistakes = [];
+    questionCount = 0;
         
-        const gameScreen = document.getElementById('game-screen');
-        gameScreen.style.display = 'flex';
-        gameScreen.style.flexDirection = 'column';
-        gameScreen.style.justifyContent = 'center';
-        gameScreen.style.alignItems = 'center';
-        nextQuestion();
-        
+    const gameScreen = document.getElementById('game-screen');
+    gameScreen.style.display = 'flex';
+    gameScreen.style.flexDirection = 'column';
+    gameScreen.style.justifyContent = 'center';
+    gameScreen.style.alignItems = 'center';
+    nextQuestion();
     }
 
     
