@@ -516,10 +516,12 @@
       });
 }
     function retryMistakes() {
-        const newMistakes = mistakes.map(term => ({ ...term })); // clone before clearing
-        mistakes = []; // clear before restarting
+        if (mistakes.length === 0) {
+        alert("No mistakes to retry!");
+        return;
+    }
         retryMode = true;
-        allTerms = newMistakes;
+        allTerms = mistakes.map(term => ({ ...term }));
         mcqLearned = [];
         fullyLearned = [];
         pendingMistakes = [];
@@ -568,4 +570,3 @@
   </script>
 </body>
 </html>
-
