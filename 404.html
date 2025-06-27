@@ -494,6 +494,10 @@
     }
 
     function showEndScreen() {
+        if (retryMode) {
+            mistakes = allTerms.filter(term => !fullyLearned.includes(term));
+        }
+      retryMode = false;
       document.getElementById('mistakes-list').innerHTML = '';
       document.getElementById('game-screen').style.display = 'none';
       document.getElementById('end-screen').style.display = 'block';
@@ -502,17 +506,14 @@
       endScreen.style.flexDirection = 'column';
       endScreen.style.justifyContent = 'center';
       endScreen.style.alignItems = 'center';
-
-      
       const list = document.getElementById('mistakes-list');
       mistakes.forEach(term => {
-        const div = document.createElement('div');
-        div.className = 'mistake-box';
-        div.textContent = `${term.pt} → ${term.en}`;
-        list.appendChild(div);
+          const div = document.createElement('div');
+          div.className = 'mistake-box';
+          div.textContent = `${term.pt} → ${term.en}`;
+          list.appendChild(div);
       });
-    }
-
+}
     function retryMistakes() {
         retryMode = true;
         allTerms = mistakes.map(term => ({ ...term }));
@@ -520,7 +521,6 @@
         fullyLearned = [];
         pendingMistakes = [];
         questionCount = 0;
-        mistakes = [...allTerms]; // share the same object references
         
         const gameScreen = document.getElementById('game-screen');
         gameScreen.style.display = 'flex';
