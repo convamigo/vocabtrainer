@@ -496,8 +496,10 @@
 
     function showEndScreen() {
         if (retryMode) {
-            mistakes = mcqLearned.filter(term => !fullyLearned.includes(term));
+            mistakes = allTerms.filter(term => !fullyLearned.includes(term));
+            
         }
+        retryMode = false;
         retryMode = false;
       document.getElementById('mistakes-list').innerHTML = '';
       document.getElementById('game-screen').style.display = 'none';
@@ -521,8 +523,6 @@
         return;
     }
     const retryTerms = mistakes.map(term => ({ ...term }));
-    mistakes = [];  // clear before restarting to capture new mistakes cleanly
-    
         retryMode = true;
         allTerms = retryTerms;
         mcqLearned = [];
