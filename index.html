@@ -500,9 +500,6 @@
     }
 
     function showEndScreen() {
-        if (retryMode) {
-            mistakes = allTerms.filter(term => !fullyLearned.includes(term));
-            
         }
         retryMode = false;
       document.getElementById('mistakes-list').innerHTML = '';
