@@ -287,7 +287,6 @@
 
   <script>
     // Initialize state variables
-    let forceMCQ = false;
     let originalTerms = [];
     let allTerms = [];
     let mcqLearned = [];
@@ -296,11 +295,11 @@
     let retryMode = false;
     let pendingMistakes = [];
     let questionCount = 0;
-    let currentTerm;
+    let currentTerm = null;
     let showTyping = false;
     let isWaiting = false;
 
-    async function loadData() {() {
+    async function loadData() {
       try {
         const fileName = window.location.pathname.split('/').pop();
         if (!fileName.endsWith('.json')) return;
@@ -361,20 +360,14 @@
       document.getElementById('mcq-options').innerHTML = '';
       updateProgressBar();
       questionCount++;
-      // pick a term
-      currentTerm = allTerms[questionCount - 1];
-      // prepare 4 options for MCQ
-      // Removed undefined generateOptions call
+
       // decide typing vs mcq
       const eligibleTyping = mcqLearned.filter(t => !fullyLearned.includes(t) && t !== currentTerm);
       const mcqLeft = allTerms.length - mcqLearned.length;
       const typingLeft = mcqLearned.length - fullyLearned.length;
       const total = mcqLeft + typingLeft;
       const shouldType = total > 0 ? typingLeft / total : 0;
-      if (forceMCQ) {
-    showTyping = false;
-    forceMCQ = false; // so typing can come back later
-  }
+      
       showTyping = false;
       if ((mcqLearned.length >= 4 || allTerms.length <= 4 || isRetryMode()) && eligibleTyping.length > 0) {
           showTyping = Math.random() < shouldType;
@@ -525,20 +518,35 @@
       });
 }
     function retryMistakes() {
-        forceMCQ = true;
-        allTerms = mistakes.slice();
-        mistakes = [];
-        mcqLearned = [];
-        fullyLearned = [];
-        questionCount = 0;
-        forceMCQ = true; // ensure MCQ starts
-        document.getElementById('end-screen').style.display = 'none';
-        document.getElementById('game-screen').style.display = 'flex';
-        nextQuestion();
+        if (mistakes.length === 0) {
+        alert("No mistakes to retry!");
+        return;
     }
     document.getElementById('mcq-bar').style.width = '0%';
     document.getElementById('typing-bar').style.width = '0%';
     document.getElementById('end-screen').style.display = 'none';
+
+    const retryTerms = mistakes.map(m => {
+        return originalTerms.find(term => term.pt === m.pt && term.en === m.en);
+    }).filter(Boolean);
+        mistakes = [];
+        retryMode = true;
+        allTerms = retryTerms;
+        mcqLearned = [];
+        fullyLearned = [];
+        pendingMistakes = [];
+        questionCount = 0;
+        
+        const gameScreen = document.getElementById('game-screen');
+        gameScreen.style.display = 'flex';
+        gameScreen.style.flexDirection = 'column';
+        gameScreen.style.justifyContent = 'center';
+        gameScreen.style.alignItems = 'center';
+        nextQuestion();
+        
+    }
+
+    
     document.addEventListener('keydown', e => {
       if (isWaiting) return;
       const key = e.key;
