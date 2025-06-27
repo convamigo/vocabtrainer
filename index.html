@@ -324,7 +324,10 @@
         console.error(err);
       }
     }
-
+    
+    function isSameTerm(a, b) {
+        return a.pt === b.pt && a.en === b.en;
+    }
     function startGame() {
         document.getElementById('start-screen').style.display = 'none';
         const gameScreen = document.getElementById('game-screen');
@@ -333,6 +336,7 @@
         gameScreen.style.justifyContent = 'center';
         gameScreen.style.alignItems = 'center';
         nextQuestion();
+        const eligibleTyping = mcqLearned.filter(t => !fullyLearned.some(m => isSameTerm(m, t)));
 }
 
 
@@ -362,9 +366,23 @@
       document.getElementById('mcq-options').innerHTML = '';
       updateProgressBar();
       questionCount++;
+      if (allTerms.length === 0) {
+          console.error("No terms available for retry.");
+          showEndScreen();
+          return;
+}
+
+      currentTerm = null;
+      if (allTerms.length === 0) {
+          console.error("No terms available for retry.");
+          showEndScreen();
+          return;
+      }
+      const eligibleTyping = mcqLearned.filter(t => !fullyLearned.some(m => isSameTerm(m, t)));
+
 
       // decide typing vs mcq
-      const eligibleTyping = mcqLearned.filter(t => !fullyLearned.includes(t) && t !== currentTerm);
+      const remaining = allTerms.filter(t => !mcqLearned.some(m => isSameTerm(m, t)));
       const mcqLeft = allTerms.length - mcqLearned.length;
       const typingLeft = mcqLearned.length - fullyLearned.length;
       const total = mcqLeft + typingLeft;
@@ -383,7 +401,7 @@
           document.getElementById('typing-area').style.display = 'block';
           document.getElementById('typing-input').focus();
       } else {
-          const remaining = allTerms.filter(t => !mcqLearned.includes(t));
+          const remaining = allTerms.filter(t => !mcqLearned.some(m => isSameTerm(m, t)));
           for (let i = 0; i < pendingMistakes.length; i++) {
               pendingMistakes[i].delay--;
           }
@@ -426,16 +444,14 @@
       document.getElementById('dont-know-btn').disabled = true;
       const correct = answer === currentTerm.en;
       element.classList.add(correct ? 'correct-answer' : 'wrong-answer');
-      if (correct) {
-          mcqLearned.push(currentTerm);
-          if (retryMode && !fullyLearned.includes(currentTerm)) {
-  fullyLearned.push(currentTerm);
-          }
+     if (!mcqLearned.some(t => isSameTerm(t, currentTerm))) {
+         mcqLearned.push(currentTerm);
+     }
   const correctSound = document.getElementById('correct-sound');
   correctSound.pause();
   correctSound.currentTime = 0;
   correctSound.play();
-      } else {
+    } else {
           if (!mistakes.some(term => term.pt === currentTerm.pt && term.en === currentTerm.en)) {
               mistakes.push(currentTerm);
               pendingMistakes.push({ term: currentTerm, delay: 3 });
@@ -531,7 +547,8 @@
         return;
     }
     
-    const retryTerms = mistakes.slice(); // copy them safely
+    const retryTerms = mistakes.slice();
+    console.log("Retrying terms:", retryTerms);
     mistakes = []; // clear AFTER copying
 
     document.getElementById('mcq-bar').style.width = '0%';
