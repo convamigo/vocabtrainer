@@ -425,8 +425,9 @@
         correctSound.currentTime = 0;
         correctSound.play();
       } else {
-          if (!retryMode || (retryMode && !mistakes.includes(currentTerm))) { mistakes.push(currentTerm);
-          pendingMistakes.push({ term: currentTerm, delay: 3 });
+          if (!mistakes.includes(currentTerm)) {
+              mistakes.push(currentTerm);
+              pendingMistakes.push({ term: currentTerm, delay: 3 });
           }
         const incorrectSound = document.getElementById('incorrect-sound');
         incorrectSound.pause();
@@ -456,9 +457,10 @@
         correctSound.currentTime = 0;
         correctSound.play();
       } else {
-          if (!retryMode || (retryMode && !mistakes.includes(currentTerm))) { mistakes.push(currentTerm);
-          pendingMistakes.push({ term: currentTerm, delay: 3 });
-}
+          if (!mistakes.includes(currentTerm)) {
+              mistakes.push(currentTerm);
+              pendingMistakes.push({ term: currentTerm, delay: 3 });
+          }
         const incorrectSound = document.getElementById('incorrect-sound');
         incorrectSound.pause();
         incorrectSound.currentTime = 0;
@@ -474,16 +476,16 @@
           feedback.id = 'typing-feedback';
           feedback.textContent = `Answer: ${currentTerm.en}`;
           document.getElementById('typing-area').appendChild(feedback);
-}
-
+    }
     }
 
     function dontKnow() {
       if (isWaiting) return;
       isWaiting = true;
-      if (!retryMode)
-      mistakes.push(currentTerm);
-      pendingMistakes.push({ term: currentTerm, delay: 3 });
+      if (!mistakes.includes(currentTerm)) {
+         mistakes.push(currentTerm);
+         pendingMistakes.push({ term: currentTerm, delay: 3 });
+      }
       document.getElementById('incorrect-sound').play();
       document.activeElement.blur();
       parent.postMessage('scrollTop', '*');
@@ -561,4 +563,3 @@
   </script>
 </body>
 </html>
-
