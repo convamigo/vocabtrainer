@@ -278,7 +278,6 @@
       <p>You’ve reached the end of the session. Here's where you can improve:</p>
       <h2>Mistakes:</h2>
       <div id="mistakes-list"></div>
-      <button class="button" onclick="retryMistakes()">Retry Mistakes</button>
     </div>
   </div>
 
@@ -516,36 +515,6 @@
           list.appendChild(div);
       });
 }
-    function retryMistakes() {
-        if (mistakes.length === 0) {
-        alert("No mistakes to retry!");
-        return;
-    }
-    document.getElementById('mcq-bar').style.width = '0%';
-    document.getElementById('typing-bar').style.width = '0%';
-    document.getElementById('end-screen').style.display = 'none';
-
-    const retryTerms = mistakes.map(m => {
-        return allTerms.find(term => term.pt === m.pt && term.en === m.en);
-    }).filter(Boolean);
-        mistakes = [];
-        retryMode = true;
-        allTerms = retryTerms;
-        mcqLearned = [];
-        fullyLearned = [];
-        pendingMistakes = [];
-        questionCount = 0;
-        
-        const gameScreen = document.getElementById('game-screen');
-        gameScreen.style.display = 'flex';
-        gameScreen.style.flexDirection = 'column';
-        gameScreen.style.justifyContent = 'center';
-        gameScreen.style.alignItems = 'center';
-        nextQuestion();
-        
-    }
-
-    
     document.addEventListener('keydown', e => {
       if (isWaiting) return;
       const key = e.key;
