@@ -369,9 +369,8 @@
       const shouldType = total > 0 ? typingLeft / total : 0;
       
       showTyping = false;
-      if ((mcqLearned.length >= 4 || allTerms.length <= 4 || isRetryMode()) && eligibleTyping.length > 0) {
-          showTyping = Math.random() < shouldType;
-      }
+      if ((mcqLearned.length >= 4 || allTerms.length <= 4 || isRetryMode()) && eligibleTyping.length > 0 && mcqLearned.includes(currentTerm)) {
+          showTyping = Math.random() < shouldType;}
       if (showTyping) {
           currentTerm = eligibleTyping[Math.floor(Math.random() * eligibleTyping.length)];
           document.getElementById('typing-area').style.display = 'block';
@@ -432,7 +431,7 @@
       } else {
           if (!mistakes.some(term => term.pt === currentTerm.pt && term.en === currentTerm.en)) {
               mistakes.push(currentTerm);
-              pendingMistakes.push({ term: currentTerm, delay: 3 });
+              pendingMistakes.push({ term: currentTerm, delay: 4 });
           }
         const incorrectSound = document.getElementById('incorrect-sound');
         incorrectSound.pause();
@@ -464,7 +463,7 @@
       } else {
           if (!mistakes.some(term => term.pt === currentTerm.pt && term.en === currentTerm.en)) {
               mistakes.push(currentTerm);
-              pendingMistakes.push({ term: currentTerm, delay: 3 });
+              pendingMistakes.push({ term: currentTerm, delay: 4 });
           }
         const incorrectSound = document.getElementById('incorrect-sound');
         incorrectSound.pause();
