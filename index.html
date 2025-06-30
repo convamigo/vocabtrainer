@@ -343,7 +343,7 @@
       document.getElementById('typing-bar').style.width = `${typingPercent}%`;
     }
     function isRetryMode() {
-        return allTerms.length <= 5 && questionCount === 1;
+        return retryMode;
     }
     function nextQuestion() {
       document.activeElement.blur();
