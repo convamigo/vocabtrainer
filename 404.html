@@ -375,11 +375,7 @@
           const eligible = eligibleTyping[Math.floor(Math.random() * eligibleTyping.length)];
           currentTerm = eligible;
           currentTerm.lastShown = Date.now();
-          if (currentTerm.status === "reviewing" || currentTerm.status === "mastered") {
-              showTyping = true;
-          } else {
-              showTyping = false;
-          }
+          showTyping = true;
           
       } else {
           showTyping = false;
