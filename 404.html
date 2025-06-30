@@ -310,7 +310,7 @@
         const res = await fetch(DATA_URL);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         originalTerms = await res.json();
-        allTerms = originalTerms.map(term => ({ ...term, status: "new", correctStreak: 0 }));
+        allTerms = originalTerms.map(term => ({ ...term, status: "new", correctStreak: 0, lastShown: 0 }));
         document.getElementById('term-count').textContent = `You will learn ${allTerms.length} words.`;
         document.getElementById('start-screen').style.display = 'block';
         const startScreen = document.getElementById('start-screen');
@@ -363,7 +363,9 @@
       questionCount++;
 
       // decide typing vs mcq
-      const eligibleTyping = mcqLearned.filter(t => !fullyLearned.includes(t) && t !== currentTerm && !recentTerms.includes(t));
+      const eligibleTyping = mcqLearned
+      .filter(t => !fullyLearned.includes(t) && t !== currentTerm && !recentTerms.includes(t))
+      .sort((a, b) => a.lastShown - b.lastShown);
       const mcqLeft = allTerms.length - mcqLearned.length;
       const typingLeft = mcqLearned.length - fullyLearned.length;
       const total = mcqLeft + typingLeft;
@@ -373,6 +375,7 @@
       if (eligibleTyping.length > 0) {
           const eligible = eligibleTyping[Math.floor(Math.random() * eligibleTyping.length)];
           currentTerm = eligible;
+          currentTerm.lastShown = Date.now();
           if (currentTerm.status === "reviewing" || currentTerm.status === "mastered") {
               showTyping = true;
           } else {
@@ -395,7 +398,9 @@
           .filter(t => t !== currentTerm && !mcqLearned.includes(t) && t.status !== "mastered" && !recentTerms.includes(t))
           .sort((a, b) => {
               const priority = { "new": 3, "learning": 2, "reviewing": 1, "mastered": 0 };
-              return priority[b.status] - priority[a.status];
+              const scoreA = priority[a.status] * 100000 - a.lastShown;
+              const scoreB = priority[b.status] * 100000 - b.lastShown;
+              return scoreB - scoreA;
           });
           for (let i = 0; i < pendingMistakes.length; i++) {
               pendingMistakes[i].delay--;
@@ -408,9 +413,12 @@
           }
           if (readyMistakeIndex !== -1) {
               currentTerm = pendingMistakes.splice(readyMistakeIndex, 1)[0].term;
+              currentTerm.lastShown = Date.now();
+
               
           } else {
               currentTerm = remaining[Math.floor(Math.random() * remaining.length)];
+              currentTerm.lastShown = Date.now();
               recentTerms.push(currentTerm);
               if (recentTerms.length > 5) recentTerms.shift();
 
