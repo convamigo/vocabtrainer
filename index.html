@@ -302,10 +302,10 @@
 
     async function loadData() {
       try {
-        const baseName = fileName.slice(0, -5);
-        const DATA_URL = `data/${baseName}.json`;
         const fileName = window.location.pathname.split('/').pop();
         if (!fileName.endsWith('.json')) return;
+        const baseName = fileName.slice(0, -5);
+        const DATA_URL = `data/${baseName}.json`;
 
         const res = await fetch(DATA_URL);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -372,21 +372,27 @@
       const shouldType = total > 0 ? typingLeft / total : 0;
       
       // Decide based on currentTerm's status
-      const eligibleTypedTerms = eligibleTyping.filter(t =>
-      t.status === "reviewing" || t.status === "mastered"
-      );
-      if (eligibleTypedTerms.length > 0) {
-          currentTerm = eligibleTypedTerms[Math.floor(Math.random() * eligibleTypedTerms.length)];
+      if (eligibleTyping.length > 0) {
+          const eligible = eligibleTyping[Math.floor(Math.random() * eligibleTyping.length)];
+          currentTerm = eligible;
           currentTerm.lastShown = Date.now();
-          showTyping = true;
-          recentTerms.push(currentTerm);
-          if (recentTerms.length > 5) recentTerms.shift();
-          document.getElementById('typing-area').style.display = 'block';
-          document.getElementById('typing-input').focus();
-          return;
+          if (currentTerm.status === "reviewing" || currentTerm.status === "mastered") {
+              showTyping = true;
+          } else {
+              showTyping = false;
+          }
+          
       } else {
           showTyping = false;
 
+      }
+      if (showTyping) {
+          recentTerms.push(currentTerm);
+          if (recentTerms.length > 5) recentTerms.shift();
+
+          document.getElementById('typing-area').style.display = 'block';
+          document.getElementById('typing-input').focus();
+          return; // prevent MCQ from rendering
       }
           const remaining = allTerms
           .filter(t => t !== currentTerm && !mcqLearned.includes(t) && t.status !== "mastered" && !recentTerms.includes(t))
@@ -452,9 +458,10 @@
           }
           currentTerm.correctStreak = (currentTerm.correctStreak || 0) + 1;
       if (retryMode && !fullyLearned.includes(currentTerm)) {
+  fullyLearned.push(currentTerm);
           }
-          if (currentTerm.correctStreak >= 3 && !fullyLearned.includes(currentTerm)) {
-              fullyLearned.push(currentTerm);
+          if (currentTerm.correctStreak >= 3 && currentTerm.status === "reviewing") {
+              currentTerm.status = "mastered";
           }
   const correctSound = document.getElementById('correct-sound');
   correctSound.pause();
@@ -489,31 +496,39 @@
 
       input.classList.add(correct ? 'correct-answer' : 'wrong-answer');
       if (correct) {
-    if (!mcqLearned.includes(currentTerm)) {
-        mcqLearned.push(currentTerm);
-    }
-    currentTerm.correctStreak = (currentTerm.correctStreak || 0) + 1;
-
-    if (currentTerm.correctStreak >= 3 && !fullyLearned.includes(currentTerm)) {
+          if (!mcqLearned.includes(currentTerm)) {
+              mcqLearned.push(currentTerm);
+          }
         fullyLearned.push(currentTerm);
-    }
-
-    if (currentTerm.status === "new") {
-    currentTerm.status = "learning";
-    } else if (currentTerm.status === "learning") {
-    currentTerm.status = "reviewing";
-    }
-
-    const correctSound = document.getElementById('correct-sound');
-    correctSound.pause();
-    correctSound.currentTime = 0;
-    correctSound.play();
-}
+        currentTerm.correctStreak = (currentTerm.correctStreak || 0) + 1;
+        if (currentTerm.correctStreak >= 3 && currentTerm.status === "reviewing") {
+            currentTerm.status = "mastered";
+            
+        } else if (currentTerm.status === "learning") {
+            currentTerm.status = "reviewing";
+        }
+        const correctSound = document.getElementById('correct-sound');
+        correctSound.pause();
+        correctSound.currentTime = 0;
+        correctSound.play();
+      } else {
+          if (!mistakes.some(term => term.pt === currentTerm.pt && term.en === currentTerm.en)) {
+              mistakes.push(currentTerm);
+              pendingMistakes.push({ term: currentTerm, delay: 4 });
+              const existing = pendingMistakes.find(m => m.term.pt === currentTerm.pt && m.term.en === currentTerm.en);
+              const delay = existing ? Math.max(1, existing.delay - 1) : 3;
+          }
+        const incorrectSound = document.getElementById('incorrect-sound');
+        incorrectSound.pause();
+        incorrectSound.currentTime = 0;
+        incorrectSound.play();
+      }
       document.activeElement.blur();
       parent.postMessage('scrollTop', '*');
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
-            if (!correct) {
+      setTimeout(nextQuestion, 1000);
+      if (!correct) {
           currentTerm.correctStreak = 0;
           if (currentTerm.status === "reviewing") {
               currentTerm.status = "learning";
@@ -523,7 +538,6 @@
           feedback.textContent = `Answer: ${currentTerm.en}`;
           document.getElementById('typing-area').appendChild(feedback);
     }
-      setTimeout(nextQuestion, 1000);
     }
 
     function dontKnow() {
