@@ -304,8 +304,7 @@
       try {
         const fileName = window.location.pathname.split('/').pop();
         if (!fileName.endsWith('.json')) return;
-        const baseName = fileName.slice(0, -5);
-        const DATA_URL = `data/${baseName}.json`;
+        const DATA_URL = fileName;
 
         const res = await fetch(DATA_URL);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -449,10 +448,6 @@
               currentTerm.status = "learning";
           } else if (currentTerm.status === "learning") {
               currentTerm.status = "reviewing";
-              else if (currentTerm.status === "new") {
-                  currentTerm.status = "learning";
-              }
-
           }
           currentTerm.correctStreak = (currentTerm.correctStreak || 0) + 1;
       if (retryMode && !fullyLearned.includes(currentTerm)) {
