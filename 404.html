@@ -368,9 +368,8 @@
       const total = mcqLeft + typingLeft;
       const shouldType = total > 0 ? typingLeft / total : 0;
       
-      showTyping = false;
-      if ((mcqLearned.length >= 4 || allTerms.length <= 4 || isRetryMode()) && eligibleTyping.length > 0 && mcqLearned.includes(currentTerm)) {
-          showTyping = Math.random() < shouldType;}
+      showTyping = (Math.random() < shouldType);
+      if ((mcqLearned.length >= 4 || allTerms.length <= 4 || isRetryMode()) && eligibleTyping.length > 0) {
       if (showTyping) {
           currentTerm = eligibleTyping[Math.floor(Math.random() * eligibleTyping.length)];
           document.getElementById('typing-area').style.display = 'block';
@@ -530,8 +529,13 @@
     }).filter(Boolean);
         mistakes = [];
         retryMode = true;
-        allTerms = retryTerms;
-        mcqLearned = [];
+        allTerms = retryTerms.filter(term =>
+        !fullyLearned.includes(term)
+        );
+        const previousMcqLearned = mcqLearned;
+        mcqLearned = retryTerms.filter(term =>
+            previousMcqLearned.includes(term)
+        );
         fullyLearned = [];
         pendingMistakes = [];
         questionCount = 0;
