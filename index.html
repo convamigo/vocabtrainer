@@ -496,6 +496,9 @@
 
       input.classList.add(correct ? 'correct-answer' : 'wrong-answer');
       if (correct) {
+          if (!mcqLearned.includes(currentTerm)) {
+              mcqLearned.push(currentTerm);
+          }
         fullyLearned.push(currentTerm);
         currentTerm.correctStreak = (currentTerm.correctStreak || 0) + 1;
         if (currentTerm.correctStreak >= 3 && currentTerm.status === "reviewing") {
