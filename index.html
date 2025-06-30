@@ -298,6 +298,7 @@
     let currentTerm = null;
     let showTyping = false;
     let isWaiting = false;
+    let sessionTerms = []; // terms used in the current session
 
     async function loadData() {
       try {
@@ -310,6 +311,7 @@
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         originalTerms = await res.json();
         allTerms = originalTerms.map(term => ({ ...term }));
+        sessionTerms = [...allTerms];
         document.getElementById('term-count').textContent = `You will learn ${allTerms.length} words.`;
         document.getElementById('start-screen').style.display = 'block';
         const startScreen = document.getElementById('start-screen');
@@ -360,6 +362,10 @@
       document.getElementById('mcq-options').innerHTML = '';
       updateProgressBar();
       questionCount++;
+      
+      for (let i = 0; i < pendingMistakes.length; i++) {
+              pendingMistakes[i].delay--;
+          }
 
       // decide typing vs mcq
       const eligibleTyping = mcqLearned.filter(t => !fullyLearned.includes(t) && t !== currentTerm);
@@ -368,18 +374,14 @@
       const total = mcqLeft + typingLeft;
       const shouldType = total > 0 ? typingLeft / total : 0;
       
-      showTyping = false;
-      if ((mcqLearned.length >= 4 || allTerms.length <= 4 || isRetryMode()) && eligibleTyping.length > 0 && mcqLearned.includes(currentTerm)) {
-          showTyping = Math.random() < shouldType;}
+      showTyping = (Math.random() < shouldType);
+      if ((mcqLearned.length >= 4 || allTerms.length <= 4 || isRetryMode()) && eligibleTyping.length > 0) {
       if (showTyping) {
           currentTerm = eligibleTyping[Math.floor(Math.random() * eligibleTyping.length)];
           document.getElementById('typing-area').style.display = 'block';
           document.getElementById('typing-input').focus();
       } else {
           const remaining = allTerms.filter(t => !mcqLearned.includes(t));
-          for (let i = 0; i < pendingMistakes.length; i++) {
-              pendingMistakes[i].delay--;
-          }
           const readyMistakeIndex = pendingMistakes.findIndex(m => m.delay <= 0);
           if (remaining.length === 0 && readyMistakeIndex === -1) {
               showEndScreen();
@@ -526,12 +528,18 @@
     document.getElementById('end-screen').style.display = 'none';
 
     const retryTerms = mistakes.map(m => {
-        return allTerms.find(term => term.pt === m.pt && term.en === m.en);
+        return sessionTerms.find(term => term.pt === m.pt && term.en === m.en);
     }).filter(Boolean);
         mistakes = [];
         retryMode = true;
-        allTerms = retryTerms;
-        mcqLearned = [];
+        allTerms = retryTerms.filter(term =>
+            !fullyLearned.includes(term)
+        );
+        sessionTerms = [...allTerms];
+        const previousMcqLearned = mcqLearned;
+        mcqLearned = retryTerms.filter(term =>
+            previousMcqLearned.includes(term)
+        );
         fullyLearned = [];
         pendingMistakes = [];
         questionCount = 0;
