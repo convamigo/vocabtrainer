@@ -372,16 +372,18 @@
       const shouldType = total > 0 ? typingLeft / total : 0;
       
       // Decide based on currentTerm's status
-      if (eligibleTyping.length > 0) {
-          const eligible = eligibleTyping[Math.floor(Math.random() * eligibleTyping.length)];
-          currentTerm = eligible;
+      const eligibleTypedTerms = eligibleTyping.filter(t =>
+      t.status === "reviewing" || t.status === "mastered"
+      );
+      if (eligibleTypedTerms.length > 0) {
+          currentTerm = eligibleTypedTerms[Math.floor(Math.random() * eligibleTypedTerms.length)];
           currentTerm.lastShown = Date.now();
-          if (currentTerm.status === "reviewing" || currentTerm.status === "mastered") {
-              showTyping = true;
-          } else {
-              showTyping = false;
-          }
-          
+          showTyping = true;
+          recentTerms.push(currentTerm);
+          if (recentTerms.length > 5) recentTerms.shift();
+          document.getElementById('typing-area').style.display = 'block';
+          document.getElementById('typing-input').focus();
+          return;
       } else {
           showTyping = false;
 
@@ -493,7 +495,7 @@
       const guess = input.value.trim();
       const cleanAnswer = currentTerm.en.replace(/\s*\(.*?\)/g, '').trim().toLowerCase();
       const correct = guess.toLowerCase() === cleanAnswer;
-
+i
       input.classList.add(correct ? 'correct-answer' : 'wrong-answer');
       if (correct) {
           if (!mcqLearned.includes(currentTerm)) {
