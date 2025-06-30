@@ -278,7 +278,6 @@
       <p>You’ve reached the end of the session. Here's where you can improve:</p>
       <h2>Mistakes:</h2>
       <div id="mistakes-list"></div>
-      <button class="button" onclick="retryMistakes()">Retry Mistakes</button>
     </div>
   </div>
 
@@ -515,11 +514,6 @@
           div.textContent = `${term.pt} → ${term.en}`;
           list.appendChild(div);
       });
-}
-    function retryMistakes() {
-        if (mistakes.length === 0) {
-        alert("No mistakes to retry!");
-        return;
     }
     document.getElementById('mcq-bar').style.width = '0%';
     document.getElementById('typing-bar').style.width = '0%';
