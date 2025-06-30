@@ -392,7 +392,8 @@
 
           document.getElementById('typing-area').style.display = 'block';
           document.getElementById('typing-input').focus();
-      } else {
+          return; // prevent MCQ from rendering
+      }
           const remaining = allTerms
           .filter(t => t !== currentTerm && !mcqLearned.includes(t) && t.status !== "mastered" && !recentTerms.includes(t))
           .sort((a, b) => {
