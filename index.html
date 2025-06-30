@@ -298,6 +298,7 @@
     let currentTerm = null;
     let showTyping = false;
     let isWaiting = false;
+    let recentTerms = [];
 
     async function loadData() {
       try {
@@ -362,21 +363,40 @@
       questionCount++;
 
       // decide typing vs mcq
-      const eligibleTyping = mcqLearned.filter(t => !fullyLearned.includes(t) && t !== currentTerm);
+      const eligibleTyping = mcqLearned.filter(t => !fullyLearned.includes(t) && t !== currentTerm && !recentTerms.includes(t));
       const mcqLeft = allTerms.length - mcqLearned.length;
       const typingLeft = mcqLearned.length - fullyLearned.length;
       const total = mcqLeft + typingLeft;
       const shouldType = total > 0 ? typingLeft / total : 0;
       
-      showTyping = false;
-      if ((mcqLearned.length >= 4 || allTerms.length <= 4 || isRetryMode()) && eligibleTyping.length > 0 && mcqLearned.includes(currentTerm)) {
-          showTyping = Math.random() < shouldType;}
+      // Decide based on currentTerm's status
+      if (eligibleTyping.length > 0) {
+          const eligible = eligibleTyping[Math.floor(Math.random() * eligibleTyping.length)];
+          currentTerm = eligible;
+          if (currentTerm.status === "reviewing" || currentTerm.status === "mastered") {
+              showTyping = true;
+          } else {
+              showTyping = false;
+          }
+          
+      } else {
+          showTyping = false;
+
+      }
       if (showTyping) {
           currentTerm = eligibleTyping[Math.floor(Math.random() * eligibleTyping.length)];
+          recentTerms.push(currentTerm);
+          if (recentTerms.length > 5) recentTerms.shift();
+
           document.getElementById('typing-area').style.display = 'block';
           document.getElementById('typing-input').focus();
       } else {
-          const remaining = allTerms.filter(t => !mcqLearned.includes(t));
+          const remaining = allTerms
+          .filter(t => t !== currentTerm && !mcqLearned.includes(t) && t.status !== "mastered" && !recentTerms.includes(t))
+          .sort((a, b) => {
+              const priority = { "new": 3, "learning": 2, "reviewing": 1, "mastered": 0 };
+              return priority[b.status] - priority[a.status];
+          });
           for (let i = 0; i < pendingMistakes.length; i++) {
               pendingMistakes[i].delay--;
           }
@@ -391,6 +411,9 @@
               
           } else {
               currentTerm = remaining[Math.floor(Math.random() * remaining.length)];
+              recentTerms.push(currentTerm);
+              if (recentTerms.length > 5) recentTerms.shift();
+
               
           }
         // build MCQ options
