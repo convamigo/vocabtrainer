@@ -278,6 +278,7 @@
       <p>You’ve reached the end of the session. Here's where you can improve:</p>
       <h2>Mistakes:</h2>
       <div id="mistakes-list"></div>
+      <button class="button" onclick="retryMistakes()">Retry Mistakes</button>
     </div>
   </div>
 
@@ -308,7 +309,7 @@
         const res = await fetch(DATA_URL);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         originalTerms = await res.json();
-        allTerms = originalTerms.map(term => ({ ...term }));
+        allTerms = originalTerms.map(term => ({ ...term, status: "new", correctStreak: 0 }));
         document.getElementById('term-count').textContent = `You will learn ${allTerms.length} words.`;
         document.getElementById('start-screen').style.display = 'block';
         const startScreen = document.getElementById('start-screen');
@@ -420,8 +421,17 @@
       element.classList.add(correct ? 'correct-answer' : 'wrong-answer');
       if (correct) {
           mcqLearned.push(currentTerm);
-          if (retryMode && !fullyLearned.includes(currentTerm)) {
+          if (currentTerm.status === "new") {
+              currentTerm.status = "learning";
+          } else if (currentTerm.status === "learning") {
+              currentTerm.status = "reviewing";
+          }
+          currentTerm.correctStreak = (currentTerm.correctStreak || 0) + 1;
+      if (retryMode && !fullyLearned.includes(currentTerm)) {
   fullyLearned.push(currentTerm);
+          }
+          if (currentTerm.correctStreak >= 3 && currentTerm.status === "reviewing") {
+              currentTerm.status = "mastered";
           }
   const correctSound = document.getElementById('correct-sound');
   correctSound.pause();
@@ -431,6 +441,8 @@
           if (!mistakes.some(term => term.pt === currentTerm.pt && term.en === currentTerm.en)) {
               mistakes.push(currentTerm);
               pendingMistakes.push({ term: currentTerm, delay: 4 });
+              const existing = pendingMistakes.find(m => m.term.pt === currentTerm.pt && m.term.en === currentTerm.en);
+              const delay = existing ? Math.max(1, existing.delay - 1) : 3;
           }
         const incorrectSound = document.getElementById('incorrect-sound');
         incorrectSound.pause();
@@ -455,6 +467,13 @@
       input.classList.add(correct ? 'correct-answer' : 'wrong-answer');
       if (correct) {
         fullyLearned.push(currentTerm);
+        currentTerm.correctStreak = (currentTerm.correctStreak || 0) + 1;
+        if (currentTerm.correctStreak >= 3 && currentTerm.status === "reviewing") {
+            currentTerm.status = "mastered";
+            
+        } else if (currentTerm.status === "learning") {
+            currentTerm.status = "reviewing";
+        }
         const correctSound = document.getElementById('correct-sound');
         correctSound.pause();
         correctSound.currentTime = 0;
@@ -463,6 +482,8 @@
           if (!mistakes.some(term => term.pt === currentTerm.pt && term.en === currentTerm.en)) {
               mistakes.push(currentTerm);
               pendingMistakes.push({ term: currentTerm, delay: 4 });
+              const existing = pendingMistakes.find(m => m.term.pt === currentTerm.pt && m.term.en === currentTerm.en);
+              const delay = existing ? Math.max(1, existing.delay - 1) : 3;
           }
         const incorrectSound = document.getElementById('incorrect-sound');
         incorrectSound.pause();
@@ -475,6 +496,10 @@
       document.body.scrollTop = 0;
       setTimeout(nextQuestion, 1000);
       if (!correct) {
+          currentTerm.correctStreak = 0;
+          if (currentTerm.status === "reviewing") {
+              currentTerm.status = "learning";
+          }
           const feedback = document.createElement('div');
           feedback.id = 'typing-feedback';
           feedback.textContent = `Answer: ${currentTerm.en}`;
@@ -488,6 +513,8 @@
       if (!mistakes.some(term => term.pt === currentTerm.pt && term.en === currentTerm.en)) {
          mistakes.push(currentTerm);
          pendingMistakes.push({ term: currentTerm, delay: 3 });
+         const existing = pendingMistakes.find(m => m.term.pt === currentTerm.pt && m.term.en === currentTerm.en);
+         const delay = existing ? Math.max(1, existing.delay - 1) : 3;
       }
       document.getElementById('incorrect-sound').play();
       document.activeElement.blur();
@@ -514,6 +541,11 @@
           div.textContent = `${term.pt} → ${term.en}`;
           list.appendChild(div);
       });
+}
+    function retryMistakes() {
+        if (mistakes.length === 0) {
+        alert("No mistakes to retry!");
+        return;
     }
     document.getElementById('mcq-bar').style.width = '0%';
     document.getElementById('typing-bar').style.width = '0%';
