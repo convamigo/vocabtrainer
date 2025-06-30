@@ -381,29 +381,21 @@
       const total = mcqLeft + typingLeft;
       const shouldType = total > 0 ? typingLeft / total : 0;
       
-      // Decide based on currentTerm's status
-      if (eligibleTyping.length > 0) {
-          const eligible = eligibleTyping[Math.floor(Math.random() * eligibleTyping.length)];
-          currentTerm = eligible;
-          currentTerm.lastShown = Date.now();
-          if (currentTerm.status === "reviewing" || currentTerm.status === "mastered") {
-              showTyping = true;
-          } else {
-              showTyping = false;
-          }
-          
-      } else {
-          showTyping = false;
+    // ——— Replace the old status‐check block with this ———
+    if (eligibleTyping.length > 0) {
+        // pick a term that’s passed MCQ
+        currentTerm = eligibleTyping[
+            Math.floor(Math.random() * eligibleTyping.length)
+            ];
+            currentTerm.lastShown = Date.now();
 
-      }
-      if (showTyping) {
-          recentTerms.push(currentTerm);
-          if (recentTerms.length > 5) recentTerms.shift();
-
-          document.getElementById('typing-area').style.display = 'block';
-          document.getElementById('typing-input').focus();
-          return; // prevent MCQ from rendering
-      }
+    // immediately show typing UI
+    recentTerms.push(currentTerm);
+    if (recentTerms.length > 5) recentTerms.shift();
+    document.getElementById('typing-area').style.display = 'block';
+    document.getElementById('typing-input').focus();
+    return; // skip MCQ entirely
+    }
           const remaining = allTerms
           .filter(t => t !== currentTerm && !mcqLearned.includes(t) && t.status !== "mastered" && !recentTerms.includes(t))
           .sort((a, b) => {
