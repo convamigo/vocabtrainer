@@ -304,7 +304,7 @@
       try {
         const fileName = window.location.pathname.split('/').pop();
         if (!fileName.endsWith('.json')) return;
-        const DATA_URL = fileName;
+        const DATA_URL = `./${fileName}`;
 
         const res = await fetch(DATA_URL);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
