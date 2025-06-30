@@ -388,14 +388,6 @@
           showTyping = false;
 
       }
-      if (showTyping) {
-          recentTerms.push(currentTerm);
-          if (recentTerms.length > 5) recentTerms.shift();
-
-          document.getElementById('typing-area').style.display = 'block';
-          document.getElementById('typing-input').focus();
-          return; // prevent MCQ from rendering
-      }
           const remaining = allTerms
           .filter(t => t !== currentTerm && !mcqLearned.includes(t) && t.status !== "mastered" && !recentTerms.includes(t))
           .sort((a, b) => {
@@ -457,13 +449,16 @@
               currentTerm.status = "learning";
           } else if (currentTerm.status === "learning") {
               currentTerm.status = "reviewing";
+              else if (currentTerm.status === "new") {
+                  currentTerm.status = "learning";
+              }
+
           }
           currentTerm.correctStreak = (currentTerm.correctStreak || 0) + 1;
       if (retryMode && !fullyLearned.includes(currentTerm)) {
-  fullyLearned.push(currentTerm);
           }
-          if (currentTerm.correctStreak >= 3 && currentTerm.status === "reviewing") {
-              currentTerm.status = "mastered";
+          if (currentTerm.correctStreak >= 3 && !fullyLearned.includes(currentTerm)) {
+              fullyLearned.push(currentTerm);
           }
   const correctSound = document.getElementById('correct-sound');
   correctSound.pause();
@@ -495,42 +490,34 @@
       const guess = input.value.trim();
       const cleanAnswer = currentTerm.en.replace(/\s*\(.*?\)/g, '').trim().toLowerCase();
       const correct = guess.toLowerCase() === cleanAnswer;
-i
+
       input.classList.add(correct ? 'correct-answer' : 'wrong-answer');
       if (correct) {
-          if (!mcqLearned.includes(currentTerm)) {
-              mcqLearned.push(currentTerm);
-          }
+    if (!mcqLearned.includes(currentTerm)) {
+        mcqLearned.push(currentTerm);
+    }
+    currentTerm.correctStreak = (currentTerm.correctStreak || 0) + 1;
+
+    if (currentTerm.correctStreak >= 3 && !fullyLearned.includes(currentTerm)) {
         fullyLearned.push(currentTerm);
-        currentTerm.correctStreak = (currentTerm.correctStreak || 0) + 1;
-        if (currentTerm.correctStreak >= 3 && currentTerm.status === "reviewing") {
-            currentTerm.status = "mastered";
-            
-        } else if (currentTerm.status === "learning") {
-            currentTerm.status = "reviewing";
-        }
-        const correctSound = document.getElementById('correct-sound');
-        correctSound.pause();
-        correctSound.currentTime = 0;
-        correctSound.play();
-      } else {
-          if (!mistakes.some(term => term.pt === currentTerm.pt && term.en === currentTerm.en)) {
-              mistakes.push(currentTerm);
-              pendingMistakes.push({ term: currentTerm, delay: 4 });
-              const existing = pendingMistakes.find(m => m.term.pt === currentTerm.pt && m.term.en === currentTerm.en);
-              const delay = existing ? Math.max(1, existing.delay - 1) : 3;
-          }
-        const incorrectSound = document.getElementById('incorrect-sound');
-        incorrectSound.pause();
-        incorrectSound.currentTime = 0;
-        incorrectSound.play();
-      }
+    }
+
+    if (currentTerm.status === "new") {
+    currentTerm.status = "learning";
+    } else if (currentTerm.status === "learning") {
+    currentTerm.status = "reviewing";
+    }
+
+    const correctSound = document.getElementById('correct-sound');
+    correctSound.pause();
+    correctSound.currentTime = 0;
+    correctSound.play();
+}
       document.activeElement.blur();
       parent.postMessage('scrollTop', '*');
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
-      setTimeout(nextQuestion, 1000);
-      if (!correct) {
+            if (!correct) {
           currentTerm.correctStreak = 0;
           if (currentTerm.status === "reviewing") {
               currentTerm.status = "learning";
@@ -540,6 +527,7 @@ i
           feedback.textContent = `Answer: ${currentTerm.en}`;
           document.getElementById('typing-area').appendChild(feedback);
     }
+      setTimeout(nextQuestion, 1000);
     }
 
     function dontKnow() {
