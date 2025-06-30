@@ -278,6 +278,7 @@
       <p>You’ve reached the end of the session. Here's where you can improve:</p>
       <h2>Mistakes:</h2>
       <div id="mistakes-list"></div>
+      <button class="button" onclick="retryMistakes()">Retry Mistakes</button>
     </div>
   </div>
 
@@ -291,6 +292,7 @@
     let mcqLearned = [];
     let fullyLearned = [];
     let mistakes = [];
+    let retryMode = false;
     let pendingMistakes = [];
     let questionCount = 0;
     let currentTerm = null;
@@ -338,6 +340,9 @@
       document.getElementById('mcq-bar').style.width = `${mcqPercent}%`;
       document.getElementById('typing-bar').style.width = `${typingPercent}%`;
     }
+    function isRetryMode() {
+        return allTerms.length <= 5 && questionCount === 1;
+    }
     function nextQuestion() {
       document.activeElement.blur();
       setTimeout(() => {
@@ -364,7 +369,7 @@
       const shouldType = total > 0 ? typingLeft / total : 0;
       
       showTyping = false;
-      if ((mcqLearned.length >= 4 || allTerms.length <= 4 && eligibleTyping.length > 0 && mcqLearned.includes(currentTerm)) {
+      if ((mcqLearned.length >= 4 || allTerms.length <= 4 || isRetryMode()) && eligibleTyping.length > 0 && mcqLearned.includes(currentTerm)) {
           showTyping = Math.random() < shouldType;}
       if (showTyping) {
           currentTerm = eligibleTyping[Math.floor(Math.random() * eligibleTyping.length)];
@@ -416,6 +421,7 @@
       element.classList.add(correct ? 'correct-answer' : 'wrong-answer');
       if (correct) {
           mcqLearned.push(currentTerm);
+          if (retryMode && !fullyLearned.includes(currentTerm)) {
   fullyLearned.push(currentTerm);
           }
   const correctSound = document.getElementById('correct-sound');
@@ -493,6 +499,7 @@
     }
 
     function showEndScreen() {
+        retryMode = false;
       document.getElementById('mistakes-list').innerHTML = '';
       document.getElementById('game-screen').style.display = 'none';
       document.getElementById('end-screen').style.display = 'block';
@@ -509,6 +516,36 @@
           list.appendChild(div);
       });
 }
+    function retryMistakes() {
+        if (mistakes.length === 0) {
+        alert("No mistakes to retry!");
+        return;
+    }
+    document.getElementById('mcq-bar').style.width = '0%';
+    document.getElementById('typing-bar').style.width = '0%';
+    document.getElementById('end-screen').style.display = 'none';
+
+    const retryTerms = mistakes.map(m => {
+        return allTerms.find(term => term.pt === m.pt && term.en === m.en);
+    }).filter(Boolean);
+        mistakes = [];
+        retryMode = true;
+        allTerms = retryTerms;
+        mcqLearned = [];
+        fullyLearned = [];
+        pendingMistakes = [];
+        questionCount = 0;
+        
+        const gameScreen = document.getElementById('game-screen');
+        gameScreen.style.display = 'flex';
+        gameScreen.style.flexDirection = 'column';
+        gameScreen.style.justifyContent = 'center';
+        gameScreen.style.alignItems = 'center';
+        nextQuestion();
+        
+    }
+
+    
     document.addEventListener('keydown', e => {
       if (isWaiting) return;
       const key = e.key;
