@@ -440,9 +440,8 @@
           div.innerHTML = `<div class='key-circle'>${i+1}</div> ${opt}`;
           document.getElementById('mcq-options').appendChild(div);
         });
+        document.getElementById('word-box').textContent = currentTerm.pt;
       }
-      document.getElementById('word-box').textContent = currentTerm.pt;
-    }
 
     function submitMCQ(answer, element) {
       if (isWaiting) return;
