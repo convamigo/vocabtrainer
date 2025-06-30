@@ -291,7 +291,6 @@
     let mcqLearned = [];
     let fullyLearned = [];
     let mistakes = [];
-    let retryMode = false;
     let pendingMistakes = [];
     let questionCount = 0;
     let currentTerm = null;
@@ -339,9 +338,6 @@
       document.getElementById('mcq-bar').style.width = `${mcqPercent}%`;
       document.getElementById('typing-bar').style.width = `${typingPercent}%`;
     }
-    function isRetryMode() {
-        return allTerms.length <= 5 && questionCount === 1;
-    }
     function nextQuestion() {
       document.activeElement.blur();
       setTimeout(() => {
@@ -368,7 +364,7 @@
       const shouldType = total > 0 ? typingLeft / total : 0;
       
       showTyping = false;
-      if ((mcqLearned.length >= 4 || allTerms.length <= 4 || isRetryMode()) && eligibleTyping.length > 0 && mcqLearned.includes(currentTerm)) {
+      if ((mcqLearned.length >= 4 || allTerms.length <= 4 && eligibleTyping.length > 0 && mcqLearned.includes(currentTerm)) {
           showTyping = Math.random() < shouldType;}
       if (showTyping) {
           currentTerm = eligibleTyping[Math.floor(Math.random() * eligibleTyping.length)];
@@ -420,7 +416,6 @@
       element.classList.add(correct ? 'correct-answer' : 'wrong-answer');
       if (correct) {
           mcqLearned.push(currentTerm);
-          if (retryMode && !fullyLearned.includes(currentTerm)) {
   fullyLearned.push(currentTerm);
           }
   const correctSound = document.getElementById('correct-sound');
@@ -498,7 +493,6 @@
     }
 
     function showEndScreen() {
-        retryMode = false;
       document.getElementById('mistakes-list').innerHTML = '';
       document.getElementById('game-screen').style.display = 'none';
       document.getElementById('end-screen').style.display = 'block';
