@@ -526,7 +526,7 @@
     document.getElementById('end-screen').style.display = 'none';
 
     const retryTerms = mistakes.map(m => {
-        return originalTerms.find(term => term.pt === m.pt && term.en === m.en);
+        return allTerms.find(term => term.pt === m.pt && term.en === m.en);
     }).filter(Boolean);
         mistakes = [];
         retryMode = true;
