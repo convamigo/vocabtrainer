@@ -567,7 +567,9 @@
       
     });
 
-    loadData();
+    document.addEventListener('DOMContentLoaded', () => {
+        loadData();
+    });
     
     function setFullHeight() {
       const vh = window.innerHeight * 0.01;
