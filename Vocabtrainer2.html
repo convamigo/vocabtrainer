@@ -215,6 +215,9 @@
     function scrollToQuizScreen() {
         const box = quizScreen;
         box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (window.parent !== window) {
+            window.parent.postMessage('scrollTop', '*');
+        }
     }
 
     function getDistractors(correct){
