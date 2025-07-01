@@ -211,6 +211,11 @@
     function resetTypeBar(varName='--type-correct'){
       typeBar.style.backgroundColor=getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
     }
+    
+    function scrollToQuizScreen() {
+        const box = quizScreen;
+        box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
 
     function getDistractors(correct){
       const pool=terms.map(t=>t.en).filter(e=>e!==correct), picks=[];
@@ -255,6 +260,8 @@
       dkBtn.disabled      = false;
       termBox.textContent=term.pt; mcqOptions.innerHTML=''; typingArea.classList.add('active');
       dkBtn.style.display='block'; typingInput.value=''; typingInput.focus();
+      scrollToQuizScreen();
+
     }
 
     function hideTyping(){ typingArea.classList.remove('active'); dkBtn.style.display='none'; }
