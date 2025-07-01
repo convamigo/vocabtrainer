@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vocab Trainer</title>
+  <style>
+    :root {
+      --primary: #e0f7fa;
+      --secondary: #b2ebf2;
+      --correct-bg: #dcedc8;
+      --incorrect-bg: #ffcdd2;
+      --light-gray: #f5f5f5;
+      --dk-button: #cccccc88;
+      --type-correct: #4caf50;
+      --type-incorrect: #f44336;
+      --type-dk: #9e9e9e;
+      --screen-bg: #ffffffcc;
+      --btn-primary: #4caf50;
+      --btn-secondary: #2196f3;
+    }
+    * { box-sizing: border-box; }
+    body { font-family: sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; background: #fafafa; }
+    .screen {
+        display: none;
+        width: 100%;
+        max-width: 400px;
+        margin-top: 50px;
+        text-align: center;
+        background: var(--screen-bg);
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    .screen.active { display: block; }
+    .count-box {
+        background: var(--secondary);
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-weight: bold;
+        display: inline-block;
+        margin: 10px 0;
+    }
+    .pt-box {
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+    }
+    .same-size-btn {
+        height: 100%;
+        width: 45%;
+    }
+    .container {
+        align-items: center;
+        width: 100%;
+        padding: 5px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    button { padding: 10px 20px; margin: 5px; border: none; border-radius: 5px; cursor: pointer; transition: transform 0.2s ease; }
+    #start-btn, #retry-btn, #restart-btn {
+        background: #1679ab;
+        width: 30%;
+        color: white;
+    }
+    #start-btn:hover, #retry-btn:hover, #restart-btn:hover {
+        background: #1C99D8;
+    }
+    button:hover { transform: scale(1.05); }
+    #term-box { background: var(--primary); padding: 20px; border-radius: 8px; font-size: 1.5em; margin-bottom: 20px; }
+    .options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .option { background: white; padding: 15px; border-radius: 5px; position: relative; cursor: pointer; border: 1px solid #eeeeee; transition: box-shadow 0.2s ease, border-color 0.2s ease; }
+    .option .key { position: absolute; top: 50%; transform: translateY(-50%); left: 8px; width: 20px; height: 20px; border-radius: 50%; background: var(--secondary); color: #333; display: flex; align-items: center; justify-content: center; font-size: 0.8em; }
+    .progress { width: 100%; background: #ddd; border-radius: 5px; height: 20px; overflow: hidden; position: relative; margin-bottom: 20px; }
+    .progress .mcq, .progress .type { position: absolute; top: 0; height: 100%; transition: width 0.3s ease, left 0.3s ease, background-color 0.3s ease; }
+    .progress .mcq { left: 0; background: #1679ab; }
+    .progress .type { background-color: var(--type-correct); }
+    #typing-area { display: none; margin-top: 10px; }
+    #typing-area.active { display: flex; align-items: center; gap: 5px; }
+    #typing-input { flex: 1; padding: 10px; font-size: 1em; }
+    #enter-btn { background: transparent; font-size: 1.2em; margin-left: 5px; padding: 0 10px; }
+    #dk-btn { background: var(--dk-button); color: #333; font-size: 0.9em; margin-top: 10px; display: none; }
+    .error-item { display: flex; justify-content: space-between; background: var(--light-gray); padding: 10px; margin: 5px 0; border-radius: 5px; align-items: center; }
+    .correct-text { background: var(--correct-bg); padding: 10px; border-radius: 5px; }
+    @media (max-width: 700px) {
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+  }
+  #start-btn, #retry-btn, #restart-btn, .same-size-btn {
+    width: 100%;
+      
+  }
+  .screen {
+    margin-top: 20px;
+    padding: 20px;
+    max-width: min(500px, 90vw);
+  }
+
+  .progress {
+    height: 16px;
+  }
+}
+  #start-btn, #retry-btn, #restart-btn, .same-size-btn {
+    width: 100%;
+  }
+
+  .screen {
+    margin-top: 20px;
+    padding: 20px;
+    max-width: 90vw;
+    max-width: min(500px, 90vw);
+  }
+
+  .progress {
+    height: 16px;
+  }
+  </style>
+</head>
+<body>
+    <div class="container">
+  <div id="start-screen" class="screen active">
+    <h1>Vocab Trainer</h1>
+            <p>You're going to learn the English Subject Pronouns!</p>
+    <div class="count-box">
+        <span id="total-count">0</span> words
+        </div>
+        <p></p>
+
+
+    <button id="start-btn">Start</button>
+  </div>
+
+  <div id="quiz-screen" class="screen">
+    <div class="progress">
+      <div id="mcq-bar" class="mcq"></div>
+      <div id="type-bar" class="type"></div>
+    </div>
+    <div id="term-box"></div>
+    <div id="mcq-options" class="options"></div>
+    <div id="typing-area">
+      <input id="typing-input" type="text" placeholder="Type translation...">
+      <button id="enter-btn">↵</button>
+    </div>
+    <button id="dk-btn">Don’t know</button>
+  </div>
+
+  <div id="end-screen" class="screen">
+    <h2>Review Mistakes</h2>
+    <div id="end-list"></div>
+    <button id="retry-btn" class="same-size-btn">Retry Mistakes</button>
+    <button id="restart-btn" class="same-size-btn">Restart All</button>
+  </div>
+
+  <audio id="sound-correct" src="https://github.com/convamigo/InglesA1/raw/refs/heads/main/Correct2.mp3"></audio>
+  <audio id="sound-wrong" src="https://github.com/convamigo/InglesA1/raw/refs/heads/main/Incorrect2.mp3"></audio>
+
+  <script>
+    const initialTerms = [
+      {pt:"eu",en:"I"},{pt:"você",en:"you"},{pt:"ele",en:"he"},{pt:"ela",en:"she"},
+      {pt:"nós",en:"we"},{pt:"vocês",en:"you (plural)"},{pt:"eles",en:"they (masc.)"},{pt:"elas",en:"they (fem.)"}
+    ];
+    let terms, stage1Queue, learnedStage1, learnedTyping, stage2Queue, mistakes, currentTerm, typeCount;
+    const startScreen=document.getElementById('start-screen'),
+          quizScreen=document.getElementById('quiz-screen'),
+          endScreen=document.getElementById('end-screen');
+    const totalCountEl=document.getElementById('total-count'),
+          startBtn=document.getElementById('start-btn'),
+          retryBtn=document.getElementById('retry-btn'),
+          restartBtn=document.getElementById('restart-btn');
+    const termBox=document.getElementById('term-box'),
+          mcqOptions=document.getElementById('mcq-options');
+    const typingArea=document.getElementById('typing-area'),
+          typingInput=document.getElementById('typing-input');
+    const enterBtn=document.getElementById('enter-btn'),
+          dkBtn=document.getElementById('dk-btn');
+    const mcqBar=document.getElementById('mcq-bar'),
+          typeBar=document.getElementById('type-bar');
+    const soundCorrect=document.getElementById('sound-correct'),
+          soundWrong=document.getElementById('sound-wrong');
+
+    function showScreen(screen){
+      [startScreen,quizScreen,endScreen].forEach(s=>s.classList.remove('active'));
+      screen.classList.add('active');
+    }
+
+    function startSession(list=initialTerms){
+      terms=list.slice();
+      stage1Queue=terms.slice();
+      learnedStage1=[]; 
+      learnedTyping=[];
+      stage2Queue=[];
+      if(list===initialTerms) mistakes=[];
+      currentTerm=null;
+      typeCount=0;
+      totalCountEl.textContent=terms.length;
+      resetTypeBar();
+      updateProgress();
+    }
+
+    function updateProgress(){
+        const total = terms.length;
+        const mcqRatio = learnedStage1.length / total;
+        const typeRatio = typeCount / total;
+        mcqBar.style.width = (mcqRatio * 50) + '%';
+        typeBar.style.left = (mcqRatio * 50) + '%';
+        typeBar.style.width = (typeRatio * 50) + '%';
+    }
+
+    function resetTypeBar(varName='--type-correct'){
+      typeBar.style.backgroundColor=getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+    }
+
+    function getDistractors(correct){
+      const pool=terms.map(t=>t.en).filter(e=>e!==correct), picks=[];
+      while(picks.length<3){
+        const v=pool[Math.floor(Math.random()*pool.length)];
+        if(!picks.includes(v)) picks.push(v);
+      }
+      return picks;
+    }
+
+    function pickNext(){
+      let mode='mcq';
+      if(learnedStage1.length>0){
+        const p=learnedStage1.length/terms.length;
+        mode=Math.random()<p?'typing':'mcq';
+      }
+      let pool=(mode==='typing')?stage2Queue:stage1Queue;
+      if(!pool.length) pool=(mode==='mcq')?stage2Queue:stage1Queue;
+      let i; do{i=Math.floor(Math.random()*pool.length);}while(pool[i]===currentTerm&&pool.length>1);
+      return {term:pool.splice(i,1)[0],mode};
+    }
+
+    function renderMCQ(term){
+      currentTerm=term; hideTyping(); termBox.textContent=term.pt; mcqOptions.innerHTML='';
+      document.querySelectorAll('#quiz-screen .correct-text')
+        .forEach(el => el.remove());
+      [term.en,...getDistractors(term.en)].sort(()=>Math.random()-.5).forEach((opt,i)=>{
+        const btn=document.createElement('div'); btn.className='option';
+        btn.innerHTML=`<span class="key">${i+1}</span> ${opt}`;
+        btn.addEventListener('click',()=>handleMCQ(opt,btn)); mcqOptions.appendChild(btn);
+      });
+    }
+
+    function renderTyping(term){
+      currentTerm=term; 
+      // ◀ remove last round’s correct‐answer box
+      const old = document.querySelector('#quiz-screen .correct-text');
+      if (old) old.remove()
+      // ◀ re‐enable typing controls
+      typingInput.disabled = false;
+      enterBtn.disabled   = false;
+      dkBtn.disabled      = false;
+      termBox.textContent=term.pt; mcqOptions.innerHTML=''; typingArea.classList.add('active');
+      dkBtn.style.display='block'; typingInput.value=''; typingInput.focus();
+    }
+
+    function hideTyping(){ typingArea.classList.remove('active'); dkBtn.style.display='none'; }
+
+    function playSound(ok){
+      soundCorrect.pause();soundWrong.pause(); soundCorrect.currentTime=0; soundWrong.currentTime=0;
+      (ok?soundCorrect:soundWrong).play();
+    }
+
+    function handleMCQ(ans,btn){
+      const ok=(ans===currentTerm.en);
+      // ◀ disable all buttons immediately
+      mcqOptions.querySelectorAll('.option')
+      .forEach(o => o.style.pointerEvents = 'none');
+      btn.style.background=varColor(ok?'--correct-bg':'--incorrect-bg');
+      playSound(ok);
+      if (!ok) {
+          // only record a mistake once
+          if (!mistakes.includes(currentTerm)) mistakes.push(currentTerm);
+          // put it back into the MCQ queue
+          stage1Queue.unshift(currentTerm);
+          // highlight the true answer in yellow
+          mcqOptions.querySelectorAll('.option').forEach(o => {
+              if (o.textContent.trim().endsWith(currentTerm.en)) {
+                  o.style.background = '#fff69d';
+              }
+          });
+      } else {
+          if (!learnedStage1.includes(currentTerm)) {
+              learnedStage1.push(currentTerm);
+          }
+
+          stage2Queue.push(currentTerm);
+          updateProgress();
+      }
+          setTimeout(() => { resetTypeBar(); nextQuestion(); }, ok ? 800 : 1700);
+    }
+
+    function handleTyping(action){
+        // ◀ disable any further typing or DK clicks
+        typingInput.disabled = true;
+        enterBtn.disabled   = true;
+        dkBtn.disabled      = true;
+      let ok;
+      if(action==='dk'){ ok=false; resetTypeBar('--type-dk'); }
+      else{
+        const v=typingInput.value.trim().toLowerCase(), f=currentTerm.en.toLowerCase();
+        const s=f.replace(/\s*\([^)]*\)\s*/g,' ').trim();
+        ok=(v===f||v===s);
+        resetTypeBar(ok?'--type-correct':'--type-incorrect'); if (ok && !learnedTyping.includes(currentTerm)) {
+            typeCount++;
+            learnedTyping.push(currentTerm);
+        }
+        if (ok && !learnedTyping.includes(currentTerm)) {
+            typeCount++;
+            learnedTyping.push(currentTerm);
+        }
+      }
+      playSound(ok);
+      if (ok) {
+          // correct typing: count it and update bartypeCount++;
+          updateProgress();
+          
+      } else {
+          // only record a mistake once
+          if (!mistakes.includes(currentTerm)) mistakes.push(currentTerm);
+          // re-queue into typing phase
+          stage2Queue.unshift(currentTerm);
+          // show correct answer below
+          const corr = document.createElement('div');
+          corr.className = 'correct-text';
+          corr.style.background = 'yellow';
+          corr.style.marginTop = '10px';
+          corr.textContent = currentTerm.en;
+          typingArea.parentNode.insertBefore(corr, dkBtn.nextSibling);
+      }
+      setTimeout(nextQuestion, ok ? 1000 : 2000);
+    }
+
+    function nextQuestion(){
+      hideTyping();
+      if(!stage1Queue.length&&!stage2Queue.length) return endSession();
+      const {term,mode}=pickNext(); mode==='typing'?renderTyping(term):renderMCQ(term);
+    }
+
+    function endSession(){
+      showScreen(endScreen);
+      const list=document.getElementById('end-list'); list.innerHTML='';
+      mistakes.forEach(t=>{
+        const item=document.createElement('div'); item.className='error-item';
+        item.innerHTML=`<div class="pt-box">${t.pt}</div><div class="correct-text">${t.en}</div>`;
+        list.appendChild(item);
+      });
+    }
+
+    function varColor(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+    document.addEventListener('keydown',e=>{
+      if(!quizScreen.classList.contains('active')) return;
+      if(!typingArea.classList.contains('active')){
+        const i=parseInt(e.key)-1;
+        if(i>=0&&i<mcqOptions.children.length) mcqOptions.children[i].click();
+      }
+    });
+    typingInput.addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault(); handleTyping();} });
+    enterBtn.addEventListener('click',()=>handleTyping()); dkBtn.addEventListener('click',()=>handleTyping('dk'));
+    startBtn.addEventListener('click',()=>{startSession(); showScreen(quizScreen); nextQuestion();});
+    retryBtn.addEventListener('click',()=>{ if(mistakes.length<4){alert('Need 4+ mistakes');return;} startSession(mistakes); showScreen(quizScreen); nextQuestion(); });
+    restartBtn.addEventListener('click',()=>location.reload());
+
+    // Initialize
+    startSession(); showScreen(startScreen);
+  </script>
+  </div>
+</body>
+</html>
