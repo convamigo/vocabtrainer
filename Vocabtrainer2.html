@@ -88,19 +88,7 @@
             display: grid;
             grid-template-columns: 1fr;
   }
-  #start-btn, #retry-btn, #restart-btn, .same-size-btn {
-    width: 100%;
-      
-  }
-  .screen {
-    margin-top: 20px;
-    padding: 20px;
-    max-width: min(500px, 90vw);
-  }
 
-  .progress {
-    height: 16px;
-  }
 }
   #start-btn, #retry-btn, #restart-btn, .same-size-btn {
     width: 100%;
@@ -109,7 +97,6 @@
   .screen {
     margin-top: 20px;
     padding: 20px;
-    max-width: 90vw;
     max-width: min(500px, 90vw);
   }
 
@@ -223,7 +210,7 @@
       learnedStage1=[]; 
       learnedTyping=[];
       stage2Queue=[];
-      if(list===initialTerms) mistakes=[];
+      if (list.length === initialTerms.length && list.every((t, i) => t === initialTerms[i])) mistakes = [];
       currentTerm=null;
       typeCount=0;
       totalCountEl.textContent=terms.length;
@@ -262,10 +249,15 @@
     }
 
     function pickNext(){
-      let mode='mcq';
-      if(learnedStage1.length>0){
-        const p=learnedStage1.length/terms.length;
-        mode=Math.random()<p?'typing':'mcq';
+      let mode;
+      if (stage1Queue.length === 0) {
+          mode = 'typing';
+      } else if (stage2Queue.length === 0) {
+          mode = 'mcq';
+      } else {
+          // Mixed mode: gradually blend typing in based on learning progress
+          const mcqWeight = stage1Queue.length / terms.length;
+          mode = Math.random() < mcqWeight ? 'mcq' : 'typing';
       }
       let pool=(mode==='typing')?stage2Queue:stage1Queue;
       if(!pool.length) pool=(mode==='mcq')?stage2Queue:stage1Queue;
@@ -350,14 +342,9 @@
             typeCount++;
             learnedTyping.push(currentTerm);
         }
-        if (ok && !learnedTyping.includes(currentTerm)) {
-            typeCount++;
-            learnedTyping.push(currentTerm);
-        }
       }
       playSound(ok);
       if (ok) {
-          // correct typing: count it and update bartypeCount++;
           updateProgress();
           
       } else {
@@ -409,6 +396,7 @@
 
     // Initialize
     startSession(); showScreen(startScreen);
+    
   </script>
   </div>
 </body>
