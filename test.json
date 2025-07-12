@@ -1,10 +1,10 @@
-[
-{ "pt": "eu", "en": "I" },
-{ "pt": "você", "en": "you" },
-{ "pt": "ele", "en": "he" },
-{ "pt": "ela", "en": "she" },
-{ "pt": "nós", "en": "we" },
-{ "pt": "vocês", "en": "you (plural)" },
-{ "pt": "eles", "en": "they (masc.)" },
-{ "pt": "elas", "en": "they (fem.)" }
+{
+"intro": "This is a test.",
+"terms": [
+{"pt":"cumprir","en":"to fulfill"},
+{"pt":"aprofundar","en":"to deepen"},
+{"pt":"aproveitar","en":"to take advantage of"},
+{"pt":"desafiar","en":"to challenge"},
+{"pt":"fortalecer","en":"to strengthen"}
 ]
+}
