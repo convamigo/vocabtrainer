@@ -1,10 +1,10 @@
 {
-"intro": "This is a test.",
-"terms": [
-{"pt":"cumprir","en":"to fulfill"},
-{"pt":"aprofundar","en":"to deepen"},
-{"pt":"aproveitar","en":"to take advantage of"},
-{"pt":"desafiar","en":"to challenge"},
-{"pt":"fortalecer","en":"to strengthen"}
-]
+  "intro": "You're going to learn the English Subject Pronouns!",
+  "terms": [
+    { "pt": "cumprir", "en": "to fulfill" },
+    { "pt": "aprofundar", "en": "to deepen" },
+    { "pt": "aproveitar", "en": "to take advantage of" },
+    { "pt": "desafiar", "en": "to challenge" },
+    { "pt": "fortalecer", "en": "to strengthen" }
+  ]
 }
