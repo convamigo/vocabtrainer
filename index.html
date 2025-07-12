@@ -141,7 +141,7 @@
     <div class="container">
   <div id="start-screen" class="screen active">
     <h1>Vocab Trainer</h1>
-            <p>You're going to learn the English Subject Pronouns!</p>
+            <p> id="intro-text"></p>
     <div class="count-box">
         <span id="total-count">0</span> words
         </div>
@@ -184,7 +184,9 @@
       fetch(dataFile)
       .then(res => res.json())
       .then(data => {
-          initialTerms = data;
+          initialTerms = data.terms;
+          // Set the intro text
+          document.getElementById('intro-text').textContent = data.intro;
           startSession();
           showScreen(startScreen);
       })
