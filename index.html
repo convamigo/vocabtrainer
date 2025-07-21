@@ -244,6 +244,7 @@
       if (list.length === initialTerms.length && list.every((t, i) => t === initialTerms[i])) mistakes = [];
       currentTerm=null;
       typeCount=0;
+      let round = 0;
       totalCountEl.textContent=terms.length;
       resetTypeBar();
       updateProgress();
@@ -290,7 +291,13 @@
           const mcqWeight = stage1Queue.length / terms.length;
           mode = Math.random() < mcqWeight ? 'mcq' : 'typing';
       }
-      let pool=(mode==='typing')?stage2Queue:stage1Queue;
+      let pool;
+      if (mode === 'typing') {
+          const ready = stage2Queue.filter(t => !t._readyAt || t._readyAt <= round);
+          pool = ready.length ? ready : stage2Queue;
+      } else {
+          pool = stage1Queue;
+      }
       if(!pool.length) pool=(mode==='mcq')?stage2Queue:stage1Queue;
       let i; do{i=Math.floor(Math.random()*pool.length);}while(pool[i]===currentTerm&&pool.length>1);
       return {term:pool.splice(i,1)[0],mode};
@@ -353,6 +360,8 @@
           }
 
           stage2Queue.push(currentTerm);
+          currentTerm._readyAt = round + 4;
+          stage2Queue.push(currentTerm);
           updateProgress();
       }
           setTimeout(() => { resetTypeBar(); nextQuestion(); }, ok ? 800 : 1700);
@@ -400,6 +409,7 @@
     }
 
     function nextQuestion(){
+        round++;
       hideTyping();
       if(!stage1Queue.length&&!stage2Queue.length) return endSession();
       const {term,mode}=pickNext(); mode==='typing'?renderTyping(term):renderMCQ(term);
