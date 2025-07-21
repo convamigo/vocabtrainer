@@ -351,7 +351,9 @@
         const v=typingInput.value.trim().toLowerCase(), f=currentTerm.en.toLowerCase();
         const s=f.replace(/\s*\([^)]*\)\s*/g,' ').trim();
         ok=(v===f||v===s);
-        resetTypeBar(ok?'--type-correct':'--type-incorrect'); if (ok && !learnedTyping.includes(currentTerm)) {
+        resetTypeBar(ok ? '--type-correct' : '--type-incorrect');
+        typingInput.style.backgroundColor = ok ? '#dcedc8' : '#ffcdd2'; 
+        if (ok && !learnedTyping.includes(currentTerm)) {
             typeCount++;
             learnedTyping.push(currentTerm);
         }
@@ -373,7 +375,10 @@
           corr.textContent = currentTerm.en;
           typingArea.parentNode.insertBefore(corr, dkBtn.nextSibling);
       }
-      setTimeout(nextQuestion, ok ? 1000 : 2000);
+      setTimeout(() => {
+          typingInput.style.backgroundColor = ''; // reset background
+          nextQuestion();
+      }, ok ? 1000 : 2000);
     }
 
     function nextQuestion(){
