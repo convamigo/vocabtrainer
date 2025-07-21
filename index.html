@@ -174,10 +174,10 @@
 
   <audio id="sound-correct" src="https://github.com/convamigo/InglesA1/raw/refs/heads/main/Correct2.mp3"></audio>
   <audio id="sound-wrong" src="https://github.com/convamigo/InglesA1/raw/refs/heads/main/Incorrect2.mp3"></audio>
- <div id="volume-control" style="margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 8px;">
-  <span>🔊</span>
-  <input id="volume-slider" type="range" min="0" max="1" step="0.01" value="1">
-</div>
+ <div id="volume-control" style="margin-top: 20px; display: flex; flex-direction: column; align-items: center;">
+     <button id="volume-toggle" style="font-size: 1.5em; background: none; border: none; cursor: pointer;">🔊</button>
+     <input id="volume-slider" type="range" min="0" max="1" step="0.01" value="1" style="display: none; margin-top: 8px;">
+     </div>
 
   <script>
       // We'll load whatever JSON file the URL hash points to (default: basicwords.json)
@@ -220,7 +220,12 @@
     const volume = parseFloat(volumeSlider.value);
           soundCorrect.volume = volume;
           soundWrong.volume = volume;
+    const volumeToggle = document.getElementById('volume-toggle');
+          volumeToggle.addEventListener('click', () => {
+    const visible = volumeSlider.style.display !== 'none';
+          volumeSlider.style.display = visible ? 'none' : 'block';
           });
+
 
 
     function showScreen(screen){
