@@ -279,7 +279,7 @@
     }
 
     function renderMCQ(term){
-      currentTerm=term; hideTyping(); termBox.textContent=term.pt; mcqOptions.innerHTML='';
+      currentTerm=term; hideTyping(); termBox.innerHTML = `<strong>${term.pt}</strong><div style="font-size: 0.8em; color: #555; margin-top: 6px;">${term.example || ''}</div>`; mcqOptions.innerHTML='';
       document.querySelectorAll('#quiz-screen .correct-text')
         .forEach(el => el.remove());
       [term.en,...getDistractors(term.en)].sort(()=>Math.random()-.5).forEach((opt,i)=>{
