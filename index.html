@@ -220,13 +220,13 @@
     const volume = parseFloat(volumeSlider.value);
           soundCorrect.volume = volume;
           soundWrong.volume = volume;
+          });
+          
     const volumeToggle = document.getElementById('volume-toggle');
           volumeToggle.addEventListener('click', () => {
     const visible = volumeSlider.style.display !== 'none';
           volumeSlider.style.display = visible ? 'none' : 'block';
           });
-
-
 
     function showScreen(screen){
       [startScreen,quizScreen,endScreen].forEach(s=>s.classList.remove('active'));
