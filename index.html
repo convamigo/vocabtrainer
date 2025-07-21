@@ -244,7 +244,7 @@
       if (list.length === initialTerms.length && list.every((t, i) => t === initialTerms[i])) mistakes = [];
       currentTerm=null;
       typeCount=0;
-      let round = 0;
+      round = 0;
       totalCountEl.textContent=terms.length;
       resetTypeBar();
       updateProgress();
@@ -359,7 +359,6 @@
               learnedStage1.push(currentTerm);
           }
 
-          stage2Queue.push(currentTerm);
           currentTerm._readyAt = round + 4;
           stage2Queue.push(currentTerm);
           updateProgress();
