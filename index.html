@@ -382,6 +382,8 @@
         if (ok && !learnedTyping.includes(currentTerm)) {
             typeCount++;
             learnedTyping.push(currentTerm);
+            const index = stage2Queue.indexOf(currentTerm);
+            if (index !== -1) stage2Queue.splice(index, 1);
         }
       }
       playSound(ok);
@@ -447,3 +449,4 @@
   </div>
 </body>
 </html>
+
