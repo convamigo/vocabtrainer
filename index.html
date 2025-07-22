@@ -293,18 +293,14 @@
       }
       let pool;
       if (mode === 'typing') {
-    const ready = stage2Queue.filter(t => !t._readyAt || t._readyAt <= round);
-    if (!ready.length) return null; // typing not ready this round
-    pool = ready;
-} else {
-    if (!stage1Queue.length) return null; // just in case
-    pool = stage1Queue;
-}
-
+          const ready = stage2Queue.filter(t => !t._readyAt || t._readyAt === round);
+          pool = ready.length ? ready : stage2Queue;
+      } else {
+          pool = stage1Queue;
+      }
+      if(!pool.length) pool=(mode==='mcq')?stage2Queue:stage1Queue;
       let i; do{i=Math.floor(Math.random()*pool.length);}while(pool[i]===currentTerm&&pool.length>1);
-      const term = pool[i];
-      if (mode === 'mcq') stage1Queue.splice(stage1Queue.indexOf(term), 1);
-      return {term, mode};
+      return {term:pool.splice(i,1)[0],mode};
     }
 
     function renderMCQ(term){
@@ -363,7 +359,7 @@
               learnedStage1.push(currentTerm);
           }
 
-          currentTerm._readyAt = round + 4 + Math.floor(Math.random() * 3);
+          currentTerm._readyAt = round + 5;
           stage2Queue.push(currentTerm);
           updateProgress();
       }
@@ -417,10 +413,7 @@
         round++;
       hideTyping();
       if(!stage1Queue.length&&!stage2Queue.length) return endSession();
-      const result = pickNext();
-      if (!result) return; // nothing ready yet
-      const {term,mode} = result;
-      mode === 'typing' ? renderTyping(term) : renderMCQ(term);
+      const {term,mode}=pickNext(); mode==='typing'?renderTyping(term):renderMCQ(term);
     }
 
     function endSession(){
