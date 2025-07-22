@@ -293,7 +293,7 @@
       }
       let pool;
       if (mode === 'typing') {
-          const ready = stage2Queue.filter(t => !t._readyAt || t._readyAt === round);
+          const ready = stage2Queue.filter(t => !t._readyAt || t._readyAt <= round);
           pool = ready.length ? ready : stage2Queue;
       } else {
           pool = stage1Queue;
