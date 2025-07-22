@@ -359,7 +359,7 @@
               learnedStage1.push(currentTerm);
           }
 
-          currentTerm._readyAt = round + 5;
+          currentTerm._readyAt = round + 4 + Math.floor(Math.random() * 3);
           stage2Queue.push(currentTerm);
           updateProgress();
       }
