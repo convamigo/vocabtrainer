@@ -294,14 +294,17 @@
       let pool;
       if (mode === 'typing') {
           const ready = stage2Queue.filter(t => !t._readyAt || t._readyAt <= round);
-          if (!ready.length) return nextQuestion(); // nothing ready — skip this round
+          if (!ready.length) return pickNext(); // skip this round, try MCQ instead
           pool = ready;
+          mode = 'typing';
       } else {
           pool = stage1Queue;
       }
       if(!pool.length) pool=(mode==='mcq')?stage2Queue:stage1Queue;
       let i; do{i=Math.floor(Math.random()*pool.length);}while(pool[i]===currentTerm&&pool.length>1);
-      return {term:pool.splice(i,1)[0],mode};
+      const term = pool[i];
+      if (mode === 'mcq') stage1Queue.splice(stage1Queue.indexOf(term), 1);
+      return {term, mode};
     }
 
     function renderMCQ(term){
