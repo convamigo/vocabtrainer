@@ -294,7 +294,8 @@
       let pool;
       if (mode === 'typing') {
           const ready = stage2Queue.filter(t => !t._readyAt || t._readyAt <= round);
-          pool = ready.length ? ready : stage2Queue;
+          if (!ready.length) return nextQuestion(); // nothing ready — skip this round
+          pool = ready;
       } else {
           pool = stage1Queue;
       }
@@ -413,7 +414,10 @@
         round++;
       hideTyping();
       if(!stage1Queue.length&&!stage2Queue.length) return endSession();
-      const {term,mode}=pickNext(); mode==='typing'?renderTyping(term):renderMCQ(term);
+      const result = pickNext();
+      if (!result) return; // nothing ready yet
+      const {term,mode} = result;
+      mode === 'typing' ? renderTyping(term) : renderMCQ(term);
     }
 
     function endSession(){
