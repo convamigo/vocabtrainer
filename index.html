@@ -288,8 +288,7 @@
           mode = 'mcq';
       } else {
           // Mixed mode: gradually blend typing in based on learning progress
-          const mcqWeight = stage1Queue.length / terms.length;
-          mode = Math.random() < mcqWeight ? 'mcq' : 'typing';
+          mode = Math.random() < 0.3 ? 'mcq' : 'typing';
       }
       let pool;
       if (mode === 'typing') {
