@@ -417,7 +417,10 @@
         round++;
       hideTyping();
       if(!stage1Queue.length&&!stage2Queue.length) return endSession();
-      const {term,mode}=pickNext(); mode==='typing'?renderTyping(term):renderMCQ(term);
+      const result = pickNext();
+      if (!result) return endSession();
+      const { term, mode } = result;
+      mode === 'typing' ? renderTyping(term) : renderMCQ(term);
     }
 
     function endSession(){
