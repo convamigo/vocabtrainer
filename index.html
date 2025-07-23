@@ -292,13 +292,17 @@
       }
       let pool;
       if (mode === 'typing') {
-          const ready = stage2Queue.filter(t => t._readyAt && t._readyAt <= round);
+          const ready = stage2Queue.filter(t => t._readyAt && t._readyAt <= round && !learnedTyping.includes(t));
           if (!ready.length) return pickNext(); // fallback to MCQ
           pool = ready;
       } else {
           pool = stage1Queue;
       }
-      if(!pool.length) pool=(mode==='mcq')?stage2Queue:stage1Queue;
+      if (!pool.length) {
+          pool = (mode === 'mcq')
+          ? stage2Queue.filter(t => !learnedTyping.includes(t))
+          : stage1Queue;
+      }
       let i; do{i=Math.floor(Math.random()*pool.length);}while(pool[i]===currentTerm&&pool.length>1);
       return {term:pool.splice(i,1)[0],mode};
     }
