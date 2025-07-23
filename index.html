@@ -292,8 +292,9 @@
       }
       let pool;
       if (mode === 'typing') {
-          const ready = stage2Queue.filter(t => !t._readyAt || t._readyAt === round);
-          pool = ready.length ? ready : stage2Queue;
+          const ready = stage2Queue.filter(t => t._readyAt && t._readyAt <= round);
+          if (!ready.length) return pickNext(); // fallback to MCQ
+          pool = ready;
       } else {
           pool = stage1Queue;
       }
