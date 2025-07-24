@@ -416,7 +416,7 @@
     function nextQuestion(){
         round++;
       hideTyping();
-      if(!stage1Queue.length&&!stage2Queue.length) return endSession();
+      if (!stage1Queue.length && stage2Queue.every(t => learnedTyping.includes(t) || t._readyAt > round)) return endSession();
       const result = pickNext();
       if (!result) return endSession();
       const { term, mode } = result;
