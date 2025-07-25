@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vocabulary Trainer Loader</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #fafafa;
+    }
+    .buttons {
+      margin-bottom: 20px;
+    }
+    .buttons button {
+      margin: 5px;
+      padding: 10px 15px;
+      font-size: 14px;
+      cursor: pointer;
+      border: 1px solid #333;
+      background-color: #f0f0f0;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+    .buttons button:hover {
+      background-color: #e0e0e0;
+    }
+    #contentFrame {
+      width: 100%;
+      height: 80vh;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="buttons" id="buttonContainer">
+    <!-- Buttons will be generated here -->
+  </div>
+  <iframe id="contentFrame" src="" title="Vocabulary Content"></iframe>
+
+  <script>
+    const container = document.getElementById('buttonContainer');
+    const frame = document.getElementById('contentFrame');
+
+    // Generate buttons for each 25-item range up to 250
+    for (let start = 1; start <= 250; start += 25) {
+      const end = start + 24;
+      const btn = document.createElement('button');
+      btn.textContent = `${start}-${end}`;
+      btn.addEventListener('click', () => {
+        // Build the new URL
+        const url = `https://convamigo.github.io/vocabtrainer/#ACOCE${start}-${end}.json`;
+        // Force reload by clearing then setting src
+        frame.src = '';
+        setTimeout(() => {
+          frame.src = url;
+        }, 100);
+      });
+      container.appendChild(btn);
+    }
+
+    // Load the first range by default
+    frame.src = 'https://convamigo.github.io/vocabtrainer/#ACOCE1-25.json';
+  </script>
+</body>
+</html>
