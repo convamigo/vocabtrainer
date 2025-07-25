@@ -437,8 +437,10 @@
       } else {
           // only record a mistake once
           if (!mistakes.includes(currentTerm)) mistakes.push(currentTerm);
-          // re-queue into typing phase
-          stage2Queue.unshift(currentTerm);
+          // re-queue into typing phase, but avoid duplicates at front
+          if (stage2Queue[0] !== currentTerm) {
+            stage2Queue.unshift(currentTerm);
+          }
           // show correct answer below
           const corr = document.createElement('div');
           corr.className = 'correct-text';
@@ -462,7 +464,8 @@
     if (
       stage1Queue.length === 0 &&
       stage2Queue.some(t => !learnedTyping.includes(t)) &&
-      stage2Queue.every(t => learnedTyping.includes(t) || t._readyAt > round)
+      // ensure at least one item is “ready” to avoid premature pulls
+      stage2Queue.some(t => !learnedTyping.includes(t) && t._readyAt <= round)
     ) {
       const term = stage2Queue.shift();
       return renderTyping(term);
