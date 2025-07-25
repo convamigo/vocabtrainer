@@ -437,10 +437,8 @@
       } else {
           // only record a mistake once
           if (!mistakes.includes(currentTerm)) mistakes.push(currentTerm);
-          // re-queue into typing phase, but avoid duplicates at front
-          if (stage2Queue[0] !== currentTerm) {
-            stage2Queue.unshift(currentTerm);
-          }
+          // re-queue into typing phase (always)
+          stage2Queue.unshift(currentTerm);
           // show correct answer below
           const corr = document.createElement('div');
           corr.className = 'correct-text';
@@ -472,7 +470,11 @@
       const term = stage2Queue.splice(idx,1)[0];
       return renderTyping(term);
     }
-      if (!stage1Queue.length && stage2Queue.every(t => learnedTyping.includes(t) || t._readyAt > round)) return endSession();
+      // only end if there are no unlearned typing items left
+      const anyTypingLeft = stage2Queue.some(t => !learnedTyping.includes(t));
+      if (!stage1Queue.length && !anyTypingLeft) {
+        return endSession();
+      }
       const result = pickNext();
       if (!result) return endSession();
       const { term, mode } = result;
