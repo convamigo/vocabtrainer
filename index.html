@@ -409,6 +409,12 @@
     }
 
     function handleTyping(action){
+        console.log(
+    'handleTyping called:',
+    'action=', action,
+    'round=', round,
+    'queue ready?=', stage2Queue.map(t => t._readyAt <= round)
+  );
         // ◀ disable any further typing or DK clicks
         typingInput.disabled = true;
         enterBtn.disabled   = true;
@@ -454,6 +460,12 @@
     }
 
     function nextQuestion(){
+        console.log(
+    'nextQuestion called:',
+    'round=', round,
+    'MCQ left=', stage1Queue.length,
+    'typing unlearned=', stage2Queue.filter(t => !learnedTyping.includes(t)).length
+  );
         round++;
         hideTyping();
 
