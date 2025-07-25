@@ -314,6 +314,7 @@
     }
 
     function pickNext(){
+    console.log('▶ handleTyping:', 'action=', action, 'round=', round);    
       let mode;
       if (stage1Queue.length === 0) {
           mode = 'typing';
@@ -346,6 +347,7 @@
     }
 
     function renderMCQ(term){
+        console.log('▶ handleTyping:', 'action=', action, 'round=', round);
       currentTerm=term; hideTyping(); termBox.innerHTML = `<strong>${term.pt}</strong><div style="font-size: 0.6em; color: #555; margin-top: 6px;">${term.example || ''}</div>`; mcqOptions.innerHTML='';
       document.querySelectorAll('#quiz-screen .correct-text')
         .forEach(el => el.remove());
@@ -357,6 +359,7 @@
     }
 
     function renderTyping(term){
+        console.log('▶ handleTyping:', 'action=', action, 'round=', round);
       currentTerm=term; 
       // ◀ remove last round’s correct‐answer box
       const old = document.querySelector('#quiz-screen .correct-text');
@@ -379,6 +382,7 @@
     }
 
     function handleMCQ(ans,btn){
+    console.log('▶ handleTyping:', 'action=', action, 'round=', round);
       const ok=(ans===currentTerm.en);
       // ◀ disable all buttons immediately
       mcqOptions.querySelectorAll('.option')
