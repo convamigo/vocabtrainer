@@ -71,6 +71,65 @@
     #term-box { background: var(--primary); padding: 20px; border-radius: 8px; font-size: 1.5em; margin-bottom: 20px; }
     .options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .option { background: white; padding: 15px; border-radius: 5px; position: relative; cursor: pointer; border: 1px solid #eeeeee; transition: box-shadow 0.2s ease, border-color 0.2s ease; }
+    /* Matching‐pairs mode */
+    .match-item {
+  flex: 1;
+  padding: 15px;
+  margin: 5px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  user-select: none;
+}
+    .match-item.selected { background: var(--secondary); }
+    .match-item.correct  { background: var(--correct-bg); border-color: var(--type-correct); }
+    .match-item.incorrect{ background-color: var(--incorrect-bg) !important; border-color: var(--type-incorrect) !important;
+    .match-columns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+#match-container {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pop {
+  0%   { transform: scale(0.9); }
+  50%  { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+.match-item {
+  transition: transform 0.2s ease, background-color 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+  animation: fadeIn 0.4s forwards;
+}
+
+.match-item.correct {
+    background-color: var(--correct-bg) !important;
+    border-color: var(--type-correct) !important;
+    animation: pop 0.4s ease;
+}
+
+.screen.active {
+  animation: slideIn 0.3s ease;
+}
+
     .option .key { position: absolute; top: 50%; transform: translateY(-50%); left: 8px; width: 20px; height: 20px; border-radius: 50%; background: var(--secondary); color: #333; display: flex; align-items: center; justify-content: center; font-size: 0.8em; }
     .progress { width: 100%; background: #ddd; border-radius: 5px; height: 20px; overflow: hidden; position: relative; margin-bottom: 20px; }
     .progress .mcq, .progress .type { position: absolute; top: 0; height: 100%; transition: width 0.3s ease, left 0.3s ease, background-color 0.3s ease; }
@@ -164,6 +223,13 @@
     </div>
     <button id="dk-btn">Don’t know</button>
   </div>
+  
+  <!-- MATCH SCREEN -->
+  <div id="match-screen" class="screen">
+    <h2>Match the words</h2>
+    <div id="match-container" class="options"></div>
+    <button id="match-done-btn" style="display:none; margin-top:10px;">Done</button>
+  </div>
 
   <div id="end-screen" class="screen">
     <h2>Review Mistakes</h2>
@@ -202,6 +268,7 @@
     let terms, stage1Queue, learnedStage1, learnedTyping, stage2Queue, mistakes, currentTerm, typeCount;
     const startScreen=document.getElementById('start-screen'),
           quizScreen=document.getElementById('quiz-screen'),
+          matchScreen=document.getElementById('match-screen'),
           endScreen=document.getElementById('end-screen');
     const totalCountEl=document.getElementById('total-count'),
           startBtn=document.getElementById('start-btn'),
@@ -231,7 +298,7 @@
           });
 
     function showScreen(screen){
-      [startScreen,quizScreen,endScreen].forEach(s=>s.classList.remove('active'));
+      [startScreen, quizScreen, matchScreen, endScreen].forEach(s => s.classList.remove('active'));
       screen.classList.add('active');
     }
 
@@ -376,10 +443,9 @@
     }
 
     function handleTyping(action){
-        // ◀ disable any further typing or DK clicks
+        // ◀ disable the text input and Enter only — keep DK alive so you never get stuck 
         typingInput.disabled = true;
         enterBtn.disabled   = true;
-        dkBtn.disabled      = true;
       let ok;
       if(action==='dk'){ ok=false; resetTypeBar('--type-dk'); }
       else{
@@ -398,7 +464,9 @@
       playSound(ok);
       if (ok) {
           updateProgress();
-          
+          if (typeCount > 0 && typeCount % 5 === 0) {
+              return startMatchExercise();
+          }
       } else {
           // only record a mistake once
           if (!mistakes.includes(currentTerm)) mistakes.push(currentTerm);
@@ -450,6 +518,63 @@
     }
 
     function varColor(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+    
+    // — MATCH EXERCISE LOGIC —
+let matchPairs, firstSelection;
+
+function startMatchExercise() {
+  showScreen(matchScreen);
+  const sliceCount = Math.min(5, learnedTyping.length);
+  matchPairs = learnedTyping.slice(-sliceCount).map(t => ({ pt: t.pt, en: t.en, matched: false }));
+  renderMatchExercise();
+}
+
+function renderMatchExercise() {
+  const container = document.getElementById('match-container');
+  container.innerHTML = '';
+  const left = document.createElement('div'), right = document.createElement('div');
+  left.className = right.className = 'match-columns';
+  const pts = shuffle(matchPairs.map(p => p.pt));
+  const ens = shuffle(matchPairs.map(p => p.en));
+  pts.forEach(pt => { left.innerHTML += `<div class="match-item" data-val="${pt}">${pt}</div>`; });
+  ens.forEach(en => { right.innerHTML += `<div class="match-item" data-val="${en}">${en}</div>`; });
+  container.appendChild(left);
+  container.appendChild(right);
+  container.querySelectorAll('.match-item').forEach(el => el.addEventListener('click', () => handleMatchClick(el)));
+}
+
+function handleMatchClick(el) {
+  if (el.classList.contains('matched')) return;
+  if (!firstSelection) {
+    firstSelection = el;
+    el.classList.add('selected');
+    return;
+  }
+  const a = firstSelection.dataset.val, b = el.dataset.val;
+  const pairOk = matchPairs.some(p => (p.pt===a && p.en===b) || (p.pt===b && p.en===a));
+  firstSelection.classList.toggle(pairOk ? 'correct':'incorrect');
+  el.classList.toggle(pairOk ? 'correct':'incorrect');
+  if (pairOk) {
+    firstSelection.classList.add('matched');
+    el.classList.add('matched');
+  }
+  setTimeout(() => {
+    firstSelection.classList.remove('selected','incorrect');
+    el.classList.remove('incorrect');
+    firstSelection = null;
+    if (matchPairs.every(p => {
+      const leftEl = document.querySelector(`.match-item[data-val="${p.pt}"]`);
+      return leftEl.classList.contains('matched');
+    })) {
+      showScreen(quizScreen);
+      nextQuestion();
+    }
+  }, pairOk ? 0 : 1500);
+}
+
+function shuffle(arr) {
+  return arr.sort(() => Math.random()-0.5);
+}
 
     document.addEventListener('keydown',e=>{
       if(!quizScreen.classList.contains('active')) return;
