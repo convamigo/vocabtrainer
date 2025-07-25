@@ -10,8 +10,18 @@
       padding: 20px;
       background-color: #fafafa;
     }
+    #contentFrame {
+      width: 100%;
+      height: 80vh;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin: 0;
+      padding: 0;
+      display: block;
+    }
     .buttons {
-      margin-bottom: 20px;
+      text-align: center;
+      margin-top: 20px;
     }
     .buttons button {
       margin: 5px;
@@ -26,19 +36,13 @@
     .buttons button:hover {
       background-color: #e0e0e0;
     }
-    #contentFrame {
-      width: 100%;
-      height: 80vh;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
   </style>
 </head>
 <body>
+  <iframe id="contentFrame" src="" title="Vocabulary Content" frameborder="0" marginheight="0" marginwidth="0"></iframe>
   <div class="buttons" id="buttonContainer">
     <!-- Buttons will be generated here -->
   </div>
-  <iframe id="contentFrame" src="" title="Vocabulary Content"></iframe>
 
   <script>
     const container = document.getElementById('buttonContainer');
@@ -50,9 +54,8 @@
       const btn = document.createElement('button');
       btn.textContent = `${start}-${end}`;
       btn.addEventListener('click', () => {
-        // Build the new URL
         const url = `https://convamigo.github.io/vocabtrainer/#ACOCE${start}-${end}.json`;
-        // Force reload by clearing then setting src
+        // Force reload by clearing then resetting src
         frame.src = '';
         setTimeout(() => {
           frame.src = url;
