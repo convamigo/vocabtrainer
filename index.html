@@ -159,7 +159,7 @@
     <div id="term-box"></div>
     <div id="mcq-options" class="options"></div>
     <div id="typing-area">
-      <input id="typing-input" type="text" placeholder="Type translation...">
+      <input id="typing-input" type="text" placeholder="Type translation..." autofocus>
       <button id="enter-btn">↵</button>
     </div>
     <button id="dk-btn">Don’t know</button>
@@ -454,7 +454,11 @@
       }
     });
     typingInput.addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault(); handleTyping();} });
-    enterBtn.addEventListener('click',()=>handleTyping()); dkBtn.addEventListener('click',()=>handleTyping('dk'));
+    enterBtn.addEventListener('click',()=>handleTyping()); dkBtn.addEventListener('click', () => {
+        // Immediately switch to typing mode in response to the tap
+        const result = { term: currentTerm, mode: 'typing' };
+        renderTyping(result.term);
+    });
     startBtn.addEventListener('click',()=>{startSession(); showScreen(quizScreen); nextQuestion();});
     retryBtn.addEventListener('click',()=>{ if(mistakes.length<4){alert('Need 4+ mistakes');return;} startSession(mistakes); showScreen(quizScreen); nextQuestion(); });
     restartBtn.addEventListener('click',()=>location.reload());
