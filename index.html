@@ -282,14 +282,19 @@
 
     function pickNext(){
       let mode;
-      if (stage1Queue.length === 0) {
-          mode = 'typing';
-      } else if (stage2Queue.length === 0) {
-          mode = 'mcq';
-      } else {
-          // Mixed mode: gradually blend typing in based on learning progress
-          mode = Math.random() < 0.3 ? 'mcq' : 'typing';
-      }
+      // Once initial learning is done and there are 5 (or fewer at the end) review items, switch to match
+      if (
+          stage1Queue.length === 0 &&
+          (stage2Queue.length >= 5 || (stage2Queue.length > 0 && stage1Queue.length === 0))
+          ) {
+              mode = 'match';
+          } else if (stage1Queue.length === 0) {
+              mode = 'typing';
+          } else if (stage2Queue.length === 0) {
+              mode = 'mcq';
+          } else {
+              mode = Math.random() < 0.3 ? 'mcq' : 'typing';
+          }
       let pool;
       if (mode === 'typing') {
           const ready = stage2Queue.filter(t => t._readyAt && t._readyAt <= round && !learnedTyping.includes(t));
@@ -308,8 +313,17 @@
           ? stage2Queue.filter(t => !learnedTyping.includes(t))
           : stage1Queue;
       }
-      let i; do{i=Math.floor(Math.random()*pool.length);}while(pool[i]===currentTerm&&pool.length>1);
-      return {term:pool.splice(i,1)[0],mode};
+      if (mode === 'match') {
+          // Return the whole batch array (up to 5 terms)
+          return { term: pool.slice(), mode };
+      } else {
+          // Existing behavior: pick one term at random
+          let i;
+          do {
+              i = Math.floor(Math.random() * pool.length);
+          } while (pool[i] === currentTerm && pool.length > 1);
+          return { term: pool.splice(i, 1)[0], mode };
+      }
     }
 
     function renderMCQ(term){
@@ -436,7 +450,13 @@
       const result = pickNext();
       if (!result) return endSession();
       const { term, mode } = result;
-      mode === 'typing' ? renderTyping(term) : renderMCQ(term);
+      if (mode === 'typing') {
+          renderTyping(term);
+      } else if (mode === 'match') {
+          renderMatch(term);
+      } else {
+          renderMCQ(term);
+      }
     }
 
     function endSession(){
