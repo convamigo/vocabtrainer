@@ -467,7 +467,9 @@
       // ensure at least one item is “ready” to avoid premature pulls
       stage2Queue.some(t => !learnedTyping.includes(t) && t._readyAt <= round)
     ) {
-      const term = stage2Queue.shift();
+      // pull the first item whose _readyAt <= round
+      const idx = stage2Queue.findIndex(t => !learnedTyping.includes(t) && t._readyAt <= round);
+      const term = stage2Queue.splice(idx,1)[0];
       return renderTyping(term);
     }
       if (!stage1Queue.length && stage2Queue.every(t => learnedTyping.includes(t) || t._readyAt > round)) return endSession();
@@ -554,11 +556,8 @@ function shuffle(arr) {
       }
     });
     typingInput.addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault(); handleTyping();} });
-    enterBtn.addEventListener('click',()=>handleTyping()); dkBtn.addEventListener('click', () => {
-        // Immediately switch to typing mode in response to the tap
-        const result = { term: currentTerm, mode: 'typing' };
-        renderTyping(result.term);
-    });
+    enterBtn.addEventListener('click', ()=>handleTyping());
+    dkBtn.addEventListener('click', ()=>handleTyping('dk'));
     startBtn.addEventListener('click',()=>{startSession(); showScreen(quizScreen); nextQuestion();});
     retryBtn.addEventListener('click',()=>{ if(mistakes.length<4){alert('Need 4+ mistakes');return;} startSession(mistakes); showScreen(quizScreen); nextQuestion(); });
     restartBtn.addEventListener('click',()=>location.reload());
