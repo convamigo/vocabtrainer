@@ -293,16 +293,7 @@
       let pool;
       if (mode === 'typing') {
           const ready = stage2Queue.filter(t => t._readyAt && t._readyAt <= round && !learnedTyping.includes(t));
-          if (!ready.length) {
-              if (stage1Queue.length) {
-                  mode = 'mcq';
-                  pool = stage1Queue;
-              } else {
-                  return null; // truly nothing left to do
-                  }
-          } else {
-              pool = ready;
-          }
+          if (!ready.length) return pickNext(); // fallback to MCQ
           pool = ready;
       } else {
           pool = stage1Queue;
