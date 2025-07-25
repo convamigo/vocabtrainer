@@ -83,7 +83,7 @@
 }
     .match-item.selected { background: var(--secondary); }
     .match-item.correct  { background: var(--correct-bg); border-color: var(--type-correct); }
-    .match-item.incorrect{ background-color: var(--incorrect-bg) !important; border-color: var(--type-incorrect) !important;
+    .match-item.incorrect{ background: var(--incorrect-bg); border-color: var(--type-incorrect); }
     .match-columns {
   display: flex;
   flex-direction: column;
@@ -96,40 +96,6 @@
   flex-direction: row;
   gap: 10px;
 }
-
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-@keyframes pop {
-  0%   { transform: scale(0.9); }
-  50%  { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-
-@keyframes slideIn {
-  from { transform: translateY(20px); opacity: 0; }
-  to   { transform: translateY(0); opacity: 1; }
-}
-
-.match-item {
-  transition: transform 0.2s ease, background-color 0.3s ease, opacity 0.3s ease;
-  opacity: 0;
-  animation: fadeIn 0.4s forwards;
-}
-
-.match-item.correct {
-    background-color: var(--correct-bg) !important;
-    border-color: var(--type-correct) !important;
-    animation: pop 0.4s ease;
-}
-
-.screen.active {
-  animation: slideIn 0.3s ease;
-}
-
     .option .key { position: absolute; top: 50%; transform: translateY(-50%); left: 8px; width: 20px; height: 20px; border-radius: 50%; background: var(--secondary); color: #333; display: flex; align-items: center; justify-content: center; font-size: 0.8em; }
     .progress { width: 100%; background: #ddd; border-radius: 5px; height: 20px; overflow: hidden; position: relative; margin-bottom: 20px; }
     .progress .mcq, .progress .type { position: absolute; top: 0; height: 100%; transition: width 0.3s ease, left 0.3s ease, background-color 0.3s ease; }
@@ -443,9 +409,10 @@
     }
 
     function handleTyping(action){
-        // ◀ disable the text input and Enter only — keep DK alive so you never get stuck 
+        // ◀ disable any further typing or DK clicks
         typingInput.disabled = true;
         enterBtn.disabled   = true;
+        dkBtn.disabled      = true;
       let ok;
       if(action==='dk'){ ok=false; resetTypeBar('--type-dk'); }
       else{
