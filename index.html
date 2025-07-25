@@ -415,7 +415,18 @@
 
     function nextQuestion(){
         round++;
-      hideTyping();
+        hideTyping();
+
+    // — OVERRIDE: If MCQ queue is empty but there are typing items that are not learned yet,
+    //   even if their _readyAt > round, force the last one into typing rather than end.
+    if (
+      stage1Queue.length === 0 &&
+      stage2Queue.some(t => !learnedTyping.includes(t)) &&
+      stage2Queue.every(t => learnedTyping.includes(t) || t._readyAt > round)
+    ) {
+      const term = stage2Queue.shift();
+      return renderTyping(term);
+    }
       if (!stage1Queue.length && stage2Queue.every(t => learnedTyping.includes(t) || t._readyAt > round)) return endSession();
       const result = pickNext();
       if (!result) return endSession();
