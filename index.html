@@ -218,7 +218,7 @@
       let initialTerms = [];
       const dataFile = window.location.hash
       ? window.location.hash.substring(1)
-      : 'basicwords.json';
+      : 'x.json';
       fetch(dataFile)
       .then(res => res.json())
       .then(data => {
@@ -420,13 +420,50 @@
         enterBtn.disabled   = true;
         dkBtn.disabled      = true;
       let ok;
-      if(action==='dk'){ ok=false; resetTypeBar('--type-dk'); }
-      else{
-        const v=typingInput.value.trim().toLowerCase(), f=currentTerm.en.toLowerCase();
-        const s=f.replace(/\s*\([^)]*\)\s*/g,' ').trim();
-        ok=(v===f||v===s);
+      if(action==='dk'){
+        // treat "don't know" as incorrect; neutral bar
+        ok=false;
+        resetTypeBar('--type-dk');
+      } else {
+        // sanitize inputs by removing punctuation and normalizing spaces
+        // helper to remove punctuation and normalize spaces, keeping alphanumeric and spaces only
+        const sanitize = (str) => str.toLowerCase()
+          .replace(/[^a-z0-9 ]/g, '')
+          .replace(/\s+/g, ' ').trim();
+        const vRaw = typingInput.value.trim().toLowerCase();
+        const fRaw = currentTerm.en.toLowerCase();
+        // remove parenthetical hints from the correct answer
+        const sRaw = fRaw.replace(/\s*\([^)]*\)\s*/g, ' ').trim();
+        const v = sanitize(vRaw);
+        const f = sanitize(fRaw);
+        const s = sanitize(sRaw);
+        // compute simple Levenshtein distance (limited to distance <=1 for efficiency)
+        function editDistanceOne(a, b) {
+          // if difference in length >1, cannot be within one edit
+          if (Math.abs(a.length - b.length) > 1) return false;
+          // ensure a is shorter or equal length
+          if (a.length > b.length) [a, b] = [b, a];
+          let i = 0, j = 0, edits = 0;
+          while (i < a.length && edits <= 1) {
+            if (a[i] === b[j]) { i++; j++; continue; }
+            edits++;
+            if (a.length === b.length) {
+              // substitution
+              i++; j++;
+            } else {
+              // insertion in b or deletion in a
+              j++;
+            }
+          }
+          // account for trailing extra char
+          if (edits <= 1) edits += (b.length - j);
+          return edits <= 1;
+        }
+        // evaluate correctness: exact match or within one edit distance
+        ok = (v === f || v === s || editDistanceOne(v, f) || editDistanceOne(v, s));
         resetTypeBar(ok ? '--type-correct' : '--type-incorrect');
-        typingInput.style.backgroundColor = ok ? '#dcedc8' : '#ffcdd2'; 
+        // visually mark the input
+        typingInput.style.backgroundColor = ok ? '#dcedc8' : '#ffcdd2';
         if (ok && !learnedTyping.includes(currentTerm)) {
             typeCount++;
             learnedTyping.push(currentTerm);
@@ -434,28 +471,38 @@
             if (index !== -1) stage2Queue.splice(index, 1);
         }
       }
+      // play appropriate sound
       playSound(ok);
-      if (ok) {
-          updateProgress();
-          if (typeCount > 0 && typeCount % 5 === 0) {
-              return startMatchExercise();
-          }
+      // handle logging mistakes and queueing when incorrect (including DK)
+      if (!ok) {
+        if (!mistakes.includes(currentTerm)) mistakes.push(currentTerm);
+        stage2Queue.unshift(currentTerm);
+        // show the correct answer below in yellow
+        const corr = document.createElement('div');
+        corr.className = 'correct-text';
+        corr.style.background = 'yellow';
+        corr.style.marginTop = '10px';
+        corr.textContent = currentTerm.en;
+        typingArea.parentNode.insertBefore(corr, dkBtn.nextSibling);
       } else {
-          // only record a mistake once
-          if (!mistakes.includes(currentTerm)) mistakes.push(currentTerm);
-          // re-queue into typing phase (always)
-          stage2Queue.unshift(currentTerm);
-          // show correct answer below
-          const corr = document.createElement('div');
-          corr.className = 'correct-text';
-          corr.style.background = 'yellow';
-          corr.style.marginTop = '10px';
-          corr.textContent = currentTerm.en;
-          typingArea.parentNode.insertBefore(corr, dkBtn.nextSibling);
+        // update progress only on correct answers
+        updateProgress();
       }
+      // decide whether to start match exercise
+      if (ok && typeCount > 0 && typeCount % 5 === 0) {
+        // delay match exercise to allow users to see correctness feedback
+        setTimeout(() => {
+          // clear the input background and reset bar to neutral before starting match
+          typingInput.style.backgroundColor = '';
+          resetTypeBar('--type-dk');
+          startMatchExercise();
+        }, 2000);
+        return;
+      }
+      // schedule next question with appropriate delay
       setTimeout(() => {
-          typingInput.style.backgroundColor = ''; // reset background
-          nextQuestion();
+        typingInput.style.backgroundColor = '';
+        nextQuestion();
       }, ok ? 1000 : 2000);
     }
 
@@ -505,8 +552,10 @@
 
     function varColor(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
     
-    // — MATCH EXERCISE LOGIC —
+// — MATCH EXERCISE LOGIC —
 let matchPairs, firstSelection;
+// Freeze flag to temporarily disable clicks when a mismatch occurs
+let freezeMatch = false;
 
 function startMatchExercise() {
   showScreen(matchScreen);
@@ -530,28 +579,48 @@ function renderMatchExercise() {
 }
 
 function handleMatchClick(el) {
+  // prevent interactions if a mismatch is being displayed
+  if (freezeMatch) return;
+  // ignore already matched items
   if (el.classList.contains('matched')) return;
+  // first click selects the first item
   if (!firstSelection) {
     firstSelection = el;
     el.classList.add('selected');
     return;
   }
-  const a = firstSelection.dataset.val, b = el.dataset.val;
-  const pairOk = matchPairs.some(p => (p.pt===a && p.en===b) || (p.pt===b && p.en===a));
-  firstSelection.classList.toggle(pairOk ? 'correct':'incorrect');
-  el.classList.toggle(pairOk ? 'correct':'incorrect');
+  // evaluate the pair
+  const a = firstSelection.dataset.val;
+  const b = el.dataset.val;
+  const pairOk = matchPairs.some(p => (p.pt === a && p.en === b) || (p.pt === b && p.en === a));
+  // visually mark result on both selections
+  firstSelection.classList.toggle(pairOk ? 'correct' : 'incorrect');
+  el.classList.toggle(pairOk ? 'correct' : 'incorrect');
+  // play sound for correctness/incorrectness
+  playSound(pairOk);
   if (pairOk) {
     firstSelection.classList.add('matched');
     el.classList.add('matched');
+  } else {
+    // freeze additional clicks until the mismatch is cleared
+    freezeMatch = true;
   }
+  // schedule cleanup
   setTimeout(() => {
-    firstSelection.classList.remove('selected','incorrect');
+    // remove temporary classes
+    firstSelection.classList.remove('selected', 'incorrect');
     el.classList.remove('incorrect');
+    // allow further clicks after mismatch delay
+    freezeMatch = false;
+    // reset selection
     firstSelection = null;
+    // if all pairs matched, return to quiz
     if (matchPairs.every(p => {
       const leftEl = document.querySelector(`.match-item[data-val="${p.pt}"]`);
       return leftEl.classList.contains('matched');
     })) {
+      // reset type bar to neutral after match round
+      resetTypeBar('--type-dk');
       showScreen(quizScreen);
       nextQuestion();
     }
