@@ -341,7 +341,13 @@
     ? stage2Queue
     : stage1Queue;
 }
-      let i; do{i=Math.floor(Math.random()*pool.length);}while(pool[i]===currentTerm&&pool.length>1);
+      // select a random index, avoiding infinite loop for single-item pools
+ let i = Math.floor(Math.random() * pool.length);
+ if (pool.length > 1) {
+   while (pool[i] === currentTerm) {
+     i = Math.floor(Math.random() * pool.length);
+   }
+ }
       return {term:pool.splice(i,1)[0],mode};
     }
 
