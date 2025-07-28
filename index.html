@@ -508,6 +508,7 @@ volumeToggle.addEventListener('click', () => {
         overrideBtn.style.border = '1px solid black';
         overrideBtn.style.padding = '6px 12px';
         overrideBtn.style.borderRadius = '4px';
+        overrideBtn.style.marginTop = '10px';
         // Place button below the correct answer box
         corr.parentNode.insertBefore(overrideBtn, corr.nextSibling);
         overrideBtn.addEventListener('click', () => {
