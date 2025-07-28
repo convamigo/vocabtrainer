@@ -506,11 +506,28 @@ volumeToggle.addEventListener('click', () => {
         overrideBtn.style.padding = '6px 12px';
         overrideBtn.style.borderRadius = '4px';
         typingArea.parentNode.insertBefore(overrideBtn, corr.nextSibling);
-        overrideBtn.addEventListener('click', () => {$1
+        overrideBtn.addEventListener('click', () => {
+          // Treat as correct: remove mistake, clear visuals, update progress, then next
+          const idx = mistakes.indexOf(currentTerm);
+          if (idx > -1) mistakes.splice(idx, 1);
+          overrideBtn.remove();
+          corr.remove();
           // Show green “correct” feedback on the input
           typingInput.style.backgroundColor = '#dcedc8';
           // Also turn the typing progress bar green
           typeBar.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--type-correct').trim();
+          // mark as learned if not already
+          if (!learnedTyping.includes(currentTerm)) {
+            typeCount++;
+            learnedTyping.push(currentTerm);
+            const pos = stage2Queue.indexOf(currentTerm);
+            if (pos !== -1) stage2Queue.splice(pos, 1);
+          }
+          updateProgress();
+          setTimeout(() => {
+            typingInput.style.backgroundColor = '';
+            nextQuestion();
+          }, 800);
         });
       } else {
         // update progress only on correct answers
