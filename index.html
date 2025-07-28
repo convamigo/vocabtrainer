@@ -500,32 +500,30 @@ volumeToggle.addEventListener('click', () => {
         // Insert “I was right” override button
         const overrideBtn = document.createElement('button');
         overrideBtn.textContent = 'I was right';
-        overrideBtn.style.marginTop = '8px';
-        overrideBtn.style.background = '#ffeb3b';
-        overrideBtn.style.border = 'none';
+        overrideBtn.style.background = 'transparent';
+        overrideBtn.style.color = 'black';
+        overrideBtn.style.border = '1px solid black';
         overrideBtn.style.padding = '6px 12px';
         overrideBtn.style.borderRadius = '4px';
-        typingArea.parentNode.insertBefore(overrideBtn, corr.nextSibling);
+        // Place button below the correct answer box
+        corr.parentNode.insertBefore(overrideBtn, corr.nextSibling);
         overrideBtn.addEventListener('click', () => {
-          // Treat as correct: remove mistake, clear visuals, update progress, then next
+          // Treat as correct: remove mistake, clear visuals
           const idx = mistakes.indexOf(currentTerm);
           if (idx > -1) mistakes.splice(idx, 1);
           overrideBtn.remove();
           corr.remove();
           // Show green “correct” feedback on the input
           typingInput.style.backgroundColor = '#dcedc8';
-          // Also turn the typing progress bar green
+          // Also make typing progress bar green
           typeBar.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--type-correct').trim();
-          // mark as learned if not already
-          if (!learnedTyping.includes(currentTerm)) {
-            typeCount++;
-            learnedTyping.push(currentTerm);
-            const pos = stage2Queue.indexOf(currentTerm);
-            if (pos !== -1) stage2Queue.splice(pos, 1);
-          }
+          // Update progress widths
           updateProgress();
+          // Proceed to next question after feedback
           setTimeout(() => {
+            // reset input and bar
             typingInput.style.backgroundColor = '';
+            resetTypeBar('--type-correct');
             nextQuestion();
           }, 800);
         });
@@ -698,3 +696,4 @@ function shuffle(arr) {
   </div>
 </body>
 </html>
+
