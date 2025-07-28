@@ -497,6 +497,34 @@ volumeToggle.addEventListener('click', () => {
         corr.style.marginTop = '10px';
         corr.textContent = currentTerm.en;
         typingArea.parentNode.insertBefore(corr, dkBtn.nextSibling);
+        // Insert “I was right” override button
+        const overrideBtn = document.createElement('button');
+        overrideBtn.textContent = 'I was right';
+        overrideBtn.style.marginTop = '8px';
+        overrideBtn.style.background = '#ffeb3b';
+        overrideBtn.style.border = 'none';
+        overrideBtn.style.padding = '6px 12px';
+        overrideBtn.style.borderRadius = '4px';
+        typingArea.parentNode.insertBefore(overrideBtn, corr.nextSibling);
+        overrideBtn.addEventListener('click', () => {
+          // Treat as correct: remove mistake, clear visuals, update progress, then next
+          const idx = mistakes.indexOf(currentTerm);
+          if (idx > -1) mistakes.splice(idx, 1);
+          overrideBtn.remove();
+          corr.remove();
+          // mark as learned if not already
+          if (!learnedTyping.includes(currentTerm)) {
+            typeCount++;
+            learnedTyping.push(currentTerm);
+            const pos = stage2Queue.indexOf(currentTerm);
+            if (pos !== -1) stage2Queue.splice(pos, 1);
+          }
+          updateProgress();
+          setTimeout(() => {
+            typingInput.style.backgroundColor = '';
+            nextQuestion();
+          }, 800);
+        });
       } else {
         // update progress only on correct answers
         updateProgress();
@@ -666,4 +694,3 @@ function shuffle(arr) {
   </div>
 </body>
 </html>
-
