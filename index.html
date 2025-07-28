@@ -546,7 +546,7 @@ volumeToggle.addEventListener('click', () => {
       }
       // schedule next question with appropriate delay
       nextQTimeout = setTimeout(() => {
-      // ◀ hide the "I was right" button if the user never clicked it
+      // hide the "I was right" button if still visible
       overrideBtn.style.display = 'none';
       typingInput.style.backgroundColor = '';
       nextQuestion();
