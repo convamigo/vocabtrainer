@@ -429,6 +429,8 @@ volumeToggle.addEventListener('click', () => {
     'queue ready?=', stage2Queue.map(t => t._readyAt <= round)
   );
         let nextQTimeout;
+    // make overrideBtn available throughout handleTyping
+    let overrideBtn;
     // ◀ disable any further typing or DK clicks
         typingInput.disabled = true;
         enterBtn.disabled   = true;
@@ -499,7 +501,7 @@ volumeToggle.addEventListener('click', () => {
         corr.textContent = currentTerm.en;
         typingArea.parentNode.insertBefore(corr, dkBtn.nextSibling);
         // Insert “I was right” override button
-        const overrideBtn = document.createElement('button');
+        overrideBtn = document.createElement('button');
         overrideBtn.textContent = 'I was right';
         overrideBtn.style.background = 'transparent';
         overrideBtn.style.color = 'black';
