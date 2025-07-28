@@ -509,6 +509,8 @@ volumeToggle.addEventListener('click', () => {
         overrideBtn.addEventListener('click', () => {$1
           // Show green “correct” feedback on the input
           typingInput.style.backgroundColor = '#dcedc8';
+          // Also turn the typing progress bar green
+          typeBar.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--type-correct').trim();
         });
       } else {
         // update progress only on correct answers
