@@ -428,7 +428,8 @@ volumeToggle.addEventListener('click', () => {
     'round=', round,
     'queue ready?=', stage2Queue.map(t => t._readyAt <= round)
   );
-        // ◀ disable any further typing or DK clicks
+        let nextQTimeout;
+    // ◀ disable any further typing or DK clicks
         typingInput.disabled = true;
         enterBtn.disabled   = true;
         dkBtn.disabled      = true;
@@ -508,7 +509,8 @@ volumeToggle.addEventListener('click', () => {
         // Place button below the correct answer box
         corr.parentNode.insertBefore(overrideBtn, corr.nextSibling);
         overrideBtn.addEventListener('click', () => {
-          // Treat as correct: remove mistake, clear visuals
+          clearTimeout(nextQTimeout);
+        // Treat as correct: remove mistake, clear visuals
           const idx = mistakes.indexOf(currentTerm);
           if (idx > -1) mistakes.splice(idx, 1);
           overrideBtn.remove();
@@ -525,7 +527,7 @@ volumeToggle.addEventListener('click', () => {
             typingInput.style.backgroundColor = '';
             resetTypeBar('--type-correct');
             nextQuestion();
-          }, 800);
+          }, 2000);
         });
       } else {
         // update progress only on correct answers
@@ -543,10 +545,10 @@ volumeToggle.addEventListener('click', () => {
         return;
       }
       // schedule next question with appropriate delay
-      setTimeout(() => {
-        typingInput.style.backgroundColor = '';
-        nextQuestion();
-      }, ok ? 1000 : 2000);
+      nextQTimeout = setTimeout(() => {
+      typingInput.style.backgroundColor = '';
+      nextQuestion();
+    }, ok ? 1000 : 2000);
     }
 
     function nextQuestion(){
@@ -696,4 +698,3 @@ function shuffle(arr) {
   </div>
 </body>
 </html>
-
