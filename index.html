@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vocab Trainer</title>
   <style>
+    /* Show slider on hover */
+    #volume-control:hover #volume-slider { display: block !important; }
     :root {
       --primary: #e0f7fa;
       --secondary: #b2ebf2;
@@ -258,10 +260,15 @@
           });
           
     const volumeToggle = document.getElementById('volume-toggle');
-          volumeToggle.addEventListener('click', () => {
-    const visible = volumeSlider.style.display !== 'none';
-          volumeSlider.style.display = visible ? 'none' : 'block';
-          });
+          // Toggle mute on click and swap icon
+volumeToggle.addEventListener('click', () => {
+    const isMuted = soundCorrect.muted;
+    soundCorrect.muted = !isMuted;
+    soundWrong.muted = !isMuted;
+    volumeToggle.querySelector('img').src = isMuted
+        ? 'https://www.convamigo.com/wp-content/uploads/2025/07/Untitled-1.png'
+        : 'https://www.convamigo.com/wp-content/uploads/2025/07/mmute.png';
+});
 
     function showScreen(screen){
       [startScreen, quizScreen, matchScreen, endScreen].forEach(s => s.classList.remove('active'));
@@ -659,3 +666,4 @@ function shuffle(arr) {
   </div>
 </body>
 </html>
+
