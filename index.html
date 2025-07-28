@@ -528,7 +528,7 @@ volumeToggle.addEventListener('click', () => {
             resetTypeBar('--type-correct');
             nextQuestion();
           }, 2000);
-        });
+        }, { once: true });   // ← add this third argument
       } else {
         // update progress only on correct answers
         updateProgress();
