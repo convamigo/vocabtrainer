@@ -233,7 +233,7 @@
       .catch(err => {
           alert('Failed to load ' + dataFile + ': ' + err);
 });
-    let terms, stage1Queue, learnedStage1, learnedTyping, stage2Queue, mistakes, currentTerm, typeCount;
+    let terms, stage1Queue, learnedStage1, learnedTyping, stage2Queue, mistakes, currentTerm, typeCount, round;
     const startScreen=document.getElementById('start-screen'),
           quizScreen=document.getElementById('quiz-screen'),
           matchScreen=document.getElementById('match-screen'),
@@ -355,7 +355,14 @@ volumeToggle.addEventListener('click', () => {
      i = Math.floor(Math.random() * pool.length);
    }
  }
-      return {term:pool.splice(i,1)[0],mode};
+      // extract the chosen term
+  const selected = pool.splice(i, 1)[0];
+  // if we were pulling from typing, also remove it from the real queue
+  if (mode === 'typing') {
+    const idx = stage2Queue.indexOf(selected);
+   if (idx > -1) stage2Queue.splice(idx, 1);
+  }
+  return { term: selected, mode };
     }
 
     function renderMCQ(term){
@@ -522,6 +529,9 @@ volumeToggle.addEventListener('click', () => {
           typingInput.style.backgroundColor = '#dcedc8';
           // Also make typing progress bar green
           typeBar.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--type-correct').trim();
+          // —— NEW LINES: actually record this as a correct typing
+    typeCount++;
+    learnedTyping.push(currentTerm);
           // Update progress widths
           updateProgress();
           // Proceed to next question after feedback
