@@ -1,0 +1,30 @@
+{
+  "intro": "Here are the Portuguese-English vocabulary pairs with normalized forms and example sentences.",
+  "terms": [
+    {
+      "pt": "ao passo",
+      "en": "while",
+      "example": "Ele trabalhava, ___ que ela descansava."
+    },
+    {
+      "pt": "brusco",
+      "en": "harsh",
+      "example": "O tom dele foi muito ___ durante a conversa."
+    },
+    {
+      "pt": "se recompor",
+      "en": "to pull yourself together",
+      "example": "Depois do choque, ela precisou ___."
+    },
+    {
+      "pt": "a contento",
+      "en": "satisfactorily",
+      "example": "Ele completou a tarefa ___."
+    },
+    {
+      "pt": "sobressaltar",
+      "en": "to startle",
+      "example": "O barulho alto fez o bebê se ___."
+    }
+  ]
+}
