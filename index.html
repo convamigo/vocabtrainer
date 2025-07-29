@@ -520,7 +520,7 @@ volumeToggle.addEventListener('click', () => {
         corr.parentNode.insertBefore(overrideBtn, corr.nextSibling);
         overrideBtn.addEventListener('click', () => {
           clearTimeout(nextQTimeout);
-        // Treat as correct: remove mistake, clear visuals
+          // Treat as correct: remove mistake, clear visuals
           const idx = mistakes.indexOf(currentTerm);
           if (idx > -1) mistakes.splice(idx, 1);
           overrideBtn.remove();
@@ -529,14 +529,27 @@ volumeToggle.addEventListener('click', () => {
           typingInput.style.backgroundColor = '#dcedc8';
           // Also make typing progress bar green
           typeBar.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--type-correct').trim();
-          // —— NEW LINES: actually record this as a correct typing
-    typeCount++;
-    learnedTyping.push(currentTerm);
+          // —— NEW: record this as a correct typing
+          typeCount++;
+          learnedTyping.push(currentTerm);
+          // —— NEW: mark ok true so batch logic applies
+          ok = true;
           // Update progress widths
           updateProgress();
+          // —— NEW: if override completes a match batch, trigger match exercise
+          if (
+            typeCount > 0 &&
+            (typeCount % 5 === 0 || (stage1Queue.length === 0 && stage2Queue.length === 0))
+          ) {
+            setTimeout(() => {
+              typingInput.style.backgroundColor = '';
+              resetTypeBar('--type-dk');
+              startMatchExercise();
+            }, 2000);
+            return;
+          }
           // Proceed to next question after feedback
           setTimeout(() => {
-            // reset input and bar
             typingInput.style.backgroundColor = '';
             resetTypeBar('--type-correct');
             nextQuestion();
@@ -725,3 +738,4 @@ function shuffle(arr) {
   </div>
 </body>
 </html>
+
