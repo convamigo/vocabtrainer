@@ -408,8 +408,8 @@ volumeToggle.addEventListener('click', () => {
       if (!ok) {
           // only record a mistake once
           if (!mistakes.includes(currentTerm)) mistakes.push(currentTerm);
-          // put it back into the MCQ queue
-          stage1Queue.unshift(currentTerm);
+          // re-queue this term at the end rather than the front
+          stage1Queue.push(currentTerm);
           // highlight the true answer in yellow
           mcqOptions.querySelectorAll('.option').forEach(o => {
               if (o.textContent.trim().endsWith(currentTerm.en)) {
