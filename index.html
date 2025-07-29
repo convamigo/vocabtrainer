@@ -529,9 +529,12 @@ volumeToggle.addEventListener('click', () => {
           typingInput.style.backgroundColor = '#dcedc8';
           // Also make typing progress bar green
           typeBar.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--type-correct').trim();
-          // —— NEW: record this as a correct typing
-          typeCount++;
-          learnedTyping.push(currentTerm);
+// —— NEW: record this as a correct typing
+  typeCount++;
+  learnedTyping.push(currentTerm);
+  // —— NEW: remove from typing queue so it isn’t quizzed again
+  const idx2 = stage2Queue.indexOf(currentTerm);
+  if (idx2 > -1) stage2Queue.splice(idx2, 1);
           // —— NEW: mark ok true so batch logic applies
           ok = true;
           // Update progress widths
@@ -738,4 +741,3 @@ function shuffle(arr) {
   </div>
 </body>
 </html>
-
