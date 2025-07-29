@@ -546,8 +546,15 @@ volumeToggle.addEventListener('click', () => {
         // update progress only on correct answers
         updateProgress();
       }
-      // decide whether to start match exercise
-      if (ok && typeCount > 0 && typeCount % 5 === 0) {
+      // trigger match on every 5 correct typings OR when both queues are empty (final batch)
+      if (
+        ok &&
+        typeCount > 0 &&
+        (
+          typeCount % 5 === 0 ||
+          (stage1Queue.length === 0 && stage2Queue.length === 0)
+        )
+      ) {
         // delay match exercise to allow users to see correctness feedback
         setTimeout(() => {
           // clear the input background and reset bar to neutral before starting match
@@ -619,7 +626,12 @@ let freezeMatch = false;
 
 function startMatchExercise() {
   showScreen(matchScreen);
-  const sliceCount = Math.min(5, learnedTyping.length);
+  // determine batch size: full 5 OR the leftover count on the final batch
+  const totalLearned = learnedTyping.length;
+  const isFinalBatch = stage1Queue.length === 0 && stage2Queue.length === 0;
+  const sliceCount = (isFinalBatch && totalLearned % 5 !== 0)
+    ? (totalLearned % 5)
+    : Math.min(5, totalLearned);
   matchPairs = learnedTyping.slice(-sliceCount).map(t => ({ pt: t.pt, en: t.en, matched: false }));
   renderMatchExercise();
 }
