@@ -400,18 +400,16 @@ volumeToggle.addEventListener('click', () => {
 
     function handleMCQ(ans,btn){
       const ok=(ans===currentTerm.en);
-      // disable all options immediately
-      mcqOptions.querySelectorAll('.option').forEach(o => o.style.pointerEvents = 'none');
-      // play feedback sound
-      playSound(ok);
+      // ◀ disable all buttons immediately
+      mcqOptions.querySelectorAll('.option')
+      .forEach(o => o.style.pointerEvents = 'none');
       btn.style.background=varColor(ok?'--correct-bg':'--incorrect-bg');
+      playSound(ok);
       if (!ok) {
           // only record a mistake once
           if (!mistakes.includes(currentTerm)) mistakes.push(currentTerm);
-          // only re-queue if there are other MCQ items left to avoid infinite single-item loops
-          if (stage1Queue.length > 0) {
-            stage1Queue.push(currentTerm);
-          }
+          // put it back into the MCQ queue
+          stage1Queue.unshift(currentTerm);
           // highlight the true answer in yellow
           mcqOptions.querySelectorAll('.option').forEach(o => {
               if (o.textContent.trim().endsWith(currentTerm.en)) {
@@ -419,15 +417,15 @@ volumeToggle.addEventListener('click', () => {
               }
           });
       } else {
-          // record learned term and schedule for typing
-          if (!learnedStage1.includes(currentTerm)) learnedStage1.push(currentTerm);
+          if (!learnedStage1.includes(currentTerm)) {
+              learnedStage1.push(currentTerm);
+          }
+
           currentTerm._readyAt = round + 5;
           stage2Queue.push(currentTerm);
           updateProgress();
       }
-      // proceed to next question after a short delay
-      setTimeout(() => { resetTypeBar(); nextQuestion(); }, ok ? 800 : 1700);
-(() => { resetTypeBar(); nextQuestion(); }, ok ? 800 : 1700);
+          setTimeout(() => { resetTypeBar(); nextQuestion(); }, ok ? 800 : 1700);
     }
 
     function handleTyping(action){
