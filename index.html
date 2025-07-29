@@ -599,19 +599,16 @@ volumeToggle.addEventListener('click', () => {
         round++;
         hideTyping();
 
-    // — OVERRIDE: If MCQ queue is empty but there are typing items that are not learned yet,
-    //   even if their _readyAt > round, force the last one into typing rather than end.
-    if (
-      stage1Queue.length === 0 &&
-      stage2Queue.some(t => !learnedTyping.includes(t)) &&
-      // ensure at least one item is “ready” to avoid premature pulls
-      stage2Queue.some(t => !learnedTyping.includes(t) && t._readyAt <= round)
-    ) {
-      // pull the first item whose _readyAt <= round
-      const idx = stage2Queue.findIndex(t => !learnedTyping.includes(t) && t._readyAt <= round);
-      const term = stage2Queue.splice(idx,1)[0];
-      return renderTyping(term);
-    }
+    // — OVERRIDE: If MCQ queue is empty but there are typing items left, pull next typing regardless of _readyAt
+ if (
+   stage1Queue.length === 0 &&
+   stage2Queue.some(t => !learnedTyping.includes(t))
+ ) {
+   // pull the first unlearned typing item regardless of readiness
+   const idx = stage2Queue.findIndex(t => !learnedTyping.includes(t));
+   const term = stage2Queue.splice(idx, 1)[0];
+   return renderTyping(term);
+ }
       // only end if there are no unlearned typing items left
       const anyTypingLeft = stage2Queue.some(t => !learnedTyping.includes(t));
       if (!stage1Queue.length && !anyTypingLeft) {
