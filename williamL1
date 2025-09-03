@@ -1,0 +1,105 @@
+{
+  "intro": "Here are the Dutch-English vocabulary pairs with normalized forms and example sentences.",
+  "terms": [
+    {
+      "pt": "vast",
+      "en": "fixed",
+      "example": "De prijs staat vast, dus we kunnen er niet over onderhandelen."
+    },
+    {
+      "pt": "leidinggevende",
+      "en": "manager",
+      "example": "Mijn leidinggevende gaf me vandaag feedback op mijn werk."
+    },
+    {
+      "pt": "formeel",
+      "en": "formal",
+      "example": "Dit is een heel formeel diner, dus draag je netste kleding."
+    },
+    {
+      "pt": "verlaten",
+      "en": "to leave",
+      "example": "Hij verliet het feest vroeg omdat hij moe was."
+    },
+    {
+      "pt": "verloren",
+      "en": "lost",
+      "example": "Ik ben mijn sleutels verloren in de supermarkt."
+    },
+    {
+      "pt": "problemen",
+      "en": "problems",
+      "example": "We moeten deze problemen samen oplossen."
+    },
+    {
+      "pt": "enige",
+      "en": "opty",
+      "example": "Zij is de enige die Spaans spreekt in onze groep."
+    },
+    {
+      "pt": "iedere",
+      "en": "every",
+      "example": "Iedere maandag gaan we samen sporten."
+    },
+    {
+      "pt": "dus",
+      "en": "so",
+      "example": "Het regent, dus we blijven binnen."
+    },
+    {
+      "pt": "kwartaal",
+      "en": "quarter",
+      "example": "De cijfers van het eerste kwartaal waren positief."
+    },
+    {
+      "pt": "balans",
+      "en": "balance",
+      "example": "Ik probeer een goede balans te vinden tussen werk en privé."
+    },
+    {
+      "pt": "heel jong",
+      "en": "very young",
+      "example": "Hij begon met piano spelen toen hij heel jong was."
+    },
+    {
+      "pt": "programmeren",
+      "en": "programming",
+      "example": "Ze leert programmeren om apps te kunnen maken."
+    },
+    {
+      "pt": "verhuizen",
+      "en": "to move house",
+      "example": "Volgende maand gaan we naar een groter huis verhuizen."
+    },
+    {
+      "pt": "geld verdienen",
+      "en": "to earn money",
+      "example": "Hij werkt hard om geld te verdienen voor zijn gezin."
+    },
+    {
+      "pt": "fotograaf",
+      "en": "photographer",
+      "example": "De fotograaf maakte prachtige foto’s van de bruiloft."
+    },
+    {
+      "pt": "te maken hebben met",
+      "en": "to have to do with",
+      "example": "Dit probleem heeft vooral te maken met slechte planning."
+    },
+    {
+      "pt": "natuurlijk",
+      "en": "naturally",
+      "example": "Ze reageerde heel natuurlijk toen ze het goede nieuws hoorde."
+    },
+    {
+      "pt": "infrastructuur",
+      "en": "infrastructure",
+      "example": "De stad investeert veel in betere infrastructuur."
+    },
+    {
+      "pt": "daarvoor",
+      "en": "before that",
+      "example": "Ik woon nu in Utrecht, maar daarvoor woonde ik in Groningen."
+    }
+  ]
+}
