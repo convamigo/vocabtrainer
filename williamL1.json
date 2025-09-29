@@ -2,134 +2,49 @@
   "intro": "Here are the Dutch-English vocabulary pairs with normalized forms and example sentences.",
   "terms": [
     {
-      "pt": "flink wat",
-      "en": "quite a lot",
-      "example": "Er waren flink wat mensen op het feest."
+      "pt": "opladen",
+      "en": "to charge",
+      "example": "Ik moet mijn telefoon opladen voordat ik vertrek."
     },
     {
-      "pt": "gevolgen",
-      "en": "consequences",
-      "example": "De gevolgen van de crisis zijn nog steeds merkbaar."
+      "pt": "vingerknip",
+      "en": "fingersnap",
+      "example": "Met een vingerknip zette hij de muziek uit."
     },
     {
-      "pt": "zeespiegel",
-      "en": "sea level",
-      "example": "Door klimaatverandering stijgt de zeespiegel."
+      "pt": "tussendoor",
+      "en": "in between",
+      "example": "We aten een broodje tussendoor."
     },
     {
-      "pt": "stijging",
-      "en": "rise",
-      "example": "Er is een sterke stijging van de prijzen."
+      "pt": "verbinding",
+      "en": "connection",
+      "example": "De internetverbinding viel plotseling weg."
     },
     {
-      "pt": "daling",
-      "en": "decrease",
-      "example": "We zagen een daling van het aantal studenten."
+      "pt": "ouder",
+      "en": "elder / older",
+      "example": "Mijn oudere broer woont in Amsterdam."
     },
     {
-      "pt": "bijbenen",
-      "en": "keep up",
-      "example": "Ik kan het tempo van de les nauwelijks bijbenen."
+      "pt": "pop",
+      "en": "puppet",
+      "example": "Het kind speelde met een pop."
     },
     {
-      "pt": "vervuiling",
-      "en": "pollution",
-      "example": "Vervuiling van rivieren is een groot probleem."
+      "pt": "buikspreker",
+      "en": "ventriloquist",
+      "example": "De buikspreker liet de pop praten."
     },
     {
-      "pt": "krimpen",
-      "en": "shrink",
-      "example": "Mijn trui is in de was gekrompen."
+      "pt": "verschillend",
+      "en": "different",
+      "example": "We hebben allemaal een verschillende mening."
     },
     {
-      "pt": "gegevens",
-      "en": "data",
-      "example": "De gegevens staan in het rapport."
-    },
-    {
-      "pt": "gedwongen",
-      "en": "forced",
-      "example": "Hij voelde zich gedwongen om te vertrekken."
-    },
-    {
-      "pt": "macht",
-      "en": "power",
-      "example": "De minister heeft veel macht."
-    },
-    {
-      "pt": "het gaat te ver",
-      "en": "goes too far",
-      "example": "Wat je nu zegt, gaat te ver."
-    },
-    {
-      "pt": "hoewel",
-      "en": "although",
-      "example": "Hoewel het regende, gingen we toch naar buiten."
-    },
-    {
-      "pt": "steeds meer",
-      "en": "increasingly",
-      "example": "Er komen steeds meer elektrische auto’s."
-    },
-    {
-      "pt": "bedrijf",
-      "en": "company",
-      "example": "Ze werkt bij een groot bedrijf."
-    },
-    {
-      "pt": "oproepen",
-      "en": "summon",
-      "example": "De politie kan getuigen oproepen."
-    },
-    {
-      "pt": "dom",
-      "en": "dumb",
-      "example": "Dat was een dom antwoord."
-    },
-    {
-      "pt": "rapporten",
-      "en": "reports",
-      "example": "De directeur leest elke week de rapporten."
-    },
-    {
-      "pt": "persoonlijk",
-      "en": "personally",
-      "example": "Persoonlijk vind ik dit een goed idee."
-    },
-    {
-      "pt": "beschrijving",
-      "en": "description",
-      "example": "De politie gaf een duidelijke beschrijving van de dader."
-    },
-    {
-      "pt": "oplossing",
-      "en": "solution",
-      "example": "We moeten een oplossing voor dit probleem vinden."
-    },
-    {
-      "pt": "begonnen",
-      "en": "began",
-      "example": "De cursus is vorige week begonnen."
-    },
-    {
-      "pt": "zonder om te kijken",
-      "en": "without looking back",
-      "example": "Ze liep weg, zonder om te kijken."
-    },
-    {
-      "pt": "verifiëren",
-      "en": "verify",
-      "example": "Je moet je identiteit verifiëren."
-    },
-    {
-      "pt": "wet",
-      "en": "law",
-      "example": "Volgens de wet is dat verboden."
-    },
-    {
-      "pt": "rekening houden met",
-      "en": "take into account",
-      "example": "We moeten rekening houden met de wensen van de klanten."
+      "pt": "serie",
+      "en": "series",
+      "example": "Ik kijk graag een nieuwe serie op Netflix."
     }
   ]
 }
