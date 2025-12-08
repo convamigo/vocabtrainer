@@ -2,49 +2,74 @@
   "intro": "Here are the Dutch-English vocabulary pairs with normalized forms and example sentences.",
   "terms": [
     {
-      "pt": "opladen",
-      "en": "to charge",
-      "example": "Ik moet mijn telefoon opladen voordat ik vertrek."
+      "pt": "pech",
+      "en": "accident / bad luck",
+      "example": "Ik had pech onderweg en mijn fietsband liep leeg."
     },
     {
-      "pt": "vingerknip",
-      "en": "fingersnap",
-      "example": "Met een vingerknip zette hij de muziek uit."
+      "pt": "wonderbaarlijk",
+      "en": "miraculously",
+      "example": "De gewonde vogel herstelde wonderbaarlijk snel."
     },
     {
-      "pt": "tussendoor",
-      "en": "in between",
-      "example": "We aten een broodje tussendoor."
+      "pt": "lukken",
+      "en": "to succeed",
+      "example": "Het is me eindelijk gelukt om de puzzel op te lossen."
     },
     {
-      "pt": "verbinding",
-      "en": "connection",
-      "example": "De internetverbinding viel plotseling weg."
+      "pt": "hartstikke",
+      "en": "very",
+      "example": "Het is hartstikke koud buiten vandaag."
     },
     {
-      "pt": "ouder",
-      "en": "elder / older",
-      "example": "Mijn oudere broer woont in Amsterdam."
+      "pt": "uitzonderlijk",
+      "en": "exceptional",
+      "example": "Zij heeft een uitzonderlijk talent voor muziek."
     },
     {
-      "pt": "pop",
-      "en": "puppet",
-      "example": "Het kind speelde met een pop."
+      "pt": "voor de zekerheid",
+      "en": "just to be sure",
+      "example": "Neem een jas mee, voor de zekerheid."
     },
     {
-      "pt": "buikspreker",
-      "en": "ventriloquist",
-      "example": "De buikspreker liet de pop praten."
+      "pt": "jagers",
+      "en": "hunters",
+      "example": "De jagers vertrokken vroeg in de ochtend."
     },
     {
-      "pt": "verschillend",
-      "en": "different",
-      "example": "We hebben allemaal een verschillende mening."
+      "pt": "dan pas",
+      "en": "only then",
+      "example": "Maak eerst je huiswerk af; dan pas mag je gamen."
     },
     {
-      "pt": "serie",
-      "en": "series",
-      "example": "Ik kijk graag een nieuwe serie op Netflix."
+      "pt": "tof",
+      "en": "cool",
+      "example": "Dat nieuwe spel is echt tof!"
+    },
+    {
+      "pt": "deskundige",
+      "en": "expert",
+      "example": "We hebben een deskundige ingeschakeld om het probleem te onderzoeken."
+    },
+    {
+      "pt": "benaderd",
+      "en": "to approach",
+      "example": "Ik werd benaderd door een bedrijf voor een samenwerking."
+    },
+    {
+      "pt": "bezig",
+      "en": "busy",
+      "example": "Ik ben nog bezig met mijn huiswerk."
+    },
+    {
+      "pt": "juist (dan)",
+      "en": "especially then",
+      "example": "Wanneer het druk is, moet je juist dan rustig blijven."
+    },
+    {
+      "pt": "raken",
+      "en": "to touch",
+      "example": "Raak de schilderijen in het museum niet aan."
     }
   ]
 }
