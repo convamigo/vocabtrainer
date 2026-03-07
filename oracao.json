@@ -1,0 +1,610 @@
+{
+  "intro": "Here are the Portuguese-English vocabulary pairs with normalized forms and example sentences.",
+  "terms": [
+    {
+      "pt": "despertar",
+      "en": "to wake",
+      "example": "O barulho me despertou cedo."
+    },
+    {
+      "pt": "enxugar",
+      "en": "to dry / wipe",
+      "example": "Ela foi enxugar a mesa."
+    },
+    {
+      "pt": "compreender",
+      "en": "to understand",
+      "example": "Finalmente consegui compreender o problema."
+    },
+    {
+      "pt": "interromper",
+      "en": "to interrupt",
+      "example": "Não quero interromper você."
+    },
+    {
+      "pt": "recolher",
+      "en": "to collect",
+      "example": "Vou recolher as roupas."
+    },
+    {
+      "pt": "aquecer",
+      "en": "to warm",
+      "example": "Preciso aquecer a comida."
+    },
+    {
+      "pt": "prever",
+      "en": "to foresee",
+      "example": "É difícil prever o futuro."
+    },
+    {
+      "pt": "cumprir",
+      "en": "to fulfill",
+      "example": "Ele vai cumprir a promessa."
+    },
+    {
+      "pt": "recordar",
+      "en": "to remember",
+      "example": "Eu sempre recordo esse dia."
+    },
+    {
+      "pt": "esforçar-se",
+      "en": "to make an effort",
+      "example": "Vou me esforçar mais."
+    },
+    {
+      "pt": "murmurar",
+      "en": "to murmur",
+      "example": "Ele começou a murmurar algo."
+    },
+    {
+      "pt": "escorregar",
+      "en": "to slip",
+      "example": "Cuidado para não escorregar."
+    },
+    {
+      "pt": "sacudir",
+      "en": "to shake",
+      "example": "Ela foi sacudir o tapete."
+    },
+    {
+      "pt": "contornar",
+      "en": "to go around",
+      "example": "Precisamos contornar o problema."
+    },
+    {
+      "pt": "distinguir",
+      "en": "to distinguish",
+      "example": "É fácil distinguir as cores."
+    },
+    {
+      "pt": "suplicar",
+      "en": "to beg",
+      "example": "Ele começou a suplicar ajuda."
+    },
+    {
+      "pt": "afundar",
+      "en": "to sink",
+      "example": "O barco começou a afundar."
+    },
+    {
+      "pt": "embaralhar",
+      "en": "to shuffle / mix",
+      "example": "Ele foi embaralhar as cartas."
+    },
+    {
+      "pt": "arrematar",
+      "en": "to finish off",
+      "example": "Ele tentou arrematar o trabalho."
+    },
+    {
+      "pt": "amaldiçoar",
+      "en": "to curse",
+      "example": "Ela começou a amaldiçoar o destino."
+    },
+    {
+      "pt": "o fluxo",
+      "en": "the flow",
+      "example": "O fluxo de pessoas aumentou."
+    },
+    {
+      "pt": "a confusão",
+      "en": "the confusion",
+      "example": "Houve muita confusão."
+    },
+    {
+      "pt": "o destino",
+      "en": "the destiny",
+      "example": "Ele acredita no destino."
+    },
+    {
+      "pt": "o relato",
+      "en": "the account",
+      "example": "O relato foi detalhado."
+    },
+    {
+      "pt": "a sentença",
+      "en": "the sentence",
+      "example": "O juiz leu a sentença."
+    },
+    {
+      "pt": "o vestígio",
+      "en": "the trace",
+      "example": "Restaram vestígios do fogo."
+    },
+    {
+      "pt": "a posse",
+      "en": "the possession",
+      "example": "Ele tomou posse da casa."
+    },
+    {
+      "pt": "a pista",
+      "en": "the clue",
+      "example": "A polícia encontrou pistas."
+    },
+    {
+      "pt": "o cotidiano",
+      "en": "everyday life",
+      "example": "Isso faz parte do cotidiano."
+    },
+    {
+      "pt": "a bondade",
+      "en": "the kindness",
+      "example": "Ela demonstrou muita bondade."
+    },
+    {
+      "pt": "a mágoa",
+      "en": "the resentment",
+      "example": "Ele guarda mágoa."
+    },
+    {
+      "pt": "o castigo",
+      "en": "the punishment",
+      "example": "O atraso teve castigo."
+    },
+    {
+      "pt": "a perturbação",
+      "en": "the disturbance",
+      "example": "Houve uma perturbação."
+    },
+    {
+      "pt": "o cansaço",
+      "en": "the fatigue",
+      "example": "O cansaço era grande."
+    },
+    {
+      "pt": "a angústia",
+      "en": "the anguish",
+      "example": "Sentia muita angústia."
+    },
+    {
+      "pt": "a fuga",
+      "en": "the escape",
+      "example": "A fuga aconteceu à noite."
+    },
+    {
+      "pt": "a renúncia",
+      "en": "the renunciation",
+      "example": "Foi uma grande renúncia."
+    },
+    {
+      "pt": "o abuso",
+      "en": "the abuse",
+      "example": "O abuso foi denunciado."
+    },
+    {
+      "pt": "o herdeiro",
+      "en": "the heir",
+      "example": "Os herdeiros receberam a casa."
+    },
+    {
+      "pt": "o legado",
+      "en": "the legacy",
+      "example": "Ele deixou um grande legado."
+    },
+    {
+      "pt": "a lucidez",
+      "en": "the clarity",
+      "example": "Falou com lucidez."
+    },
+    {
+      "pt": "a bruma",
+      "en": "the mist",
+      "example": "A bruma cobria o campo."
+    },
+    {
+      "pt": "a névoa",
+      "en": "the fog",
+      "example": "A estrada estava cheia de névoa."
+    },
+    {
+      "pt": "o cume",
+      "en": "the summit",
+      "example": "Chegamos ao cume da montanha."
+    },
+    {
+      "pt": "o fosso",
+      "en": "the ditch / moat",
+      "example": "O castelo tinha um fosso."
+    },
+    {
+      "pt": "a travessia",
+      "en": "the crossing",
+      "example": "A travessia levou horas."
+    },
+    {
+      "pt": "o marulho",
+      "en": "the sound of waves",
+      "example": "O marulho era constante."
+    },
+    {
+      "pt": "a ventania",
+      "en": "the strong wind",
+      "example": "Uma ventania começou."
+    },
+    {
+      "pt": "a cinza",
+      "en": "the ash",
+      "example": "Restaram apenas cinzas."
+    },
+    {
+      "pt": "a fumaça",
+      "en": "the smoke",
+      "example": "A fumaça subia."
+    },
+    {
+      "pt": "a faísca",
+      "en": "the spark",
+      "example": "Saltaram faíscas."
+    },
+    {
+      "pt": "o vidro",
+      "en": "the glass",
+      "example": "O vidro quebrou."
+    },
+    {
+      "pt": "o pano",
+      "en": "the cloth",
+      "example": "Pegue um pano."
+    },
+    {
+      "pt": "o fio",
+      "en": "the thread / wire",
+      "example": "O fio arrebentou."
+    },
+    {
+      "pt": "o colar",
+      "en": "the necklace",
+      "example": "Ela usava um colar."
+    },
+    {
+      "pt": "o brinco",
+      "en": "the earring",
+      "example": "Ela comprou brincos novos."
+    },
+    {
+      "pt": "o baú",
+      "en": "the chest",
+      "example": "O tesouro estava no baú."
+    },
+    {
+      "pt": "o utensílio",
+      "en": "the utensil",
+      "example": "Lavamos os utensílios."
+    },
+    {
+      "pt": "a torneira",
+      "en": "the faucet",
+      "example": "A torneira estava pingando."
+    },
+    {
+      "pt": "o azulejo",
+      "en": "the tile",
+      "example": "A parede tem azulejos."
+    },
+    {
+      "pt": "a ruela",
+      "en": "the narrow alley",
+      "example": "Caminharam pelas ruelas."
+    },
+    {
+      "pt": "a colina",
+      "en": "the hill",
+      "example": "A casa fica na colina."
+    },
+    {
+      "pt": "o galho",
+      "en": "the branch",
+      "example": "Um pássaro pousou no galho."
+    },
+    {
+      "pt": "o cacho",
+      "en": "the curl / bunch",
+      "example": "Ela tem cachos."
+    },
+    {
+      "pt": "a nuca",
+      "en": "the nape",
+      "example": "Sentiu dor na nuca."
+    },
+    {
+      "pt": "a gengiva",
+      "en": "the gum",
+      "example": "As gengivas doíam."
+    },
+    {
+      "pt": "o lábio",
+      "en": "the lip",
+      "example": "Ele mordeu o lábio."
+    },
+    {
+      "pt": "o seio",
+      "en": "the breast",
+      "example": "O bebê dormiu nos seios da mãe."
+    },
+    {
+      "pt": "ingênuo",
+      "en": "naive",
+      "example": "Ele é muito ingênuo."
+    },
+    {
+      "pt": "impiedoso",
+      "en": "merciless",
+      "example": "Foi uma crítica impiedosa."
+    },
+    {
+      "pt": "angustiante",
+      "en": "distressing",
+      "example": "Foi um momento angustiante."
+    },
+    {
+      "pt": "lancinante",
+      "en": "piercing",
+      "example": "Uma dor lancinante."
+    },
+    {
+      "pt": "perturbador",
+      "en": "disturbing",
+      "example": "Foi um silêncio perturbador."
+    },
+    {
+      "pt": "solene",
+      "en": "solemn",
+      "example": "Foi uma cerimônia solene."
+    },
+    {
+      "pt": "penoso",
+      "en": "painful",
+      "example": "O processo foi penoso."
+    },
+    {
+      "pt": "insólito",
+      "en": "unusual",
+      "example": "Um acontecimento insólito."
+    },
+    {
+      "pt": "espantado",
+      "en": "astonished",
+      "example": "Ficou espantado."
+    },
+    {
+      "pt": "desamparado",
+      "en": "helpless",
+      "example": "Sentia-se desamparado."
+    },
+    {
+      "pt": "atordoado",
+      "en": "stunned",
+      "example": "Ele ficou atordoado."
+    },
+    {
+      "pt": "desconexo",
+      "en": "incoherent",
+      "example": "O discurso estava desconexo."
+    },
+    {
+      "pt": "miúdo",
+      "en": "tiny",
+      "example": "Pequenos detalhes miúdos."
+    },
+    {
+      "pt": "vagaroso",
+      "en": "slow",
+      "example": "O movimento era vagaroso."
+    },
+    {
+      "pt": "cru",
+      "en": "raw / harsh",
+      "example": "A verdade foi crua."
+    },
+    {
+      "pt": "alaranjado",
+      "en": "orange-colored",
+      "example": "O céu ficou alaranjado."
+    },
+    {
+      "pt": "o forasteiro",
+      "en": "the outsider",
+      "example": "Ele era forasteiro."
+    },
+    {
+      "pt": "o insurgente",
+      "en": "the rebel",
+      "example": "Um grupo insurgente surgiu."
+    },
+    {
+      "pt": "o pedinte",
+      "en": "the beggar",
+      "example": "Um pedinte pediu dinheiro."
+    },
+    {
+      "pt": "a freira",
+      "en": "the nun",
+      "example": "A freira entrou."
+    },
+    {
+      "pt": "o guardião",
+      "en": "the guardian",
+      "example": "Ela era a guardiã."
+    },
+    {
+      "pt": "o tataravô",
+      "en": "the great-great-grandfather",
+      "example": "Conhecemos os tataravós pela história."
+    },
+    {
+      "pt": "a caravela",
+      "en": "the caravel ship",
+      "example": "As caravelas partiram."
+    },
+    {
+      "pt": "o sino",
+      "en": "the bell",
+      "example": "O sino tocou."
+    },
+    {
+      "pt": "badalar",
+      "en": "to toll",
+      "example": "O sino começou a badalar."
+    },
+    {
+      "pt": "o estalo",
+      "en": "the crack / snap",
+      "example": "Ouviu-se um estalo."
+    },
+    {
+      "pt": "o chocalho",
+      "en": "the rattle",
+      "example": "O chocalho fez barulho."
+    },
+    {
+      "pt": "o grunhido",
+      "en": "the grunt",
+      "example": "O animal soltou um grunhido."
+    },
+    {
+      "pt": "o jorro",
+      "en": "the gush",
+      "example": "Um jorro de água saiu."
+    },
+    {
+      "pt": "a camada",
+      "en": "the layer",
+      "example": "Havia várias camadas."
+    },
+    {
+      "pt": "o traço",
+      "en": "the trace",
+      "example": "Restaram alguns traços."
+    },
+    {
+      "pt": "o borrão",
+      "en": "the blur / stain",
+      "example": "Havia um borrão na página."
+    },
+    {
+      "pt": "a nitidez",
+      "en": "the clarity",
+      "example": "A imagem ganhou nitidez."
+    },
+    {
+      "pt": "espesso",
+      "en": "thick",
+      "example": "Uma camada espessa de poeira."
+    },
+    {
+      "pt": "desbotado",
+      "en": "faded",
+      "example": "O tecido estava desbotado."
+    },
+    {
+      "pt": "espalhar",
+      "en": "to spread",
+      "example": "Os papéis estavam espalhados."
+    },
+    {
+      "pt": "o arranhão",
+      "en": "the scratch",
+      "example": "Ele tinha arranhões."
+    },
+    {
+      "pt": "a pancada",
+      "en": "the blow",
+      "example": "Ouviu várias pancadas."
+    },
+    {
+      "pt": "o ponto",
+      "en": "the stitch / dot",
+      "example": "Havia pontos roxos."
+    },
+    {
+      "pt": "a costura",
+      "en": "the stitching",
+      "example": "A costura abriu."
+    },
+    {
+      "pt": "o inchaço",
+      "en": "the swelling",
+      "example": "O inchaço diminuiu."
+    },
+    {
+      "pt": "o desatino",
+      "en": "the madness",
+      "example": "Foi um desatino."
+    },
+    {
+      "pt": "a trapaça",
+      "en": "the trick",
+      "example": "Aquilo foi uma trapaça."
+    },
+    {
+      "pt": "a reprovação",
+      "en": "the disapproval",
+      "example": "Houve reprovação geral."
+    },
+    {
+      "pt": "a acolhida",
+      "en": "the reception",
+      "example": "Tivemos boa acolhida."
+    },
+    {
+      "pt": "o constrangimento",
+      "en": "the embarrassment",
+      "example": "Houve constrangimento."
+    },
+    {
+      "pt": "o desaforo",
+      "en": "the insult",
+      "example": "Aquilo foi um desaforo."
+    },
+    {
+      "pt": "o sobressalto",
+      "en": "the shock",
+      "example": "Ele acordou com sobressalto."
+    },
+    {
+      "pt": "o delírio",
+      "en": "the delirium",
+      "example": "Teve um delírio febril."
+    },
+    {
+      "pt": "desgraçado",
+      "en": "miserable",
+      "example": "Sentia-se desgraçado."
+    },
+    {
+      "pt": "miserável",
+      "en": "miserable",
+      "example": "Vida miserável."
+    },
+    {
+      "pt": "bondoso",
+      "en": "kind",
+      "example": "Um homem bondoso."
+    },
+    {
+      "pt": "cristão",
+      "en": "Christian",
+      "example": "Uma tradição cristã."
+    }
+  ]
+}
