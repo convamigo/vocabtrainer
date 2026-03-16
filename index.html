@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Treinador de Vocabulário (NL → PT-BR)</title>
+  <title>Treinador de Vocabulário (EN → PT-BR)</title>
   <style>
     /* Show slider on hover */
     #volume-control:hover #volume-slider { display: block !important; }
@@ -272,7 +272,8 @@
       const PROGRESS_STORAGE_KEY = 'convamigo_vocab_progress';
 
       function termKey(term) {
-        return `${term.nl}|||${term.pt}`;
+        return `${term.en}|||${term.pt}`;
+      }|||${term.pt}`;
       }
 
       function buildTermMap(list) {
@@ -392,7 +393,7 @@
           // Normaliza chaves para NL (holandês) e PT (português do Brasil)
           initialTerms = (data.terms || []).map(t => ({
             ...t,
-            nl: t.nl ?? t.en ?? t.dutch ?? t.term ?? '',
+            en: t.en ?? t.nl ?? t.dutch ?? t.term ?? '',
             pt: t.pt ?? t.ptbr ?? t['pt-BR'] ?? t.br ?? t.translation ?? '',
             example: t.example ?? t.exemplo ?? t.frase ?? ''
           }));
@@ -492,13 +493,15 @@ volumeToggle.addEventListener('click', () => {
         }
     }
 
-    function getDistractorsNL(correctNL) {
-  const pool = terms.map(t => t.nl).filter(nl => nl !== correctNL);
+    function getDistractorsPT(correctPT) {
+  const pool = terms.map(t => t.pt).filter(pt => pt !== correctPT);
   let picks = [];
-      while (picks.length < 3) {
-        const v=pool[Math.floor(Math.random()*pool.length)];
-        if(!picks.includes(v)) picks.push(v);
-      }
+  while (picks.length < 3) {
+    const v = pool[Math.floor(Math.random()*pool.length)];
+    if(!picks.includes(v)) picks.push(v);
+  }
+  return picks;
+}
       return picks;
     }
 
@@ -1050,3 +1053,4 @@ function shuffle(arr) {
   </div>
 </body>
 </html>
+
