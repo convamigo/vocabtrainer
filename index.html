@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vocabulary Trainer (NL → PT-BR)</title>
+  <title>Vocabulary Trainer</title>
   <style>
     /* Show slider on hover */
     #volume-control:hover #volume-slider { display: block !important; }
@@ -192,7 +192,7 @@
     <div id="term-box"></div>
     <div id="mcq-options" class="options"></div>
     <div id="typing-area">
-      <input id="typing-input" type="text" placeholder="Type the translation in Dutch..." autofocus>
+      <input id="typing-input" type="text" placeholder="Type the translation..." autofocus>
       <button id="enter-btn">↵</button>
     </div>
     <button id="dk-btn">I don't know</button>
@@ -200,7 +200,7 @@
   
   <!-- MATCH SCREEN -->
   <div id="match-screen" class="screen">
-    <h2>Combine as words</h2>
+    <h2>Match the words</h2>
     <div id="match-container" class="options"></div>
     <button id="match-done-btn" style="display:none; margin-top:10px;">Finish</button>
   </div>
@@ -222,13 +222,23 @@
      </div>
 
   <script>
-      // Carrega o arquivo JSON indicado na URL.
-      // Suporta:
-      // 1) ?list=<url-ou-nome>  (recomendado)
-      // 2) #<url-ou-nome>
-      // 3) fallback: vocab-nl-pt.json
+      // Loads a JSON vocabulary list from the URL.
+      // Supported sources:
+      // 1) ?list=<url-or-name>  (recommended)
+      // 2) #<url-or-name>
+      // 3) fallback default file
       //
-      // Se você passar apenas um nome (ex.: m1-subjuntivos.json), ele será buscado no BASE_LIST_URL.
+      // Accepted JSON format:
+      // {
+      //   "intro": "...",
+      //   "terms": [
+      //     { "pt": "despertar", "en": "to wake", "example": "O barulho me despertou cedo." }
+      //   ]
+      // }
+      //
+      // The loader is flexible and also accepts older key names such as:
+      // - source side: pt, ptbr, pt-BR, br, term
+      // - target side: en, nl, dutch, translation
       let initialTerms = [];
 
       const BASE_LIST_URL = 'https://convamigo.github.io/A1PTVOCAB/';
@@ -385,17 +395,21 @@
 
       fetch(dataFile)
       .then(res => {
-          if (!res.ok) throw new Error(`HTTP ${res.status} ao buscar ${dataFile}`);
+          if (!res.ok) throw new Error(`HTTP ${res.status} while fetching ${dataFile}`);
           return res.json();
       })
       .then(data => {
-          // Normaliza chaves para NL (holandês) e PT (português do Brasil)
-          initialTerms = (data.terms || []).map(t => ({
-            ...t,
-            nl: t.nl ?? t.en ?? t.dutch ?? t.term ?? '',
-            pt: t.pt ?? t.ptbr ?? t['pt-BR'] ?? t.br ?? t.translation ?? '',
-            example: t.example ?? t.exemplo ?? t.frase ?? ''
-          }));
+          // Normalize keys so the app can read both legacy lists and JSON like:
+          // { intro, terms: [{ pt, en, example }] }
+          initialTerms = (data.terms || [])
+            .map(t => ({
+              ...t,
+              nl: t.nl ?? t.en ?? t.english ?? t.target ?? t.translation ?? t.dutch ?? '',
+              pt: t.pt ?? t.ptbr ?? t['pt-BR'] ?? t.portuguese ?? t.source ?? t.term ?? '',
+              example: t.example ?? t.exemplo ?? t.frase ?? ''
+            }))
+            .filter(t => String(t.pt || '').trim() && String(t.nl || '').trim());
+
           // Set the intro text
           document.getElementById('intro-text').textContent = data.intro || '';
 
@@ -868,7 +882,7 @@ volumeToggle.addEventListener('click', () => {
         retryBtn.textContent = `Repeat mistakes (${mistakes.length})`;
         mistakes.forEach(t=>{
           const item=document.createElement('div'); item.className='error-item';
-          item.innerHTML=`<div class="pt-box">${t.nl}</div><div class="correct-text">${t.pt}</div>`;
+          item.innerHTML=`<div class="pt-box">${t.pt}</div><div class="correct-text">${t.nl}</div>`;
           list.appendChild(item);
         });
       }
