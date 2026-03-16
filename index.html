@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vocabulary Trainer</title>
+  <title>Treinador de Vocabulário (NL → PT-BR)</title>
   <style>
     /* Show slider on hover */
     #volume-control:hover #volume-slider { display: block !important; }
@@ -173,15 +173,15 @@
   <div class="app-shell">
     <div class="container">
   <div id="start-screen" class="screen active">
-    <h1>Vocabulary Trainer</h1>
+    <h1>Treinador de Vocabulário</h1>
     <p id="intro-text"></p>
     <div class="count-box">
-        <span id="total-count">0</span> words
+        <span id="total-count">0</span> palavras
         </div>
         <p></p>
 
 
-    <button id="start-btn">Start</button>
+    <button id="start-btn">Começar</button>
   </div>
 
   <div id="quiz-screen" class="screen">
@@ -192,24 +192,24 @@
     <div id="term-box"></div>
     <div id="mcq-options" class="options"></div>
     <div id="typing-area">
-      <input id="typing-input" type="text" placeholder="Type the translation..." autofocus>
+      <input id="typing-input" type="text" placeholder="Digite a tradução em português..." autofocus>
       <button id="enter-btn">↵</button>
     </div>
-    <button id="dk-btn">I don't know</button>
+    <button id="dk-btn">Não sei</button>
   </div>
   
   <!-- MATCH SCREEN -->
   <div id="match-screen" class="screen">
-    <h2>Match the words</h2>
+    <h2>Combine as palavras</h2>
     <div id="match-container" class="options"></div>
-    <button id="match-done-btn" style="display:none; margin-top:10px;">Finish</button>
+    <button id="match-done-btn" style="display:none; margin-top:10px;">Concluir</button>
   </div>
 
   <div id="end-screen" class="screen">
-    <h2>Review mistakes</h2>
+    <h2>Revisar erros</h2>
     <div id="end-list"></div>
-    <button id="retry-btn" class="same-size-btn">Repeat mistakes</button>
-    <button id="restart-btn" class="same-size-btn">Restart all</button>
+    <button id="retry-btn" class="same-size-btn">Repetir erros</button>
+    <button id="restart-btn" class="same-size-btn">Recomeçar tudo</button>
   </div>
 
   <audio id="sound-correct" src="https://github.com/convamigo/InglesA1/raw/refs/heads/main/Correct2.mp3"></audio>
@@ -222,23 +222,13 @@
      </div>
 
   <script>
-      // Loads a JSON vocabulary list from the URL.
-      // Supported sources:
-      // 1) ?list=<url-or-name>  (recommended)
-      // 2) #<url-or-name>
-      // 3) fallback default file
+      // Carrega o arquivo JSON indicado na URL.
+      // Suporta:
+      // 1) ?list=<url-ou-nome>  (recomendado)
+      // 2) #<url-ou-nome>
+      // 3) fallback: vocab-nl-pt.json
       //
-      // Accepted JSON format:
-      // {
-      //   "intro": "...",
-      //   "terms": [
-      //     { "pt": "despertar", "en": "to wake", "example": "O barulho me despertou cedo." }
-      //   ]
-      // }
-      //
-      // The loader is flexible and also accepts older key names such as:
-      // - source side: pt, ptbr, pt-BR, br, term
-      // - target side: en, nl, dutch, translation
+      // Se você passar apenas um nome (ex.: m1-subjuntivos.json), ele será buscado no BASE_LIST_URL.
       let initialTerms = [];
 
       const BASE_LIST_URL = 'https://convamigo.github.io/A1PTVOCAB/';
@@ -395,21 +385,17 @@
 
       fetch(dataFile)
       .then(res => {
-          if (!res.ok) throw new Error(`HTTP ${res.status} while fetching ${dataFile}`);
+          if (!res.ok) throw new Error(`HTTP ${res.status} ao buscar ${dataFile}`);
           return res.json();
       })
       .then(data => {
-          // Normalize keys so the app can read both legacy lists and JSON like:
-          // { intro, terms: [{ pt, en, example }] }
-          initialTerms = (data.terms || [])
-            .map(t => ({
-              ...t,
-              nl: t.nl ?? t.en ?? t.english ?? t.target ?? t.translation ?? t.dutch ?? '',
-              pt: t.pt ?? t.ptbr ?? t['pt-BR'] ?? t.portuguese ?? t.source ?? t.term ?? '',
-              example: t.example ?? t.exemplo ?? t.frase ?? ''
-            }))
-            .filter(t => String(t.pt || '').trim() && String(t.nl || '').trim());
-
+          // Normaliza chaves para NL (holandês) e PT (português do Brasil)
+          initialTerms = (data.terms || []).map(t => ({
+            ...t,
+            nl: t.nl ?? t.en ?? t.dutch ?? t.term ?? '',
+            pt: t.pt ?? t.ptbr ?? t['pt-BR'] ?? t.br ?? t.translation ?? '',
+            example: t.example ?? t.exemplo ?? t.frase ?? ''
+          }));
           // Set the intro text
           document.getElementById('intro-text').textContent = data.intro || '';
 
@@ -422,7 +408,7 @@
           }
       })
       .catch(err => {
-          alert('Could not load ' + dataFile + ': ' + err);
+          alert('Não foi possível carregar ' + dataFile + ': ' + err);
 });
     let terms, stage1Queue, learnedStage1, learnedTyping, stage2Queue, mistakes, currentTerm, typeCount, round;
     const startScreen=document.getElementById('start-screen'),
@@ -571,7 +557,7 @@ volumeToggle.addEventListener('click', () => {
       if (term.example) {
         exampleControls = `
           <div style="margin-top:8px;">
-            <button id="show-example-btn" style="font-size:8px;padding:3px 8px;border-radius:12px;background:#1679ab;color:white;border:none;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.15);">Show example</button>
+            <button id="show-example-btn" style="font-size:8px;padding:3px 8px;border-radius:12px;background:#1679ab;color:white;border:none;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.15);">Mostrar exemplo</button>
             <div id="example-box" style="display:none;font-size:0.6em;color:#555;margin-top:6px;">${term.example}</div>
           </div>
         `;
@@ -720,7 +706,7 @@ volumeToggle.addEventListener('click', () => {
           note.style.background = '#fff3cd';
           note.style.marginTop = '8px';
           note.style.fontSize = '0.9em';
-          note.textContent = `Check spelling: ${currentTerm.nl}`;
+          note.textContent = `Atenção à ortografia: ${currentTerm.nl}`;
           typingArea.parentNode.insertBefore(note, dkBtn.nextSibling);
         }
 
@@ -873,16 +859,16 @@ volumeToggle.addEventListener('click', () => {
       if (!mistakes.length) {
         const item=document.createElement('div');
         item.className='correct-text';
-        item.textContent='Perfect! No mistakes remaining.';
+        item.textContent='Perfeito! Nenhum erro restante.';
         list.appendChild(item);
         retryBtn.style.display = 'none';
         clearProgress();
       } else {
         retryBtn.style.display = 'inline-block';
-        retryBtn.textContent = `Repeat mistakes (${mistakes.length})`;
+        retryBtn.textContent = `Repetir erros (${mistakes.length})`;
         mistakes.forEach(t=>{
           const item=document.createElement('div'); item.className='error-item';
-          item.innerHTML=`<div class="pt-box">${t.pt}</div><div class="correct-text">${t.nl}</div>`;
+          item.innerHTML=`<div class="pt-box">${t.nl}</div><div class="correct-text">${t.pt}</div>`;
           list.appendChild(item);
         });
       }
@@ -1007,15 +993,15 @@ function shuffle(arr) {
     
   </script>
   </div>
-  <button id="quick-restart" title="Restart" style="position:absolute;right:0;bottom:70px;font-size:12px;padding:8px 12px;border-radius:18px;background:#1679ab;color:#fff;border:1px solid rgba(255,255,255,0.35);cursor:pointer;opacity:0.94;z-index:20;box-shadow:0 4px 12px rgba(0,0,0,0.18);font-weight:600;">↺ Restart</button>
+  <button id="quick-restart" title="Recomeçar" style="position:absolute;right:0;bottom:70px;font-size:12px;padding:8px 12px;border-radius:18px;background:#1679ab;color:#fff;border:1px solid rgba(255,255,255,0.35);cursor:pointer;opacity:0.94;z-index:20;box-shadow:0 4px 12px rgba(0,0,0,0.18);font-weight:600;">↺ Recomeçar</button>
 
   <script>
   (function(){
     const btn = document.getElementById('quick-restart');
     if(!btn) return;
 
-    const defaultText = '↺ Restart';
-    const confirmText = 'Confirm restart';
+    const defaultText = '↺ Recomeçar';
+    const confirmText = 'Confirmar reinício';
     let armed = false;
     let timeoutId = null;
 
@@ -1064,4 +1050,3 @@ function shuffle(arr) {
   </div>
 </body>
 </html>
-
