@@ -273,7 +273,6 @@
 
       function termKey(term) {
         return `${term.en}|||${term.pt}`;
-      }|||${term.pt}`;
       }
 
       function buildTermMap(list) {
@@ -380,7 +379,7 @@
         showScreen(startScreen);
       }
 
-      // Helpful for debugging on GitHub Pages
+      // Útil para depuração no GitHub Pages
       console.log('Loading vocab list:', dataFile);
       console.log('Progress list ID:', currentListId);
 
@@ -390,14 +389,14 @@
           return res.json();
       })
       .then(data => {
-          // Normaliza chaves para NL (holandês) e PT (português do Brasil)
+          // Normaliza chaves para EN (inglês) e PT (português do Brasil)
           initialTerms = (data.terms || []).map(t => ({
             ...t,
-            en: t.en ?? t.en ?? t.dutch ?? t.term ?? '',
+            en: t.en ?? t.english ?? t.term ?? '',
             pt: t.pt ?? t.ptbr ?? t['pt-BR'] ?? t.br ?? t.translation ?? '',
             example: t.example ?? t.exemplo ?? t.frase ?? ''
           }));
-          // Set the intro text
+          // Define o texto de introdução
           document.getElementById('intro-text').textContent = data.intro || '';
 
           const savedState = loadProgress();
@@ -497,13 +496,11 @@ volumeToggle.addEventListener('click', () => {
   const pool = terms.map(t => t.pt).filter(pt => pt !== correctPT);
   let picks = [];
   while (picks.length < 3) {
-    const v = pool[Math.floor(Math.random()*pool.length)];
-    if(!picks.includes(v)) picks.push(v);
+    const v = pool[Math.floor(Math.random() * pool.length)];
+    if (!picks.includes(v)) picks.push(v);
   }
   return picks;
 }
-      return picks;
-    }
 
     function pickNext(){
       let mode;
@@ -576,7 +573,7 @@ volumeToggle.addEventListener('click', () => {
       mcqOptions.innerHTML='';
       document.querySelectorAll('#quiz-screen .correct-text')
         .forEach(el => el.remove());
-      [term.en,...getDistractorsNL(term.en)].sort(()=>Math.random()-.5).forEach((opt,i)=>{
+      [term.en, ...getDistractorsEN(term.en)].sort(()=>Math.random()-.5).forEach((opt,i)=>{
         const btn=document.createElement('div'); btn.className='option';
         btn.innerHTML=`<span class="key">${i+1}</span> ${opt}`;
         btn.addEventListener('click',()=>handleMCQ(opt,btn)); mcqOptions.appendChild(btn);
@@ -608,7 +605,7 @@ volumeToggle.addEventListener('click', () => {
     }
 
     function handleMCQ(ans,btn){
-      const ok=(ans===currentTerm.en);
+      const ok = (ans === currentTerm.en);
       // ◀ disable all buttons immediately
       mcqOptions.querySelectorAll('.option')
       .forEach(o => o.style.pointerEvents = 'none');
@@ -959,8 +956,18 @@ function handleMatchClick(el) {
   }, pairOk ? 0 : 1500);
 }
 
+function getDistractorsEN(correctEN) {
+  const pool = terms.map(t => t.en).filter(en => en !== correctEN);
+  let picks = [];
+  while (picks.length < 3 && picks.length < pool.length) {
+    const v = pool[Math.floor(Math.random() * pool.length)];
+    if (!picks.includes(v)) picks.push(v);
+  }
+  return picks;
+}
+
 function shuffle(arr) {
-  return arr.sort(() => Math.random()-0.5);
+  return arr.sort(() => Math.random() - 0.5);
 }
 
     document.addEventListener('keydown',e=>{
