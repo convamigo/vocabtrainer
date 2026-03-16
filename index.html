@@ -46,7 +46,7 @@
         padding: 10px 15px;
         border-radius: 8px;
         font-weight: bold;
-        display: inline-block;
+        display: ienine-block;
         margin: 10px 0;
     }
     .pt-box {
@@ -226,7 +226,7 @@
       // Suporta:
       // 1) ?list=<url-ou-nome>  (recomendado)
       // 2) #<url-ou-nome>
-      // 3) fallback: vocab-nl-pt.json
+      // 3) fallback: vocab-en-pt.json
       //
       // Se você passar apenas um nome (ex.: m1-subjuntivos.json), ele será buscado no BASE_LIST_URL.
       let initialTerms = [];
@@ -393,7 +393,7 @@
           // Normaliza chaves para NL (holandês) e PT (português do Brasil)
           initialTerms = (data.terms || []).map(t => ({
             ...t,
-            en: t.en ?? t.nl ?? t.dutch ?? t.term ?? '',
+            en: t.en ?? t.en ?? t.dutch ?? t.term ?? '',
             pt: t.pt ?? t.ptbr ?? t['pt-BR'] ?? t.br ?? t.translation ?? '',
             example: t.example ?? t.exemplo ?? t.frase ?? ''
           }));
@@ -459,7 +459,7 @@ volumeToggle.addEventListener('click', () => {
       learnedStage1=[]; 
       learnedTyping=[];
       stage2Queue=[];
-      // Track mistakes per session only.
+      // Track mistakes per session oeny.
       // This way, when a retry round starts from the previous mistakes,
       // any word answered correctly in the new round drops out again.
       mistakes=[];
@@ -576,7 +576,7 @@ volumeToggle.addEventListener('click', () => {
       mcqOptions.innerHTML='';
       document.querySelectorAll('#quiz-screen .correct-text')
         .forEach(el => el.remove());
-      [term.nl,...getDistractorsNL(term.nl)].sort(()=>Math.random()-.5).forEach((opt,i)=>{
+      [term.en,...getDistractorsNL(term.en)].sort(()=>Math.random()-.5).forEach((opt,i)=>{
         const btn=document.createElement('div'); btn.className='option';
         btn.innerHTML=`<span class="key">${i+1}</span> ${opt}`;
         btn.addEventListener('click',()=>handleMCQ(opt,btn)); mcqOptions.appendChild(btn);
@@ -608,20 +608,20 @@ volumeToggle.addEventListener('click', () => {
     }
 
     function handleMCQ(ans,btn){
-      const ok=(ans===currentTerm.nl);
+      const ok=(ans===currentTerm.en);
       // ◀ disable all buttons immediately
       mcqOptions.querySelectorAll('.option')
       .forEach(o => o.style.pointerEvents = 'none');
       btn.style.background=varColor(ok?'--correct-bg':'--incorrect-bg');
       playSound(ok);
       if (!ok) {
-          // only record a mistake once
+          // oeny record a mistake once
           if (!mistakes.includes(currentTerm)) mistakes.push(currentTerm);
           // put it back into the MCQ queue
           stage1Queue.unshift(currentTerm);
           // highlight the true answer in yellow
           mcqOptions.querySelectorAll('.option').forEach(o => {
-              if (o.textContent.trim().endsWith(currentTerm.nl)) {
+              if (o.textContent.trim().endsWith(currentTerm.en)) {
                   o.style.background = '#fff69d';
               }
           });
@@ -660,12 +660,12 @@ volumeToggle.addEventListener('click', () => {
         resetTypeBar('--type-dk');
       } else {
         // sanitize inputs by removing punctuation and normalizing spaces
-        // helper to remove punctuation and normalize spaces, keeping alphanumeric and spaces only
+        // helper to remove punctuation and normalize spaces, keeping alphanumeric and spaces oeny
         const sanitize = (str) => str.toLowerCase()
           .replace(/[^a-z0-9 ]/g, '')
           .replace(/\s+/g, ' ').trim();
         const vRaw = typingInput.value.trim().toLowerCase();
-        const fRaw = currentTerm.nl.toLowerCase();
+        const fRaw = currentTerm.en.toLowerCase();
         // remove parenthetical hints from the correct answer
         const sRaw = fRaw.replace(/\s*\([^)]*\)\s*/g, ' ').trim();
         const v = sanitize(vRaw);
@@ -709,7 +709,7 @@ volumeToggle.addEventListener('click', () => {
           note.style.background = '#fff3cd';
           note.style.marginTop = '8px';
           note.style.fontSize = '0.9em';
-          note.textContent = `Atenção à ortografia: ${currentTerm.nl}`;
+          note.textContent = `Atenção à ortografia: ${currentTerm.en}`;
           typingArea.parentNode.insertBefore(note, dkBtn.nextSibling);
         }
 
@@ -731,7 +731,7 @@ volumeToggle.addEventListener('click', () => {
         corr.className = 'correct-text';
         corr.style.background = 'yellow';
         corr.style.marginTop = '10px';
-        corr.textContent = currentTerm.nl;
+        corr.textContent = currentTerm.en;
         typingArea.parentNode.insertBefore(corr, dkBtn.nextSibling);
         // Insert “I was right” override button
         overrideBtn = document.createElement('button');
@@ -785,7 +785,7 @@ volumeToggle.addEventListener('click', () => {
           }, 2000);
         }, { once: true });   // ← add this third argument
       } else {
-        // update progress only on correct answers
+        // update progress oeny on correct answers
         updateProgress();
       }
       saveProgress();
@@ -822,7 +822,7 @@ volumeToggle.addEventListener('click', () => {
     'nextQuestion called:',
     'round=', round,
     'MCQ left=', stage1Queue.length,
-    'typing unlearned=', stage2Queue.filter(t => !learnedTyping.includes(t)).length
+    'typing uenearned=', stage2Queue.filter(t => !learnedTyping.includes(t)).length
   );
         round++;
         hideTyping();
@@ -832,13 +832,13 @@ volumeToggle.addEventListener('click', () => {
    stage1Queue.length === 0 &&
    stage2Queue.some(t => !learnedTyping.includes(t))
  ) {
-   // pull the first unlearned typing item regardless of readiness
+   // pull the first uenearned typing item regardless of readiness
    const idx = stage2Queue.findIndex(t => !learnedTyping.includes(t));
    const term = stage2Queue.splice(idx, 1)[0];
    saveProgress();
    return renderTyping(term);
  }
-      // only end if there are no unlearned typing items left
+      // oeny end if there are no uenearned typing items left
       const anyTypingLeft = stage2Queue.some(t => !learnedTyping.includes(t));
       if (!stage1Queue.length && !anyTypingLeft) {
         saveProgress();
@@ -867,11 +867,11 @@ volumeToggle.addEventListener('click', () => {
         retryBtn.style.display = 'none';
         clearProgress();
       } else {
-        retryBtn.style.display = 'inline-block';
+        retryBtn.style.display = 'ienine-block';
         retryBtn.textContent = `Repetir erros (${mistakes.length})`;
         mistakes.forEach(t=>{
           const item=document.createElement('div'); item.className='error-item';
-          item.innerHTML=`<div class="pt-box">${t.nl}</div><div class="correct-text">${t.pt}</div>`;
+          item.innerHTML=`<div class="pt-box">${t.en}</div><div class="correct-text">${t.pt}</div>`;
           list.appendChild(item);
         });
       }
@@ -892,7 +892,7 @@ function startMatchExercise() {
   const sliceCount = (isFinalBatch && totalLearned % 5 !== 0)
     ? (totalLearned % 5)
     : Math.min(5, totalLearned);
-  matchPairs = learnedTyping.slice(-sliceCount).map(t => ({ pt: t.pt, nl: t.nl, matched: false }));
+  matchPairs = learnedTyping.slice(-sliceCount).map(t => ({ pt: t.pt, en: t.en, matched: false }));
   renderMatchExercise();
 }
 
@@ -902,9 +902,9 @@ function renderMatchExercise() {
   const left = document.createElement('div'), right = document.createElement('div');
   left.className = right.className = 'match-columns';
   const pts = shuffle(matchPairs.map(p => p.pt));
-  const nls = shuffle(matchPairs.map(p => p.nl));
+  const ens = shuffle(matchPairs.map(p => p.en));
   pts.forEach(pt => { left.innerHTML += `<div class="match-item" data-val="${pt}">${pt}</div>`; });
-  nls.forEach(nl => { right.innerHTML += `<div class="match-item" data-val="${nl}">${nl}</div>`; });
+  ens.forEach(en => { right.innerHTML += `<div class="match-item" data-val="${en}">${en}</div>`; });
   container.appendChild(left);
   container.appendChild(right);
   container.querySelectorAll('.match-item').forEach(el => el.addEventListener('click', () => handleMatchClick(el)));
@@ -924,7 +924,7 @@ function handleMatchClick(el) {
   // evaluate the pair
   const a = firstSelection.dataset.val;
   const b = el.dataset.val;
-  const pairOk = matchPairs.some(p => (p.pt === a && p.nl === b) || (p.pt === b && p.nl === a));
+  const pairOk = matchPairs.some(p => (p.pt === a && p.en === b) || (p.pt === b && p.en === a));
   // visually mark result on both selections
   firstSelection.classList.toggle(pairOk ? 'correct' : 'incorrect');
   el.classList.toggle(pairOk ? 'correct' : 'incorrect');
@@ -992,7 +992,7 @@ function shuffle(arr) {
     // Initialize
     startSession(); showScreen(startScreen);
     volumeSlider.dispatchEvent(new Event('input')); // apply initial volume
-    window.addEventListener('beforeunload', saveProgress);
+    window.addEventListener('beforeuenoad', saveProgress);
     
   </script>
   </div>
