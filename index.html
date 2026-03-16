@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vocab Trainer</title>
+  <title>Vocabulary Trainer (NL → PT-BR)</title>
   <style>
     /* Show slider on hover */
     #volume-control:hover #volume-slider { display: block !important; }
@@ -22,15 +22,21 @@
       --btn-secondary: #2196f3;
     }
     * { box-sizing: border-box; }
-    body { font-family: sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; background: #fafafa; }
+    body { font-family: sans-serif; margin: 0; padding: 0; background: #fafafa; }
+    .app-shell {
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: clamp(16px, 4vw, 40px) 16px 80px;
+    }
     .screen {
         display: none;
         width: 100%;
-        max-width: 400px;
-        margin-top: 50px;
+        max-width: 640px;
         text-align: center;
         background: var(--screen-bg);
-        padding: 30px;
+        padding: clamp(20px, 3vw, 32px);
         border-radius: 12px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
@@ -53,9 +59,11 @@
         width: 45%;
     }
     .container {
+        position: relative;
         align-items: center;
         width: 100%;
-        padding: 5px;
+        max-width: 640px;
+        padding: 0 0 56px;
         display: flex;
         flex-direction: column;
     }
@@ -112,26 +120,23 @@
     .correct-text { background: var(--correct-bg); padding: 10px; border-radius: 5px; }
     @media (max-width: 700px) {
         .options {
-            display: grid;
             grid-template-columns: 1fr;
-  }
+        }
 
-}
-  #start-btn, #retry-btn, #restart-btn, .same-size-btn {
-    width: 100%;
-  }
+        #start-btn, #retry-btn, #restart-btn, .same-size-btn {
+          width: 100%;
+        }
 
-  .screen {
-    margin-top: 20px;
-    padding: 20px;
-    max-width: min(500px, 90vw);
-  }
+        .screen {
+          max-width: min(500px, 92vw);
+        }
 
-  .progress {
-    height: 16px;
-  }
-  
-  @media (min-width: 1024px) {
+        .progress {
+          height: 16px;
+        }
+      }
+
+      @media (min-width: 1024px) {
   .screen {
     max-width: 700px;
     padding: 40px;
@@ -165,9 +170,10 @@
   </style>
 </head>
 <body>
+  <div class="app-shell">
     <div class="container">
   <div id="start-screen" class="screen active">
-    <h1>Vocab Trainer</h1>
+    <h1>Vocabulary Trainer</h1>
     <p id="intro-text"></p>
     <div class="count-box">
         <span id="total-count">0</span> words
@@ -186,24 +192,24 @@
     <div id="term-box"></div>
     <div id="mcq-options" class="options"></div>
     <div id="typing-area">
-      <input id="typing-input" type="text" placeholder="Type translation..." autofocus>
+      <input id="typing-input" type="text" placeholder="Type the translation in Dutch..." autofocus>
       <button id="enter-btn">↵</button>
     </div>
-    <button id="dk-btn">Don’t know</button>
+    <button id="dk-btn">I don't know</button>
   </div>
   
   <!-- MATCH SCREEN -->
   <div id="match-screen" class="screen">
-    <h2>Match the words</h2>
+    <h2>Combine as words</h2>
     <div id="match-container" class="options"></div>
-    <button id="match-done-btn" style="display:none; margin-top:10px;">Done</button>
+    <button id="match-done-btn" style="display:none; margin-top:10px;">Finish</button>
   </div>
 
   <div id="end-screen" class="screen">
-    <h2>Review Mistakes</h2>
+    <h2>Review mistakes</h2>
     <div id="end-list"></div>
-    <button id="retry-btn" class="same-size-btn">Retry Mistakes</button>
-    <button id="restart-btn" class="same-size-btn">Restart All</button>
+    <button id="retry-btn" class="same-size-btn">Repeat mistakes</button>
+    <button id="restart-btn" class="same-size-btn">Restart all</button>
   </div>
 
   <audio id="sound-correct" src="https://github.com/convamigo/InglesA1/raw/refs/heads/main/Correct2.mp3"></audio>
@@ -216,22 +222,193 @@
      </div>
 
   <script>
-      // We'll load whatever JSON file the URL hash points to (default: basicwords.json)
+      // Carrega o arquivo JSON indicado na URL.
+      // Suporta:
+      // 1) ?list=<url-ou-nome>  (recomendado)
+      // 2) #<url-ou-nome>
+      // 3) fallback: vocab-nl-pt.json
+      //
+      // Se você passar apenas um nome (ex.: m1-subjuntivos.json), ele será buscado no BASE_LIST_URL.
       let initialTerms = [];
-      const dataFile = window.location.hash
-      ? window.location.hash.substring(1)
-      : 'ACOCE1-25.json';
+
+      const BASE_LIST_URL = 'https://convamigo.github.io/A1PTVOCAB/';
+      const DEFAULT_LIST_FILE = 'm1-subjuntivos.json';
+
+      function resolveListPath(raw) {
+        // If nothing is specified, load a sensible default that exists in this repo.
+        if (!raw) return BASE_LIST_URL + DEFAULT_LIST_FILE;
+        const v = decodeURIComponent(String(raw).trim());
+        if (!v) return BASE_LIST_URL + DEFAULT_LIST_FILE;
+
+        // allow full URLs
+        if (/^https?:\/\//i.test(v)) return v;
+
+        // allow absolute paths
+        if (v.startsWith('/')) return v;
+
+        // if user passes "m2-verbos" add .json
+        const withExt = v.toLowerCase().endsWith('.json') ? v : `${v}.json`;
+
+        // treat as file in the shared base folder
+        return BASE_LIST_URL + withExt;
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const rawFromQuery = params.get('list') || params.get('vocab') || params.get('data');
+      const rawFromHash = window.location.hash ? window.location.hash.substring(1) : '';
+      const requestedListRef = rawFromQuery || rawFromHash || DEFAULT_LIST_FILE;
+      const dataFile = resolveListPath(requestedListRef);
+
+      function getListIdFromPath(path) {
+        const raw = String(path || '').trim();
+        if (!raw) return DEFAULT_LIST_FILE;
+        const clean = decodeURIComponent(raw).split('#')[0].split('?')[0];
+        const parts = clean.split('/').filter(Boolean);
+        const last = parts.length ? parts[parts.length - 1] : clean;
+        return last.toLowerCase().endsWith('.json') ? last : `${last}.json`;
+      }
+
+      const currentListId = getListIdFromPath(requestedListRef || dataFile);
+      const PROGRESS_STORAGE_KEY = 'convamigo_vocab_progress';
+
+      function termKey(term) {
+        return `${term.nl}|||${term.pt}`;
+      }
+
+      function buildTermMap(list) {
+        const map = new Map();
+        list.forEach(term => map.set(termKey(term), term));
+        return map;
+      }
+
+      function serializeTermList(list) {
+        return (list || []).map(term => ({
+          key: termKey(term),
+          readyAt: term._readyAt ?? null
+        }));
+      }
+
+      function hydrateTermList(serialized, termMap) {
+        return (serialized || []).map(item => {
+          const term = termMap.get(item.key);
+          if (!term) return null;
+          term._readyAt = item.readyAt ?? null;
+          return term;
+        }).filter(Boolean);
+      }
+
+      function getProgressKey() {
+        return `${PROGRESS_STORAGE_KEY}__${currentListId}`;
+      }
+
+      function saveProgress() {
+        try {
+          if (!initialTerms.length || !terms) return;
+          const payload = {
+            savedAt: new Date().toISOString(),
+            listId: currentListId,
+            terms: serializeTermList(terms),
+            stage1Queue: serializeTermList(stage1Queue),
+            learnedStage1: serializeTermList(learnedStage1),
+            learnedTyping: serializeTermList(learnedTyping),
+            stage2Queue: serializeTermList(stage2Queue),
+            mistakes: serializeTermList(mistakes),
+            currentTerm: currentTerm ? { key: termKey(currentTerm), readyAt: currentTerm._readyAt ?? null } : null,
+            typeCount,
+            round,
+            activeScreen: document.querySelector('.screen.active')?.id || 'start-screen',
+            typingValue: typingInput ? typingInput.value : ''
+          };
+          localStorage.setItem(getProgressKey(), JSON.stringify(payload));
+        } catch (err) {
+          console.warn('Could not save progress:', err);
+        }
+      }
+
+      function loadProgress() {
+        try {
+          const raw = localStorage.getItem(getProgressKey());
+          return raw ? JSON.parse(raw) : null;
+        } catch (err) {
+          console.warn('Could not load progress:', err);
+          return null;
+        }
+      }
+
+      function clearProgress() {
+        try {
+          localStorage.removeItem(getProgressKey());
+        } catch (err) {
+          console.warn('Could not clear progress:', err);
+        }
+      }
+
+      function restoreSession(state) {
+        const termMap = buildTermMap(initialTerms);
+        terms = hydrateTermList(state.terms, termMap);
+        stage1Queue = hydrateTermList(state.stage1Queue, termMap);
+        learnedStage1 = hydrateTermList(state.learnedStage1, termMap);
+        learnedTyping = hydrateTermList(state.learnedTyping, termMap);
+        stage2Queue = hydrateTermList(state.stage2Queue, termMap);
+        mistakes = hydrateTermList(state.mistakes, termMap);
+        currentTerm = state.currentTerm ? (termMap.get(state.currentTerm.key) || null) : null;
+        if (currentTerm && state.currentTerm?.readyAt != null) currentTerm._readyAt = state.currentTerm.readyAt;
+        typeCount = state.typeCount || 0;
+        round = state.round || 0;
+        totalCountEl.textContent = terms.length;
+        resetTypeBar();
+        updateProgress();
+
+        if (state.activeScreen === 'end-screen') {
+          endSession();
+          return;
+        }
+
+        if (state.activeScreen === 'quiz-screen' && currentTerm) {
+          showScreen(quizScreen);
+          const isTypingTerm = !learnedTyping.includes(currentTerm) && (stage2Queue.includes(currentTerm) || learnedStage1.includes(currentTerm));
+          if (isTypingTerm) {
+            renderTyping(currentTerm);
+            typingInput.value = state.typingValue || '';
+          } else {
+            renderMCQ(currentTerm);
+          }
+          return;
+        }
+
+        showScreen(startScreen);
+      }
+
+      // Helpful for debugging on GitHub Pages
+      console.log('Loading vocab list:', dataFile);
+      console.log('Progress list ID:', currentListId);
+
       fetch(dataFile)
-      .then(res => res.json())
+      .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status} ao buscar ${dataFile}`);
+          return res.json();
+      })
       .then(data => {
-          initialTerms = data.terms;
+          // Normaliza chaves para NL (holandês) e PT (português do Brasil)
+          initialTerms = (data.terms || []).map(t => ({
+            ...t,
+            nl: t.nl ?? t.en ?? t.dutch ?? t.term ?? '',
+            pt: t.pt ?? t.ptbr ?? t['pt-BR'] ?? t.br ?? t.translation ?? '',
+            example: t.example ?? t.exemplo ?? t.frase ?? ''
+          }));
           // Set the intro text
-          document.getElementById('intro-text').textContent = data.intro;
-          startSession();
-          showScreen(startScreen);
+          document.getElementById('intro-text').textContent = data.intro || '';
+
+          const savedState = loadProgress();
+          if (savedState && savedState.listId === currentListId) {
+            restoreSession(savedState);
+          } else {
+            startSession();
+            showScreen(startScreen);
+          }
       })
       .catch(err => {
-          alert('Failed to load ' + dataFile + ': ' + err);
+          alert('Could not load ' + dataFile + ': ' + err);
 });
     let terms, stage1Queue, learnedStage1, learnedTyping, stage2Queue, mistakes, currentTerm, typeCount, round;
     const startScreen=document.getElementById('start-screen'),
@@ -281,13 +458,17 @@ volumeToggle.addEventListener('click', () => {
       learnedStage1=[]; 
       learnedTyping=[];
       stage2Queue=[];
-      if (list.length === initialTerms.length && list.every((t, i) => t === initialTerms[i])) mistakes = [];
+      // Track mistakes per session only.
+      // This way, when a retry round starts from the previous mistakes,
+      // any word answered correctly in the new round drops out again.
+      mistakes=[];
       currentTerm=null;
       typeCount=0;
       round = 0;
       totalCountEl.textContent=terms.length;
       resetTypeBar();
       updateProgress();
+      saveProgress();
     }
 
     function updateProgress(){
@@ -311,9 +492,10 @@ volumeToggle.addEventListener('click', () => {
         }
     }
 
-    function getDistractors(correct){
-      const pool=terms.map(t=>t.en).filter(e=>e!==correct), picks=[];
-      while(picks.length<3){
+    function getDistractorsNL(correctNL) {
+  const pool = terms.map(t => t.nl).filter(nl => nl !== correctNL);
+  let picks = [];
+      while (picks.length < 3) {
         const v=pool[Math.floor(Math.random()*pool.length)];
         if(!picks.includes(v)) picks.push(v);
       }
@@ -365,15 +547,38 @@ volumeToggle.addEventListener('click', () => {
   return { term: selected, mode };
     }
 
+    function persistProgress(){
+      saveProgress();
+    }
+
     function renderMCQ(term){
-      currentTerm=term; hideTyping(); termBox.innerHTML = `<strong>${term.pt}</strong><div style="font-size: 0.6em; color: #555; margin-top: 6px;">${term.example || ''}</div>`; mcqOptions.innerHTML='';
+      currentTerm=term; hideTyping();
+      let exampleControls = '';
+      if (term.example) {
+        exampleControls = `
+          <div style="margin-top:8px;">
+            <button id="show-example-btn" style="font-size:8px;padding:3px 8px;border-radius:12px;background:#1679ab;color:white;border:none;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.15);">Show example</button>
+            <div id="example-box" style="display:none;font-size:0.6em;color:#555;margin-top:6px;">${term.example}</div>
+          </div>
+        `;
+      }
+      termBox.innerHTML = `<strong>${term.pt}</strong>${exampleControls}`;
+      const btn = document.getElementById('show-example-btn');
+      if (btn) {
+        btn.addEventListener('click', () => {
+          const box = document.getElementById('example-box');
+          if (box) box.style.display = box.style.display === 'none' ? 'block' : 'none';
+        });
+      }
+      mcqOptions.innerHTML='';
       document.querySelectorAll('#quiz-screen .correct-text')
         .forEach(el => el.remove());
-      [term.en,...getDistractors(term.en)].sort(()=>Math.random()-.5).forEach((opt,i)=>{
+      [term.nl,...getDistractorsNL(term.nl)].sort(()=>Math.random()-.5).forEach((opt,i)=>{
         const btn=document.createElement('div'); btn.className='option';
         btn.innerHTML=`<span class="key">${i+1}</span> ${opt}`;
         btn.addEventListener('click',()=>handleMCQ(opt,btn)); mcqOptions.appendChild(btn);
       });
+      saveProgress();
     }
 
     function renderTyping(term){
@@ -388,6 +593,7 @@ volumeToggle.addEventListener('click', () => {
       termBox.textContent=term.pt; mcqOptions.innerHTML=''; typingArea.classList.add('active');
       dkBtn.style.display='block'; typingInput.value=''; typingInput.focus();
       scrollToQuizScreen();
+      saveProgress();
 
     }
 
@@ -399,7 +605,7 @@ volumeToggle.addEventListener('click', () => {
     }
 
     function handleMCQ(ans,btn){
-      const ok=(ans===currentTerm.en);
+      const ok=(ans===currentTerm.nl);
       // ◀ disable all buttons immediately
       mcqOptions.querySelectorAll('.option')
       .forEach(o => o.style.pointerEvents = 'none');
@@ -412,7 +618,7 @@ volumeToggle.addEventListener('click', () => {
           stage1Queue.unshift(currentTerm);
           // highlight the true answer in yellow
           mcqOptions.querySelectorAll('.option').forEach(o => {
-              if (o.textContent.trim().endsWith(currentTerm.en)) {
+              if (o.textContent.trim().endsWith(currentTerm.nl)) {
                   o.style.background = '#fff69d';
               }
           });
@@ -425,7 +631,8 @@ volumeToggle.addEventListener('click', () => {
           stage2Queue.push(currentTerm);
           updateProgress();
       }
-          setTimeout(() => { resetTypeBar(); nextQuestion(); }, ok ? 800 : 1700);
+          saveProgress();
+      setTimeout(() => { resetTypeBar(); nextQuestion(); }, ok ? 800 : 1700);
     }
 
     function handleTyping(action){
@@ -443,6 +650,7 @@ volumeToggle.addEventListener('click', () => {
         enterBtn.disabled   = true;
         dkBtn.disabled      = true;
       let ok;
+      let typoHint=false;
       if(action==='dk'){
         // treat "don't know" as incorrect; neutral bar
         ok=false;
@@ -454,7 +662,7 @@ volumeToggle.addEventListener('click', () => {
           .replace(/[^a-z0-9 ]/g, '')
           .replace(/\s+/g, ' ').trim();
         const vRaw = typingInput.value.trim().toLowerCase();
-        const fRaw = currentTerm.en.toLowerCase();
+        const fRaw = currentTerm.nl.toLowerCase();
         // remove parenthetical hints from the correct answer
         const sRaw = fRaw.replace(/\s*\([^)]*\)\s*/g, ' ').trim();
         const v = sanitize(vRaw);
@@ -483,10 +691,25 @@ volumeToggle.addEventListener('click', () => {
           return edits <= 1;
         }
         // evaluate correctness: exact match or within one edit distance
-        ok = (v === f || v === s || editDistanceOne(v, f) || editDistanceOne(v, s));
+        const exact = (v === f || v === s);
+        const close = (!exact && (editDistanceOne(v, f) || editDistanceOne(v, s)));
+        ok = exact || close;
         resetTypeBar(ok ? '--type-correct' : '--type-incorrect');
         // visually mark the input
         typingInput.style.backgroundColor = ok ? '#dcedc8' : '#ffcdd2';
+
+        // If spelling was slightly off but accepted, show hint with correct spelling
+        if (ok && close) {
+          typoHint = true;
+          const note = document.createElement('div');
+          note.className = 'correct-text';
+          note.style.background = '#fff3cd';
+          note.style.marginTop = '8px';
+          note.style.fontSize = '0.9em';
+          note.textContent = `Check spelling: ${currentTerm.nl}`;
+          typingArea.parentNode.insertBefore(note, dkBtn.nextSibling);
+        }
+
         if (ok && !learnedTyping.includes(currentTerm)) {
             typeCount++;
             learnedTyping.push(currentTerm);
@@ -505,7 +728,7 @@ volumeToggle.addEventListener('click', () => {
         corr.className = 'correct-text';
         corr.style.background = 'yellow';
         corr.style.marginTop = '10px';
-        corr.textContent = currentTerm.en;
+        corr.textContent = currentTerm.nl;
         typingArea.parentNode.insertBefore(corr, dkBtn.nextSibling);
         // Insert “I was right” override button
         overrideBtn = document.createElement('button');
@@ -562,6 +785,7 @@ volumeToggle.addEventListener('click', () => {
         // update progress only on correct answers
         updateProgress();
       }
+      saveProgress();
       // trigger match on every 5 correct typings OR when both queues are empty (final batch)
       if (
         ok &&
@@ -581,12 +805,13 @@ volumeToggle.addEventListener('click', () => {
         return;
       }
       // schedule next question with appropriate delay
+      const delay = ok ? (typoHint ? 2500 : 1000) : 2500;
       nextQTimeout = setTimeout(() => {
       // hide the "I was right" button if still visible
       if (overrideBtn) overrideBtn.style.display = 'none';
       typingInput.style.backgroundColor = '';
       nextQuestion();
-    }, ok ? 1000 : 2000);
+    }, delay);
     }
 
     function nextQuestion(){
@@ -607,27 +832,46 @@ volumeToggle.addEventListener('click', () => {
    // pull the first unlearned typing item regardless of readiness
    const idx = stage2Queue.findIndex(t => !learnedTyping.includes(t));
    const term = stage2Queue.splice(idx, 1)[0];
+   saveProgress();
    return renderTyping(term);
  }
       // only end if there are no unlearned typing items left
       const anyTypingLeft = stage2Queue.some(t => !learnedTyping.includes(t));
       if (!stage1Queue.length && !anyTypingLeft) {
+        saveProgress();
         return endSession();
       }
       const result = pickNext();
-      if (!result) return endSession();
+      if (!result) {
+        saveProgress();
+        return endSession();
+      }
       const { term, mode } = result;
+      saveProgress();
       mode === 'typing' ? renderTyping(term) : renderMCQ(term);
     }
 
     function endSession(){
       showScreen(endScreen);
-      const list=document.getElementById('end-list'); list.innerHTML='';
-      mistakes.forEach(t=>{
-        const item=document.createElement('div'); item.className='error-item';
-        item.innerHTML=`<div class="pt-box">${t.pt}</div><div class="correct-text">${t.en}</div>`;
+      const list=document.getElementById('end-list');
+      list.innerHTML='';
+
+      if (!mistakes.length) {
+        const item=document.createElement('div');
+        item.className='correct-text';
+        item.textContent='Perfect! No mistakes remaining.';
         list.appendChild(item);
-      });
+        retryBtn.style.display = 'none';
+        clearProgress();
+      } else {
+        retryBtn.style.display = 'inline-block';
+        retryBtn.textContent = `Repeat mistakes (${mistakes.length})`;
+        mistakes.forEach(t=>{
+          const item=document.createElement('div'); item.className='error-item';
+          item.innerHTML=`<div class="pt-box">${t.nl}</div><div class="correct-text">${t.pt}</div>`;
+          list.appendChild(item);
+        });
+      }
     }
 
     function varColor(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
@@ -645,7 +889,7 @@ function startMatchExercise() {
   const sliceCount = (isFinalBatch && totalLearned % 5 !== 0)
     ? (totalLearned % 5)
     : Math.min(5, totalLearned);
-  matchPairs = learnedTyping.slice(-sliceCount).map(t => ({ pt: t.pt, en: t.en, matched: false }));
+  matchPairs = learnedTyping.slice(-sliceCount).map(t => ({ pt: t.pt, nl: t.nl, matched: false }));
   renderMatchExercise();
 }
 
@@ -655,9 +899,9 @@ function renderMatchExercise() {
   const left = document.createElement('div'), right = document.createElement('div');
   left.className = right.className = 'match-columns';
   const pts = shuffle(matchPairs.map(p => p.pt));
-  const ens = shuffle(matchPairs.map(p => p.en));
+  const nls = shuffle(matchPairs.map(p => p.nl));
   pts.forEach(pt => { left.innerHTML += `<div class="match-item" data-val="${pt}">${pt}</div>`; });
-  ens.forEach(en => { right.innerHTML += `<div class="match-item" data-val="${en}">${en}</div>`; });
+  nls.forEach(nl => { right.innerHTML += `<div class="match-item" data-val="${nl}">${nl}</div>`; });
   container.appendChild(left);
   container.appendChild(right);
   container.querySelectorAll('.match-item').forEach(el => el.addEventListener('click', () => handleMatchClick(el)));
@@ -677,7 +921,7 @@ function handleMatchClick(el) {
   // evaluate the pair
   const a = firstSelection.dataset.val;
   const b = el.dataset.val;
-  const pairOk = matchPairs.some(p => (p.pt === a && p.en === b) || (p.pt === b && p.en === a));
+  const pairOk = matchPairs.some(p => (p.pt === a && p.nl === b) || (p.pt === b && p.nl === a));
   // visually mark result on both selections
   firstSelection.classList.toggle(pairOk ? 'correct' : 'incorrect');
   el.classList.toggle(pairOk ? 'correct' : 'incorrect');
@@ -723,18 +967,87 @@ function shuffle(arr) {
         if(i>=0&&i<mcqOptions.children.length) mcqOptions.children[i].click();
       }
     });
-    typingInput.addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault(); handleTyping();} });
+    typingInput.addEventListener('keydown',e=>{
+      saveProgress();
+      if(e.key==='Enter'){e.preventDefault(); handleTyping();}
+    });
+    typingInput.addEventListener('input', saveProgress);
     enterBtn.addEventListener('click', ()=>handleTyping());
     dkBtn.addEventListener('click', ()=>handleTyping('dk'));
     startBtn.addEventListener('click',()=>{startSession(); showScreen(quizScreen); nextQuestion();});
-    retryBtn.addEventListener('click',()=>{ if(mistakes.length<4){alert('Need 4+ mistakes');return;} startSession(mistakes); showScreen(quizScreen); nextQuestion(); });
-    restartBtn.addEventListener('click',()=>location.reload());
+    retryBtn.addEventListener('click',()=>{
+      if(!mistakes.length) return;
+      startSession(mistakes);
+      showScreen(quizScreen);
+      nextQuestion();
+    });
+    restartBtn.addEventListener('click',()=>{
+      clearProgress();
+      location.reload();
+    });
 
     // Initialize
     startSession(); showScreen(startScreen);
     volumeSlider.dispatchEvent(new Event('input')); // apply initial volume
+    window.addEventListener('beforeunload', saveProgress);
     
+  </script>
+  </div>
+  <button id="quick-restart" title="Restart" style="position:absolute;right:0;bottom:70px;font-size:12px;padding:8px 12px;border-radius:18px;background:#1679ab;color:#fff;border:1px solid rgba(255,255,255,0.35);cursor:pointer;opacity:0.94;z-index:20;box-shadow:0 4px 12px rgba(0,0,0,0.18);font-weight:600;">↺ Restart</button>
+
+  <script>
+  (function(){
+    const btn = document.getElementById('quick-restart');
+    if(!btn) return;
+
+    const defaultText = '↺ Restart';
+    const confirmText = 'Confirm restart';
+    let armed = false;
+    let timeoutId = null;
+
+    function resetButton(){
+      armed = false;
+      btn.textContent = defaultText;
+      btn.style.background = '#1679ab';
+      btn.style.opacity = '0.9';
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+      }
+    }
+
+    function armButton(){
+      armed = true;
+      btn.textContent = confirmText;
+      btn.style.background = '#c62828';
+      btn.style.opacity = '1';
+      timeoutId = setTimeout(resetButton, 3000);
+    }
+
+    btn.addEventListener('mouseenter',()=>btn.style.opacity='1');
+    btn.addEventListener('mouseleave',()=>btn.style.opacity=armed ? '1' : '0.9');
+
+    btn.addEventListener('click',()=>{
+      if(!armed){
+        armButton();
+        return;
+      }
+
+      try {
+        if (typeof clearProgress === 'function') clearProgress();
+      } catch(e){}
+
+      // Restart the engine from zero without reloading
+      if (typeof startSession === 'function') {
+        startSession(initialTerms);
+        showScreen(startScreen);
+      }
+
+      resetButton();
+    });
+  })();
   </script>
   </div>
 </body>
 </html>
+
